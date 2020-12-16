@@ -1,23 +1,23 @@
 package characters.ai;
 
+import characters.Entity;
+import characters.movement.AiMovement;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class Npc extends AiCharacter {
-    public static int numberof_crew;
+public class Npc extends Entity {
+    public static int numberOfCrew;
 
     /**
      * NPC object.
      *
      * @param world The game world
-     * @param x the initial spawn position x
-     * @param y the initial spawn position y
+     * @param x     the initial spawn position x
+     * @param y     the initial spawn position y
      */
     public Npc(World world, float x, float y) {
-        super(world, x, y);
-        numberof_crew++;
-        super.b2body.setUserData("crew" + numberof_crew);
-        super.b2body.getFixtureList().get(0).setSensor(true);
-        destX = x;
-        destY = y;
+        super();
+        numberOfCrew++;
+        this.movementSystem = new AiMovement(this,world, x, y);
+        this.movementSystem.b2body.setUserData("crew" + numberOfCrew);
     }
 }

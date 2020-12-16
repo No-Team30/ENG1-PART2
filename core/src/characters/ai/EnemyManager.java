@@ -1,6 +1,7 @@
 package characters.ai;
 
 import characters.Player;
+import characters.movement.AiMovement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -8,10 +9,11 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import sprites.Systems;
 
+import sprites.Systems;
 
 
 /**
@@ -25,16 +27,16 @@ public class EnemyManager {
     public static ArrayList<float[]> spawn_position = new ArrayList<>();
     public static ArrayList<float[]> target_position = new ArrayList<>();
     public static ArrayList<Systems> systems = new ArrayList<>();
+    /**
+     * Presumably a map containing which systems are targeted by which enemy
+     **/
     public static HashMap<Systems, Enemy> information;
 
     /**
      * EnemyManager to manage enemies behavior.
-
      *
-     * @param world box2D world
-     *
-     * @param map Tiled map
-     *
+     * @param world   box2D world
+     * @param map     Tiled map
      * @param systems Arraylist Systems objects
      */
     public EnemyManager(World world, TiledMap map, ArrayList<Systems> systems) {
@@ -87,7 +89,7 @@ public class EnemyManager {
     }
 
     /**
-     *  generate 8 initial targets for enemies.
+     * generate 8 initial targets for enemies.
      *
      * @param systems Arraylist stores system objects
      */
@@ -101,7 +103,7 @@ public class EnemyManager {
             // generate a index [0,15]
             int index = (int) (randomD * 15);
             // take away healing pod for initial traget, for difficulty
-            while (randomIndex.contains(index) 
+            while (randomIndex.contains(index)
                     && !systems.get(index).sysName.equals("headlingPod")) {
                 randomD = Math.random();
                 index = (int) (randomD * 15);
@@ -121,8 +123,8 @@ public class EnemyManager {
             // set the target
             enemy.set_target_system(sys);
             // set the destination
-            enemy.setDest(endX, endY);
-            enemy.moveToDest();
+            ((AiMovement)enemy.movementSystem).setDest(endX, endY);
+            ((AiMovement)enemy.movementSystem).moveToDest();
             // update the information hash table, aviod enemy targeting the same system
             information.put(sys, enemy);
 
@@ -136,7 +138,6 @@ public class EnemyManager {
      * @param batch SpriteBatch used in game
      */
     public void render_ememy(SpriteBatch batch) {
-
         for (Enemy enemy : enemies) {
             enemy.draw(batch);
         }
@@ -154,7 +155,7 @@ public class EnemyManager {
 
             //if (enemy.ability.provked && ! enemy.ability.disabled 
             //&& enemy.ability.target != null && !enemy.is_attcking_mode()) {
-            if (enemy.ability.inUse && !enemy.usingAbility) {    
+            if (enemy.ability.inUse && !enemy.usingAbility) {
                 Player target = enemy.ability.target;
                 enemy.ability.useAbility(enemy, target);
                 enemy.update(delta);
@@ -165,7 +166,7 @@ public class EnemyManager {
                 // if enemy have a taget system
                 if (enemy.get_target_system() != null) {
                     // remove it from information for other enemies to target that system.
-                    if (enemy.get_target_system().is_not_sabotaged() 
+                    if (enemy.get_target_system().is_not_sabotaged()
                             && information.containsKey(enemy.get_target_system())) {
                         information.remove(enemy.get_target_system());
                         enemy.targetSystem = null;
@@ -207,15 +208,16 @@ public class EnemyManager {
      *
      * @param enemy enemy object
      */
+    // Appears to find the first system not in information?, and sets that as the enemies target?
     public void generateNextTarget(Enemy enemy) {
         for (Systems system : systems) {
             if (!information.containsKey(system)) {
                 float endx = system.getposition()[0];
                 float endy = system.getposition()[1];
-                enemy.setDest(endx, endy);
+                ((AiMovement)enemy.movementSystem).setDest(endx, endy);
                 enemy.set_target_system(system);
                 information.put(system, enemy);
-                enemy.moveToDest();
+                ((AiMovement)enemy.movementSystem).moveToDest();
                 // set enemy back to standBy mode before it contacts with the next target system,
                 // otherwise the system will lose HP before contact
                 enemy.set_standByMode();

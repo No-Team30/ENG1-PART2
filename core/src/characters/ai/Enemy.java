@@ -1,34 +1,37 @@
 package characters.ai;
 
+import characters.Entity;
+import characters.movement.AiMovement;
+import characters.movement.Movement;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import sprites.Systems;
+import tools.CharacterRenderer;
 
-public class Enemy extends AiCharacter {
+public class Enemy extends Entity {
 
     public Systems targetSystem;
     public Systems currentContactSystem; // used for contact listener
+    //TODO WHY NO ENUM?
     public String mode;
     public Ability ability;
     public static int numberofInfiltrators;
-    public boolean usingAbility; 
+    public boolean usingAbility;
+
     /**
      * Enemy.
-
+     *
      * @param world The game world
-     *
-     * @param x position x
-     *
-     * @param y position y
+     * @param x     position x
+     * @param y     position y
      */
     public Enemy(World world, float x, float y) {
-        super(world, x, y);
-        this.destX = x;
-        this.destY = y;
+        super();
         numberofInfiltrators++;
-        this.b2body.setUserData("Infiltrators" + numberofInfiltrators);
+        this.movementSystem = new AiMovement(this,world, x, y);
+        this.movementSystem.b2body.setUserData("Infiltrators" + numberofInfiltrators);
         ability = new Ability();
         createEdgeShape(ability);
         mode = "";
@@ -37,7 +40,7 @@ public class Enemy extends AiCharacter {
 
     /**
      * Create an EdgeShape for enemy to sense auber for special ability.
-
+     *
      * @param ability Ability to be triggered
      */
     public void createEdgeShape(Ability ability) {
@@ -48,14 +51,13 @@ public class Enemy extends AiCharacter {
         fixtureDef.shape = sensoringArea;
         fixtureDef.isSensor = true;
         // store ability in sensor userdata to retrieve it in contactListener
-        b2body.createFixture(fixtureDef).setUserData(ability);
+        this.movementSystem.b2body.createFixture(fixtureDef).setUserData(ability);
 
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-
         ability.update(delta, this);
         if (!ability.inUse) {
             usingAbility = false;
@@ -64,7 +66,7 @@ public class Enemy extends AiCharacter {
 
     /**
      * set sabotage system target.
-
+     *
      * @param system Systems Arraylist
      */
     public void set_target_system(Systems system) {
@@ -73,7 +75,7 @@ public class Enemy extends AiCharacter {
 
     /**
      * Get target system object.
-
+     *
      * @return targeted system
      */
     public Systems get_target_system() {
@@ -82,7 +84,7 @@ public class Enemy extends AiCharacter {
 
     /**
      * ability to sabotage the system.
-
+     *
      * @param system system object
      */
     public void sabotage(Systems system) {
@@ -135,7 +137,7 @@ public class Enemy extends AiCharacter {
 
     /**
      * getter for arrested.
-
+     *
      * @return bool if the enemy is arrested
      */
     public boolean isArrested() {
@@ -146,8 +148,6 @@ public class Enemy extends AiCharacter {
     // TO DO
     // Enemies special abilities
     // ...
-
-
 
 
 }

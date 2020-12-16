@@ -209,7 +209,7 @@ public class Gameplay implements Screen {
         backgroundRenderer.render();
 
         // set camera follow the player
-        camera.position.set(player.b2body.getPosition().x, player.b2body.getPosition().y, 0);
+        camera.position.set(player.movementSystem.b2body.getPosition().x, player.movementSystem.b2body.getPosition().y, 0);
         camera.update();
         game.getBatch().setProjectionMatrix(camera.combined);
 
