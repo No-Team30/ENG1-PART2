@@ -1,7 +1,6 @@
-package characters.ai;
+package characters.Entities;
 
-import characters.Player;
-import characters.movement.AiMovement;
+import characters.Movement.AiMovement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;

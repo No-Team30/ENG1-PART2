@@ -1,8 +1,8 @@
 package screen;
 
-import characters.Player;
-import characters.ai.EnemyManager;
-import characters.ai.NpcManager;
+import characters.Entities.Player;
+import characters.Entities.EnemyManager;
+import characters.Entities.NpcManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;

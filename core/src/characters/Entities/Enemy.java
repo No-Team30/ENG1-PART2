@@ -1,14 +1,11 @@
-package characters.ai;
+package characters.Entities;
 
-import characters.Entity;
-import characters.movement.AiMovement;
-import characters.movement.Movement;
+import characters.Movement.AiMovement;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import sprites.Systems;
-import tools.CharacterRenderer;
 
 public class Enemy extends Entity {
 

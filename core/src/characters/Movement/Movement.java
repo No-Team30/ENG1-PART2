@@ -1,6 +1,6 @@
-package characters.movement;
+package characters.Movement;
 
-import characters.Entity;
+import characters.Entities.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -27,7 +27,7 @@ public abstract class Movement {
         this.entity = entity;
         this.world = world;
         this.position = new Vector2(x, y);
-        this.size = new Vector2(64f, 64f);
+        size = new Vector2(24, 24);
         this.speed = 1000.0f;
         this.createBody();
 

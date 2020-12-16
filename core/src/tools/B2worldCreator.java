@@ -1,7 +1,7 @@
 package tools;
 
-import characters.Player;
-import characters.movement.UserMovement;
+import characters.Entities.Player;
+import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;

@@ -1,7 +1,6 @@
-package characters.ai;
+package characters.Entities;
 
-import characters.Entity;
-import characters.movement.AiMovement;
+import characters.Movement.AiMovement;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class Npc extends Entity {

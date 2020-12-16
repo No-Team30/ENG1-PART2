@@ -1,9 +1,7 @@
-package characters;
+package characters.Entities;
 
-import characters.ai.Enemy;
-import characters.movement.AiMovement;
-import characters.movement.Movement;
-import com.badlogic.gdx.physics.box2d.World;
+import characters.Movement.AiMovement;
+import characters.Movement.Movement;
 import tools.CharacterRenderer;
 import tools.Controller;
 
@@ -88,8 +86,8 @@ public class Player extends Entity {
         if (Controller.isArrestPressed()) {
             arrestPressed = true;
         }
-
         if (nearbyEnemy != null && arrestPressed) {
+            System.out.println("Arrested: " + nearbyEnemy + " arrestPressed: ");
             arrest(nearbyEnemy);
         }
         // should be called each loop of rendering

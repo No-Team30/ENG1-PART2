@@ -1,6 +1,6 @@
-package characters.movement;
+package characters.Movement;
 
-import characters.Entity;
+import characters.Entities.Entity;
 import com.badlogic.gdx.ai.pfa.PathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.math.Vector2;
@@ -9,7 +9,6 @@ import map.Distance;
 import map.Map;
 import map.Node;
 import map.Path;
-import tools.CharacterRenderer;
 
 /**
  * AI Character object for the game.

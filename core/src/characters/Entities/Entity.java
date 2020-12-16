@@ -1,9 +1,8 @@
-package characters;
+package characters.Entities;
 
-import characters.movement.Movement;
+import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import tools.CharacterRenderer;
 
 /**
@@ -26,11 +25,13 @@ public abstract class Entity {
      */
     public Entity(CharacterRenderer.Sprite sprite) {
         renderer = new CharacterRenderer(sprite);
+        numberOfEntities += 1;
     }
 
 
     public Entity() {
         renderer = new CharacterRenderer(sprites[numberOfEntities % 3]);
+        numberOfEntities += 1;
     }
 
     /**

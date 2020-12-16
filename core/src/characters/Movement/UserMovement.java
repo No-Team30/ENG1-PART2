@@ -1,6 +1,6 @@
-package characters.movement;
+package characters.Movement;
 
-import characters.Entity;
+import characters.Entities.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import tools.Controller;

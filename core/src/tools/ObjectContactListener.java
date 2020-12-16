@@ -1,8 +1,8 @@
 package tools;
 
-import characters.Player;
-import characters.ai.Ability;
-import characters.ai.Enemy;
+import characters.Entities.Player;
+import characters.Entities.Ability;
+import characters.Entities.Enemy;
 import com.badlogic.gdx.physics.box2d.*;
 import java.util.regex.Pattern;
 import sprites.Door;

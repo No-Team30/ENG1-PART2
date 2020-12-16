@@ -1,7 +1,6 @@
-package characters.ai;
+package characters.Entities;
 
-import characters.Player;
-import characters.movement.AiMovement;
+import characters.Movement.AiMovement;
 
 import java.util.Random;
 

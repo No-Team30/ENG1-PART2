@@ -1,7 +1,7 @@
 /*
 package characters.ai;
 
-import characters.Player;
+import characters.Entities.Player;
 import com.badlogic.gdx.ai.pfa.PathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.math.Vector2;
