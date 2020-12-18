@@ -1,7 +1,8 @@
 package characters.Entities;
 
 import characters.Movement.AiMovement;
-import characters.Movement.Movement;
+import characters.Movement.UserMovement;
+import com.badlogic.gdx.physics.box2d.World;
 import tools.CharacterRenderer;
 import tools.Controller;
 
@@ -18,6 +19,7 @@ public class Player extends Entity {
     public boolean arrestPressed;
     public int arrestedCount = 0;
     public ArrayList<Enemy> arrestedEnemy = new ArrayList<>();
+    private float last_print = 0;
 
     /**
      * creates an semi-initalised player the physics body is still uninitiated.
@@ -26,20 +28,15 @@ public class Player extends Entity {
      * @param x     The inital x location of the player
      * @param y     The inital y location of the player
      */
-    public Player() {
+    public Player(World world, float x, float y) {
         super(CharacterRenderer.Sprite.AUBER);
         //WARN This can be null
-        this.movementSystem = null;
-
+        this.movementSystem = new UserMovement(this, world, x, y);
+        this.movementSystem.b2body.setUserData("auber_user");
         this.health = 100f;
         this.ishealing = false;
         arrestPressed = false;
 
-    }
-
-    public void setMovementSystem(Movement movement) {
-        this.movementSystem = movement;
-        this.movementSystem.b2body.setUserData("auber");
     }
 
     /**
@@ -79,9 +76,42 @@ public class Player extends Entity {
 
     }
 
+    private final int print_frequency = 2;
+    private final int AI_ARREST_RANGE = 64;
+
     @Override
     public void update(float delta) {
         super.update(delta);
+        if (this.movementSystem instanceof AiMovement) {
+            Enemy closest_enemy = null;
+            int closest_distance = Integer.MAX_VALUE;
+            last_print += delta;
+            for (Enemy enemy : EnemyManager.enemies) {
+                if (!enemy.isArrested()) {
+                    int test_distance = (int) enemy.movementSystem.position.dst(this.movementSystem.position);
+                    if (test_distance < AI_ARREST_RANGE) {
+                        System.out.println("    Arresting Enemy: " + enemy.movementSystem.b2body.getUserData() + " at: " + enemy.movementSystem.position + " with distance: " + test_distance);
+                        arrest(enemy);
+                    } else if (test_distance < closest_distance) {
+                        closest_distance = test_distance;
+                        closest_enemy = enemy;
+                    }
+
+                    if (last_print > print_frequency) {
+                        System.out.println("    Enemy: " + enemy.movementSystem.b2body.getUserData() + " at: " + enemy.movementSystem.position + " with distance: " + test_distance);
+                    }
+                }
+            }
+            if (closest_enemy != null) {
+                if (last_print > print_frequency) {
+                    last_print = 0;
+                    System.out.println("Targetting Enemy: " + closest_enemy.movementSystem.b2body.getUserData() + " at: " + closest_enemy.movementSystem.position + " Player at: " + this.movementSystem.position);
+                }
+                ((AiMovement) this.movementSystem).setDestination(closest_enemy.movementSystem.position);
+                ((AiMovement) this.movementSystem).moveToDestination();
+
+            }
+        }
         // TODO arrestPressed can never be false?
         if (Controller.isArrestPressed()) {
             arrestPressed = true;
@@ -89,6 +119,16 @@ public class Player extends Entity {
         if (nearbyEnemy != null && arrestPressed) {
             System.out.println("Arrested: " + nearbyEnemy + " arrestPressed: ");
             arrest(nearbyEnemy);
+        }
+
+        for (Enemy enemy : EnemyManager.enemies) {
+            if (!enemy.isArrested()) {
+                int test_distance = (int) enemy.movementSystem.position.dst(this.movementSystem.position);
+                if (test_distance < AI_ARREST_RANGE) {
+                    System.out.println("    Arresting Enemy: " + enemy.movementSystem.b2body.getUserData() + " at: " + enemy.movementSystem.position + " with distance: " + test_distance);
+                    arrest(enemy);
+                }
+            }
         }
         // should be called each loop of rendering
         healing(delta);
@@ -103,8 +143,8 @@ public class Player extends Entity {
         // stop enemy's sabotaging if it does
         enemy.set_ArrestedMode();
         // set enemy destination to auber's left,enemy should follow auber until it is in jail
-        ((AiMovement) enemy.movementSystem).setDest(this.movementSystem.position.x, this.movementSystem.position.y);
-        ((AiMovement) enemy.movementSystem).moveToDest();
+        ((AiMovement) enemy.movementSystem).setDestination(this.movementSystem.position.x, this.movementSystem.position.y);
+        ((AiMovement) enemy.movementSystem).moveToDestination();
 
     }
 

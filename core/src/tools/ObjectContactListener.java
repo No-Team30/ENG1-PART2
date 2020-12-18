@@ -4,7 +4,9 @@ import characters.Entities.Player;
 import characters.Entities.Ability;
 import characters.Entities.Enemy;
 import com.badlogic.gdx.physics.box2d.*;
+
 import java.util.regex.Pattern;
+
 import sprites.Door;
 import sprites.Systems;
 
@@ -22,17 +24,16 @@ public class ObjectContactListener implements ContactListener {
     private final String infiltratorsPattern = ".*Infiltrators.*";
 
 
-
     /**
-     * If auber has contact with the teleport, the auber's userData to ready_to_teleport, 
+     * If auber has contact with the teleport, the auber's userData to ready_to_teleport,
      * update auber's position in player.update()
      * if enemy has contact with the systems, start sabotage process.
      * if auber has contact with healing pod, start healing process.
-     * if auber has contact with enemy body and auber is not arresting another enemy and 
+     * if auber has contact with enemy body and auber is not arresting another enemy and
      * KEY A is pressed, auber to arrest enemy.
      * if auber has contact with enemy ability area and enemy is not in cool down,
      * enemy will use ability.
-
+     *
      * @param contact the contact that is being sensed
      */
     @Override
@@ -40,14 +41,13 @@ public class ObjectContactListener implements ContactListener {
 
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
-
         // use reg to check whether the object contacted is a teleporter or not
         isTeleport = Pattern.matches(teleportPattern, fixB.getBody().getUserData().toString());
         // use reg to check whether the object contacted is a healpod
         isHealingPod = Pattern.matches(healingPattern, fixB.getBody().getUserData().toString());
 
         // only auber contact with teleport will be listened
-        if (isTeleport && fixA.getBody().getUserData() == "auber")  {
+        if (isTeleport && fixA.getBody().getUserData() == "auber") {
             // set the player.UserData to ready_to_teleport for teleport_process
             fixA.getBody().setUserData("ready_to_teleport");
         }
@@ -61,11 +61,11 @@ public class ObjectContactListener implements ContactListener {
         }
 
         // Infiltrators contact
-        if (is_Infiltrators(fixA) || is_Infiltrators(fixB))  {
+        if (is_Infiltrators(fixA) || is_Infiltrators(fixB)) {
 
             if (is_Infiltrators(fixA)) {
                 // if fixture's userdata is Ability object, then is sensoring area
-                if (fixA.getUserData() != null 
+                if (fixA.getUserData() != null
                         && Ability.class.isAssignableFrom(fixA.getUserData().getClass())) {
                     // enemy sensors auber
                     if (is_Auber(fixB)) {
@@ -91,7 +91,7 @@ public class ObjectContactListener implements ContactListener {
                 }
             } else if (is_Infiltrators(fixB)) {
                 // if fixture's userdata is Ability object, then is sensoring area
-                if (fixB.getUserData() != null 
+                if (fixB.getUserData() != null
                         && Ability.class.isAssignableFrom(fixB.getUserData().getClass())) {
                     if (is_Auber(fixA)) {
                         Ability ability = (Ability) fixB.getUserData();
@@ -119,7 +119,7 @@ public class ObjectContactListener implements ContactListener {
         // auber arrest contact, auber can only arrest enemy if contact with its main body
         if (is_Auber(fixA) || is_Auber(fixB)) {
             // if contact happened between auber and infiltrators' body but not sensor area
-            if (is_Auber(fixA) && is_Infiltrators(fixB) 
+            if (is_Auber(fixA) && is_Infiltrators(fixB)
                     && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
                 Player auber = (Player) fixA.getUserData();
                 Enemy enemy = (Enemy) fixB.getUserData();
@@ -130,7 +130,7 @@ public class ObjectContactListener implements ContactListener {
                     //enemy.set_standByMode();
                     enemy.ability.setDisable(true);
                 }
-            } else if (is_Auber(fixB) && is_Infiltrators(fixA) 
+            } else if (is_Auber(fixB) && is_Infiltrators(fixA)
                     && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
                 Player auber = (Player) fixB.getUserData();
                 Enemy enemy = (Enemy) fixA.getUserData();
@@ -147,7 +147,7 @@ public class ObjectContactListener implements ContactListener {
     /**
      * if auber end contact with enemy and KEY A is not pressed, arrest process will fail
      * if enemy end contact with system system's hp should be checked.
-
+     *
      * @param contact The contact that is ending
      */
     @Override
@@ -157,7 +157,7 @@ public class ObjectContactListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
 
         // use reg to check whether the object end contact is a teleporter or not
-        isTeleport = Pattern.matches(teleportPattern,  fixB.getBody().getUserData().toString());
+        isTeleport = Pattern.matches(teleportPattern, fixB.getBody().getUserData().toString());
         // use reg to check whether the object end contact is a healpod
         isHealingPod = Pattern.matches(healingPattern, fixB.getBody().getUserData().toString());
 
@@ -168,7 +168,7 @@ public class ObjectContactListener implements ContactListener {
         }
 
         // if auber end contact with healing pod, set auber's body data back to auber
-        if (isHealingPod 
+        if (isHealingPod
                 && ((String) fixA.getBody().getUserData()).toString().equals("ready_to_heal")) {
             // set the player.UserData to ready_to_heal for healing process
             fixA.getBody().setUserData("auber");
@@ -176,9 +176,9 @@ public class ObjectContactListener implements ContactListener {
 
 
         // // infiltrators end contact
-        if (is_Infiltrators(fixA) || is_Infiltrators(fixB))  {
+        if (is_Infiltrators(fixA) || is_Infiltrators(fixB)) {
 
-            if (is_Infiltrators(fixA) && is_System(fixB) 
+            if (is_Infiltrators(fixA) && is_System(fixB)
                     && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
                 Enemy enemy = (Enemy) fixA.getUserData();
                 Systems currentContactsystem = enemy.currentContactSystem;
@@ -197,7 +197,7 @@ public class ObjectContactListener implements ContactListener {
                 // left the current contact system, should set it back to null
                 currentContactsystem = null;
 
-            } else if (is_Infiltrators(fixB) && is_System(fixA) 
+            } else if (is_Infiltrators(fixB) && is_System(fixA)
                     && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
 
                 Enemy enemy = (Enemy) fixB.getUserData();
@@ -223,7 +223,7 @@ public class ObjectContactListener implements ContactListener {
         // end auber arrest contact
         if (is_Auber(fixA) || is_Auber(fixB)) {
             // if contact happened between auber and infiltrators' body but not sensor area
-            if (is_Auber(fixA) && is_Infiltrators(fixB) 
+            if (is_Auber(fixA) && is_Infiltrators(fixB)
                     && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
                 Player auber = (Player) fixA.getUserData();
                 Enemy enemy = (Enemy) fixB.getUserData();
@@ -231,7 +231,7 @@ public class ObjectContactListener implements ContactListener {
                     auber.setNearby_enemy(null);
                     enemy.ability.setDisable(false);
                 }
-            } else if (is_Auber(fixB) && is_Infiltrators(fixA) 
+            } else if (is_Auber(fixB) && is_Infiltrators(fixA)
                     && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
                 Player auber = (Player) fixB.getUserData();
                 Enemy enemy = (Enemy) fixA.getUserData();
@@ -247,7 +247,7 @@ public class ObjectContactListener implements ContactListener {
 
     /**
      * if the given fixture is an infiltrator.
-
+     *
      * @param fixture contact fixture
      * @return true if fixture is an Enemy object
      */
@@ -257,29 +257,29 @@ public class ObjectContactListener implements ContactListener {
 
     /**
      * If the given fixture is a system.
-
+     *
      * @param fixture contact fixture
      * @return true if fixture is a System object
      */
     public boolean is_System(Fixture fixture) {
-        return Pattern.matches(systemPattern,  fixture.getBody().getUserData().toString())
+        return Pattern.matches(systemPattern, fixture.getBody().getUserData().toString())
                 || Pattern.matches(healingPattern, fixture.getBody().getUserData().toString());
     }
 
     /**
      * If the given fixture is a Door.
-
+     *
      * @param fixture contact fixture
      * @return true if fixture is a door
      */
     public boolean is_Doors(Fixture fixture) {
-        return  Pattern.matches("door_.*", fixture.getUserData().toString());
+        return Pattern.matches("door_.*", fixture.getUserData().toString());
     }
 
 
     /**
      * If the given fixture is a Auber.
-
+     *
      * @param fixture contact fixture
      * @return true if fixture is a Player object
      */
@@ -294,8 +294,8 @@ public class ObjectContactListener implements ContactListener {
         Fixture fixB = contact.getFixtureB();
 
         // if the character is about to come into contact with a door
-        if (is_Doors(fixB) 
-            && ((fixA.getBody().getUserData() == "auber") || is_Infiltrators(fixA))) {
+        if (is_Doors(fixB)
+                && ((fixA.getBody().getUserData() == "auber") || is_Infiltrators(fixA))) {
             // gets the door
             Object data = fixB.getBody().getUserData();
             if (data instanceof Door) {
@@ -307,5 +307,6 @@ public class ObjectContactListener implements ContactListener {
     }
 
     @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {}
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+    }
 }

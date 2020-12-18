@@ -122,8 +122,8 @@ public class EnemyManager {
             // set the target
             enemy.set_target_system(sys);
             // set the destination
-            ((AiMovement)enemy.movementSystem).setDest(endX, endY);
-            ((AiMovement)enemy.movementSystem).moveToDest();
+            ((AiMovement) enemy.movementSystem).setDestination(endX, endY);
+            ((AiMovement) enemy.movementSystem).moveToDestination();
             // update the information hash table, aviod enemy targeting the same system
             information.put(sys, enemy);
 
@@ -143,15 +143,15 @@ public class EnemyManager {
 
     }
 
+    private float last_print = 0;
+
     /**
      * update the enemy, should be called in gameplay update.
      *
      * @param delta The time in secconds since the last update
      */
     public void update_enemy(float delta) {
-
         for (Enemy enemy : enemies) {
-
             //if (enemy.ability.provked && ! enemy.ability.disabled 
             //&& enemy.ability.target != null && !enemy.is_attcking_mode()) {
             if (enemy.ability.inUse && !enemy.usingAbility) {
@@ -213,10 +213,10 @@ public class EnemyManager {
             if (!information.containsKey(system)) {
                 float endx = system.getposition()[0];
                 float endy = system.getposition()[1];
-                ((AiMovement)enemy.movementSystem).setDest(endx, endy);
+                ((AiMovement) enemy.movementSystem).setDestination(endx, endy);
                 enemy.set_target_system(system);
                 information.put(system, enemy);
-                ((AiMovement)enemy.movementSystem).moveToDest();
+                ((AiMovement) enemy.movementSystem).moveToDestination();
                 // set enemy back to standBy mode before it contacts with the next target system,
                 // otherwise the system will lose HP before contact
                 enemy.set_standByMode();

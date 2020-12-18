@@ -128,7 +128,7 @@ public class Ability {
         float currentSpeed = enemy.movementSystem.speed;
         enemy.movementSystem.speed = currentSpeed * 3f;
         if (target != null) {
-            ((AiMovement)enemy.movementSystem).setDest(target.movementSystem.b2body.getPosition().x - 400, target.movementSystem.b2body.getPosition().y);
+            ((AiMovement)enemy.movementSystem).setDestination(target.movementSystem.b2body.getPosition().x - 400, target.movementSystem.b2body.getPosition().y);
         }
 
     }

@@ -54,8 +54,7 @@ public class B2worldCreator {
         // Creates the player at the spawn point on the spawn layer of the map
         for (MapObject object : layers.get("spawn").getObjects()) {
             Rectangle point = ((RectangleMapObject) object).getRectangle();
-            Gameplay.player = new Player();
-            Gameplay.player.setMovementSystem(new UserMovement(Gameplay.player, world, point.x, point.y));
+            Gameplay.player = new Player(world, point.x, point.y);
             break;
 
         }

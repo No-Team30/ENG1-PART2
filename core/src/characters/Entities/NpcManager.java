@@ -80,8 +80,8 @@ public class NpcManager {
             destcount += 1;
             // pic for NPC needed
             Npc npc = new Npc(world, position[0], position[1]);
-            ((AiMovement) npc.movementSystem).setDest(dest[0], dest[1]);
-            ((AiMovement) npc.movementSystem).moveToDest();
+            ((AiMovement) npc.movementSystem).setDestination(dest[0], dest[1]);
+            ((AiMovement) npc.movementSystem).moveToDestination();
             npcs.add(npc);
 
         }
@@ -128,8 +128,8 @@ public class NpcManager {
         index = random.nextInt(20);
 
         float[] destination = spawnPositions.get(index);
-        ((AiMovement) npc.movementSystem).setDest(destination[0], destination[1]);
-        ((AiMovement) npc.movementSystem).moveToDest();
+        ((AiMovement) npc.movementSystem).setDestination(destination[0], destination[1]);
+        ((AiMovement) npc.movementSystem).moveToDestination();
     }
 
 

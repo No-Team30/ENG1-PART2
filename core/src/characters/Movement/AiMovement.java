@@ -26,14 +26,31 @@ public class AiMovement extends Movement {
 
 
     /**
+     * Converts a User Input Based movement system to an Ai controlled one
+     *
+     * @param entity   The entity to alter
+     * @param movement The existing movement system to inherit from
+     */
+    public AiMovement(Entity entity, UserMovement movement) {
+        super(entity, movement.world, movement.position.x, movement.position.y);
+        this.destX = movement.position.x;
+        this.destY = movement.position.y;
+        // Maybe not needed?
+        numberOfAiEntities++;
+
+        path = new Path();
+        pathFinder = new IndexedAStarPathFinder<Node>(Map.graph);
+    }
+
+    /**
      * creates an semi-initalised AI character the physics body is still uninitiated.
      *
      * @param world The game world
      * @param x     The inital x location of the character
      * @param y     The inital y location of the character
      */
-    public AiMovement(Entity entity,World world, float x, float y) {
-        super(entity,world, x, y);
+    public AiMovement(Entity entity, World world, float x, float y) {
+        super(entity, world, x, y);
         this.destX = x;
         this.destY = y;
         // Maybe not needed?
@@ -124,20 +141,30 @@ public class AiMovement extends Movement {
     }
 
     /**
-     * set the destination postion.
+     * Set the destination position to target
      *
      * @param x x component
      * @param y y component
      */
-    public void setDest(float x, float y) {
+    public void setDestination(float x, float y) {
         destX = x;
         destY = y;
     }
 
     /**
+     * Set the destination position to target
+     *
+     * @param position The coordinates to target
+     */
+    public void setDestination(Vector2 position) {
+        destX = position.x;
+        destY = position.y;
+    }
+
+    /**
      * move to destination.
      */
-    public void moveToDest() {
+    public void moveToDestination() {
         goTo(destX, destY);
     }
 

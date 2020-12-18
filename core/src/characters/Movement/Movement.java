@@ -14,8 +14,6 @@ public abstract class Movement {
     protected Vector2 size;
 
 
-    /*    */
-
     /**
      * creates an semi-initialised player the physics body is still uninitiated.
      *
