@@ -123,7 +123,7 @@ public class TeleportProcess {
         auber.nearbyEnemy.movementSystem.b2body.setTransform(jailX, jailY, 0);
         ((AiMovement)auber.nearbyEnemy.movementSystem).stop();
         // add the enemy to arrested list, shouldn't be arrested again
-        auber.arrestedEnemy.add(auber.nearbyEnemy);
+        auber.jailedEnemies.add(auber.nearbyEnemy);
         auber.arrestedCount++;
         // remove enemy's target system if it has one
         auber.nearbyEnemy.targetSystem = null;
