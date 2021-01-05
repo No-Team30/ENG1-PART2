@@ -165,7 +165,7 @@ public class AiMovement extends Movement {
      * move to destination.
      */
     public void moveToDestination() {
-        goTo(destX, destY);
+        findValidPath(destX, destY);
     }
 
     /**
@@ -175,9 +175,7 @@ public class AiMovement extends Movement {
      * @param y y coordinate of destination in pixels
      * @return true if there is a path between character and destination, false otherwise
      */
-    public boolean goTo(float x, float y) {
-
-
+    public boolean pathFind(float x, float y) {
         Vector2 position = this.b2body.getPosition();
 
         Node startNode = Map.graph.getNodeByXy((int) position.x, (int) position.y);
@@ -208,6 +206,66 @@ public class AiMovement extends Movement {
         } else {
             return true;
         }
+    }
+
+    /**
+     * As the pathfinder may occasionally fail at finding a path between two points
+     * This function, adjusts the start and end points to get a path that is "close enough" to the required direction
+     *
+     * @param x The x coordinate to target
+     * @param y The y coordinate to target
+     * @return true if we managed to find a valid path
+     */
+    public boolean findValidPath(float x, float y) {
+        boolean found_path = true;
+        float targeted_x_position = x;
+        float targeted_y_position = y;
+
+        // Expands the circle of backup paths each time, we fail
+        int scale = 1;
+        // The different positions to check
+        int offsetIndex = 0;
+        int[][] offsetOptions = new int[][]{new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 1}, new int[]{1, 1}, new int[]{1, 0}, new int[]{1, -1}, new int[]{0, -1}, new int[]{-1, -1}};
+        // Adjust the end position, until a valid path is found, or we fail
+        while (!this.pathFind(targeted_x_position, targeted_y_position)) {
+            targeted_x_position = x + (scale * offsetOptions[offsetIndex][0]);
+            targeted_y_position = y + (scale * offsetOptions[offsetIndex][1]);
+            offsetIndex += 1;
+            if (offsetIndex >= offsetOptions.length) {
+                offsetIndex = 0;
+                scale += 1;
+                // If we have failed to find a solution, break and try adjusting the start position instead
+                if (scale == 4) {
+                    found_path = false;
+                    break;
+                }
+            }
+        }
+        // If we found a path, exit
+        if (found_path) {
+            return true;
+        }
+        // Try adjusting the start position instead
+
+        float original_x = position.x;
+        float original_y = position.y;
+        scale = 1;
+        offsetIndex = 0;
+        while (!this.pathFind(x, y)) {
+            position.x = original_x + (scale * offsetOptions[offsetIndex][0]);
+            position.y = original_y + (scale * offsetOptions[offsetIndex][1]);
+            offsetIndex += 1;
+            if (offsetIndex >= offsetOptions.length) {
+                offsetIndex = 0;
+                scale += 1;
+                // We failed to find a path completely!
+                if (scale == 3) {
+                    System.out.println("Finding a valid path failed, from (" + original_x + ", " + original_y + ") to (" + x + ", " + y + ")");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

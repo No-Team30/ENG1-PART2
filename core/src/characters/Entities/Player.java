@@ -148,6 +148,7 @@ public class Player extends Entity {
                 ((AiMovement) this.movementSystem).setDestination(closest_enemy.movementSystem.position);
                 ((AiMovement) this.movementSystem).moveToDestination();
 
+
             }
 
         }
