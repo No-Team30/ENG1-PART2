@@ -22,9 +22,19 @@ public class EnemyManager {
 
     public World world;
     public TiledMap map;
-    public static ArrayList<Enemy> enemies = new ArrayList<>();
+    /**
+     * Enemies that are wandering around damaging systems
+     */
+    public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
+    /**
+     * Enemies that are in jail
+     */
+    public static ArrayList<Enemy> jailedEnemies = new ArrayList<>();
+    /**
+     * Enemies that are following the Player
+     */
+    public static ArrayList<Enemy> arrestedEnemies = new ArrayList<>();
     public static ArrayList<float[]> spawn_position = new ArrayList<>();
-    public static ArrayList<float[]> target_position = new ArrayList<>();
     public static ArrayList<Systems> systems = new ArrayList<>();
     /**
      * Presumably a map containing which systems are targeted by which enemy
@@ -56,7 +66,6 @@ public class EnemyManager {
     public void generate_spawn_position(TiledMap map) {
 
         MapLayer enemySpawn = map.getLayers().get("npcSpawns");
-
         while (spawn_position.size() < 8) {
             for (MapObject object : enemySpawn.getObjects()) {
                 Rectangle point = ((RectangleMapObject) object).getRectangle();
@@ -81,7 +90,7 @@ public class EnemyManager {
             float[] position = spawn_position.get(i);
             // pic needs to be changed with enemy pic
             Enemy enemy = new Enemy(world, position[0], position[1]);
-            enemies.add(enemy);
+            activeEnemies.add(enemy);
 
         }
 
@@ -118,7 +127,7 @@ public class EnemyManager {
             float endX = sys.getposition()[0];
             float endY = sys.getposition()[1];
 
-            Enemy enemy = enemies.get(i);
+            Enemy enemy = activeEnemies.get(i);
             // set the target
             enemy.set_target_system(sys);
             // set the destination
@@ -136,14 +145,18 @@ public class EnemyManager {
      *
      * @param batch SpriteBatch used in game
      */
-    public void render_ememy(SpriteBatch batch) {
-        for (Enemy enemy : enemies) {
+    public void render_enemy(SpriteBatch batch) {
+        for (Enemy enemy : activeEnemies) {
+            enemy.draw(batch);
+        }
+        for (Enemy enemy : arrestedEnemies) {
+            enemy.draw(batch);
+        }
+        for (Enemy enemy : jailedEnemies) {
             enemy.draw(batch);
         }
 
     }
-
-    private float last_print = 0;
 
     /**
      * update the enemy, should be called in gameplay update.
@@ -151,54 +164,45 @@ public class EnemyManager {
      * @param delta The time in secconds since the last update
      */
     public void update_enemy(float delta) {
-        for (Enemy enemy : enemies) {
-            //if (enemy.ability.provked && ! enemy.ability.disabled 
-            //&& enemy.ability.target != null && !enemy.is_attcking_mode()) {
-            if (enemy.ability.inUse && !enemy.usingAbility) {
-                Player target = enemy.ability.target;
-                enemy.ability.useAbility(enemy, target);
-                enemy.update(delta);
-                enemy.usingAbility = true;
-                continue;
-            }
-            if (enemy.isArrested()) {
-                // if enemy have a taget system
-                if (enemy.get_target_system() != null) {
-                    // remove it from information for other enemies to target that system.
-                    if (enemy.get_target_system().is_not_sabotaged()
-                            && information.containsKey(enemy.get_target_system())) {
-                        information.remove(enemy.get_target_system());
-                        enemy.targetSystem = null;
-                        enemy.update(delta);
-                        continue;
-                    }
-                    enemy.update(delta);
-                    continue;
-                }
-            } else {
-                // get targeted system object
-                Systems sys = enemy.get_target_system();
-                // if no system left to sabotage, should start attacking auber
-                if (sys == null) {
-                    // still have systems not sabotaged, should keep generating next target
-                    if (information.size() < 17) {
-                        generateNextTarget(enemy);
-                        enemy.update(delta);
-                        if (enemy.get_target_system() == null) {
-                            continue;
-                        }
-                    }
-                    continue;
-                }
-                if (enemy.is_attcking_mode()) {
-                    enemy.sabotage(sys);
-                }
-                // generate next traget if system sabotaged
-                if (sys.is_sabotaged()) {
-                    generateNextTarget(enemy);
+        for (Enemy enemy : jailedEnemies) {
+            enemy.update(delta);
+        }
+        for (Enemy enemy : arrestedEnemies) {
+            if (enemy.get_target_system() != null) {
+                // remove it from information for other enemies to target that system.
+                if (enemy.get_target_system().is_not_sabotaged()
+                        && information.containsKey(enemy.get_target_system())) {
+                    information.remove(enemy.get_target_system());
+                    enemy.targetSystem = null;
                 }
             }
             enemy.update(delta);
+        }
+        // Try and use special ability, otherwise try and damage systems
+        for (Enemy enemy : activeEnemies) {
+            enemy.update(delta);
+            if (enemy.ability.inUse && !enemy.usingAbility) {
+                Player target = enemy.ability.target;
+                enemy.ability.useAbility(enemy, target);
+                enemy.usingAbility = true;
+            } else {
+                // get targeted system object
+                Systems sys = enemy.get_target_system();
+                // TODO If no system left to sabotage, should start attacking Auber
+                if (sys == null) {
+                    // Still have systems not sabotaged, should keep generating next target
+                    if (information.size() < 17) {
+                        generateNextTarget(enemy);
+                    }
+
+                } else if (enemy.is_attcking_mode()) {
+                    // Damage system
+                    enemy.sabotage(sys);
+                } else if (sys.is_sabotaged()) {
+                    // generate next traget if system sabotaged
+                    generateNextTarget(enemy);
+                }
+            }
         }
     }
 

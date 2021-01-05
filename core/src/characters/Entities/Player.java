@@ -23,8 +23,6 @@ public class Player extends Entity {
     public boolean ishealing;
     public boolean arrestPressed;
     public int arrestedCount = 0;
-    public ArrayList<Enemy> jailedEnemies = new ArrayList<>();
-    public ArrayList<Enemy> arrestedEnemies = new ArrayList<>();
 
     /**
      * The time since the target for the AI movement system was last updated
@@ -108,57 +106,56 @@ public class Player extends Entity {
             this.timeSinceEnemyTargetUpdated = 0;
             Enemy closest_enemy = null;
             int closest_distance = Integer.MAX_VALUE;
-            // Set all arrested enemies to follow the Player
-            for (Enemy enemy : this.arrestedEnemies) {
-                ((AiMovement) enemy.movementSystem).setDestination(this.movementSystem.position);
-                ((AiMovement) enemy.movementSystem).moveToDestination();
+            // TODO Optimisation Could maybe store all non arrested enemies
+            ArrayList<Enemy> enemiesToArrest = new ArrayList<>();
+            for (Enemy enemy : EnemyManager.activeEnemies) {
+                int enemyDistance = (int) enemy.movementSystem.position.dst(this.movementSystem.position);
+                if (enemyDistance < AI_ARREST_RANGE) {
+                    // Cannot arrest enemy here, because you cannot modify activeEnemies, inside a loop
+                    enemiesToArrest.add(enemy);
+                } else if (enemyDistance < closest_distance) {
+                    closest_distance = enemyDistance;
+                    closest_enemy = enemy;
+                }
+            }
+            for (Enemy enemy : enemiesToArrest) {
+                System.out.println("    Arresting Enemy: " + enemy.movementSystem.b2body.getUserData() + " at: " + enemy.movementSystem.position);
+                arrest(enemy);
             }
 
-            // TODO Optimisation Could maybe store all non arrested enemies
-            for (Enemy enemy : EnemyManager.enemies) {
-                if (!enemy.isArrested()) {
-                    int enemyDistance = (int) enemy.movementSystem.position.dst(this.movementSystem.position);
-                    if (enemyDistance < AI_ARREST_RANGE) {
-                        System.out.println("    Arresting Enemy: " + enemy.movementSystem.b2body.getUserData() + " at: " + enemy.movementSystem.position + " with distance: " + enemyDistance);
-                        arrest(enemy);
-                    } else if (enemyDistance < closest_distance) {
-                        closest_distance = enemyDistance;
-                        closest_enemy = enemy;
-                    }
-                }
-            }
-            // If we have arrested an enemy, move to the jail
+            // If we have arrested an enemy, and are not at the jail, go to the jail
             // Otherwise go to the closest enemy
-            if (this.arrestedEnemies.size() > 0) {
-                // If we are at the jail, put arrested enemies in jail (Within 2 squares distance of the jail)
-                if (this.movementSystem.position.dst(this.jailPosition) < 64 * 2) {
-                    while (arrestedEnemies.size() > 0) {
-                        this.arrestedCount += 1;
-                        Enemy enemy = arrestedEnemies.remove(0);
-                        enemy.targetSystem = null;
-                        enemy.movementSystem.b2body.setTransform(jailPosition, 0);
-                        ((AiMovement) enemy.movementSystem).stop();
-                    }
-                } else {
-                    ((AiMovement) this.movementSystem).setDestination(this.jailPosition);
-                    ((AiMovement) this.movementSystem).moveToDestination();
-                }
+
+            if (EnemyManager.arrestedEnemies.size() > 0 && this.movementSystem.position.dst(this.jailPosition) > 64 * 2) {
+                ((AiMovement) this.movementSystem).setDestination(this.jailPosition);
+                ((AiMovement) this.movementSystem).moveToDestination();
             } else if (closest_enemy != null) {
-                System.out.println("Targeting Enemy: " + closest_enemy.movementSystem.b2body.getUserData() + " at: " + closest_enemy.movementSystem.position + " Player at: " + this.movementSystem.position + " With distance: " + closest_distance);
                 ((AiMovement) this.movementSystem).setDestination(closest_enemy.movementSystem.position);
                 ((AiMovement) this.movementSystem).moveToDestination();
-
-
             }
-
         }
-        // TODO arrestPressed can never be false?
         if (Controller.isArrestPressed()) {
             arrestPressed = true;
         }
         if (nearbyEnemy != null && arrestPressed && !nearbyEnemy.isArrested()) {
             System.out.println("Arrested: " + nearbyEnemy.movementSystem.b2body.getUserData() + " arrestPressed: ");
             arrest(nearbyEnemy);
+        }
+        // Set all arrested enemies to follow the Player
+        for (Enemy enemy : EnemyManager.arrestedEnemies) {
+            ((AiMovement) enemy.movementSystem).setDestination(this.movementSystem.position);
+            ((AiMovement) enemy.movementSystem).moveToDestination();
+        }
+        // If we are at the jail, put arrested enemies in jail (Within 2 squares distance of the jail)
+        if (this.movementSystem.position.dst(this.jailPosition) < 64 * 2) {
+            while (EnemyManager.arrestedEnemies.size() > 0) {
+                this.arrestedCount += 1;
+                Enemy enemy = EnemyManager.arrestedEnemies.remove(0);
+                EnemyManager.jailedEnemies.add(enemy);
+                enemy.targetSystem = null;
+                enemy.movementSystem.b2body.setTransform(jailPosition, 0);
+                ((AiMovement) enemy.movementSystem).stop();
+            }
         }
 
         // should be called each loop of rendering
@@ -172,16 +169,14 @@ public class Player extends Entity {
      * @param enemy The enemy object
      */
     public void arrest(Enemy enemy) {
-        arrestedEnemies.add(enemy);
+        EnemyManager.arrestedEnemies.add(enemy);
+        EnemyManager.activeEnemies.remove(enemy);
         // stop enemy's sabotaging if it does
         enemy.set_ArrestedMode();
         // set enemy destination to auber's left,enemy should follow auber until it is in jail
         ((AiMovement) enemy.movementSystem).setDestination(this.movementSystem.position.x, this.movementSystem.position.y);
         ((AiMovement) enemy.movementSystem).moveToDestination();
 
-    }
-
-    public void inprisonEnemy(Enemy enemy) {
     }
 
     /**
@@ -209,7 +204,7 @@ public class Player extends Entity {
      * @return True if enemy is not in arrested or jailed enemy arraylist
      */
     public boolean not_arrested(Enemy enemy) {
-        return !jailedEnemies.contains(enemy) && !arrestedEnemies.contains(enemy);
+        return EnemyManager.activeEnemies.contains(enemy);
     }
 
 }

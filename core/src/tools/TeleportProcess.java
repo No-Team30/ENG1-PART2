@@ -1,5 +1,6 @@
 package tools;
 
+import characters.Entities.EnemyManager;
 import characters.Entities.Player;
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.maps.MapLayers;
@@ -7,8 +8,10 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import screen.actors.Teleport_Menu;
 
 /**
@@ -26,8 +29,8 @@ public class TeleportProcess {
      * Create a new instantiated teleport_process.
      *
      * @param selectedRoom the selectBox object from the stage
-     * @param auber the player object
-     * @param map tiled map used to get positions of teleports
+     * @param auber        the player object
+     * @param map          tiled map used to get positions of teleports
      */
     public TeleportProcess(Teleport_Menu selectedRoom, Player auber, TiledMap map) {
         this.selectedRoom = selectedRoom;
@@ -40,7 +43,7 @@ public class TeleportProcess {
 
     /**
      * store the positions of the teleports in Hashmap.
-
+     *
      * @param layers layers of the tiled map
      */
     public void generate_position(MapLayers layers) {
@@ -78,7 +81,7 @@ public class TeleportProcess {
         if (((String) auber.movementSystem.b2body.getUserData()).equals("ready_to_teleport")
                 && selectedRoom.isDisabled()) {
             selectedRoom.setDisabled(false);
-        } else if ((!(selectedRoom.getSelected()).equals("Teleport") 
+        } else if ((!(selectedRoom.getSelected()).equals("Teleport")
                 && !((String) selectedRoom.getSelected()).equals("Jail"))
                 && ((auber.movementSystem.b2body.getUserData()).equals("ready_to_teleport"))) {
             transform();
@@ -107,8 +110,6 @@ public class TeleportProcess {
     }
 
 
-
-
     static int jail_index = 0;
 
     /**
@@ -121,9 +122,11 @@ public class TeleportProcess {
         jail_index++;
         //auber.b2body.setTransform(jail_X,jail_Y,0);
         auber.nearbyEnemy.movementSystem.b2body.setTransform(jailX, jailY, 0);
-        ((AiMovement)auber.nearbyEnemy.movementSystem).stop();
+        ((AiMovement) auber.nearbyEnemy.movementSystem).stop();
         // add the enemy to arrested list, shouldn't be arrested again
-        auber.jailedEnemies.add(auber.nearbyEnemy);
+        EnemyManager.jailedEnemies.add(auber.nearbyEnemy);
+        System.out.println("Added " + auber.nearbyEnemy.movementSystem.b2body.getUserData() + " to jailed");
+        EnemyManager.activeEnemies.remove(auber.nearbyEnemy);
         auber.arrestedCount++;
         // remove enemy's target system if it has one
         auber.nearbyEnemy.targetSystem = null;

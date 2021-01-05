@@ -16,7 +16,9 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
+
 import java.util.ArrayList;
+
 import map.Map;
 import screen.actors.ArrestedHeader;
 import screen.actors.HealthBar;
@@ -33,7 +35,6 @@ import tools.ObjectContactListener;
 import tools.TeleportProcess;
 
 
-
 /**
  * Main gameplay object, holds all game data.
  */
@@ -46,6 +47,10 @@ public class Gameplay implements Screen {
     public static ArrayList<Systems> systems = new ArrayList<>();
 
     public static Player player;
+    /**
+     * Whether the game is in demo mode
+     */
+    private final Boolean isDemo;
 
     public EnemyManager enemyManager;
 
@@ -83,21 +88,21 @@ public class Gameplay implements Screen {
 
     /**
      * Creates a new instantiated game.
-
+     *
      * @param game The game object used in Libgdx things
      */
     public Gameplay(GameMain game) {
-        this(game, new Vector2(640, 360));
+        this(game, new Vector2(640, 360), false);
     }
 
     /**
      * Creates a new instantiated game.
-
-     * @param game The game object used in Libgdx things
+     *
+     * @param game       The game object used in Libgdx things
      * @param screenSize size of the rendered game screen, doesn't effect screen size
      */
-    protected Gameplay(GameMain game, Vector2 screenSize) {
-
+    protected Gameplay(GameMain game, Vector2 screenSize, Boolean isDemo) {
+        this.isDemo = isDemo;
         this.game = game;
         // create a box2D world
         this.world = new World(new Vector2(0, 0), true);
@@ -143,11 +148,10 @@ public class Gameplay implements Screen {
     }
 
 
-
     /**
      * Updates the game, logic will go here called by libgdx GameMain.
      */
-    public void update()  {
+    public void update() {
 
         float delta = Gdx.graphics.getDeltaTime();
         backgroundRenderer.update(delta);
@@ -222,7 +226,7 @@ public class Gameplay implements Screen {
         // render player
         player.draw(game.getBatch());
         // render Infiltrators
-        enemyManager.render_ememy(game.getBatch());
+        enemyManager.render_enemy(game.getBatch());
         // render NPC
         npcManager.renderNpc(game.getBatch());
         // end the batch
@@ -281,8 +285,8 @@ public class Gameplay implements Screen {
      */
     public void checkGameState() {
 
-        if (player.arrestedCount == 8) {
-            game.setScreen(new WinLoseScreen(game.getBatch(), "YOU WIN!!"));
+        if (player.arrestedCount >= 2) {
+            game.setScreen(new WinLoseScreen(game.getBatch(), "YOU WIN!!", this.isDemo));
         }
         int sabotagedCount = 0;
         for (Systems system : systems) {
@@ -291,7 +295,7 @@ public class Gameplay implements Screen {
             }
         }
         if (sabotagedCount >= 15 || player.health <= 1) {
-            game.setScreen(new WinLoseScreen(game.getBatch(), "YOU LOSE!!"));
+            game.setScreen(new WinLoseScreen(game.getBatch(), "YOU LOSE!!", this.isDemo));
         }
 
     }

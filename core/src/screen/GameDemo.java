@@ -9,7 +9,7 @@ public class GameDemo extends Gameplay {
 
     public GameDemo(GameMain game) {
         //super(game, new Vector2(2560, 1440));
-        super(game, new Vector2(640, 360));
+        super(game, new Vector2(640, 360), true);
         Gameplay.player.movementSystem = new AiMovement(Gameplay.player, (UserMovement) Gameplay.player.movementSystem);
         Gameplay.player.movementSystem.b2body.setUserData("auber_demo");
         Gameplay.player.movementSystem.speed = 10000;
