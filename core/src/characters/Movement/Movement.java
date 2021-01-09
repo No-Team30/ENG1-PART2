@@ -3,6 +3,7 @@ package characters.Movement;
 import characters.Entities.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import org.json.simple.JSONObject;
 
 public abstract class Movement {
     private final Entity entity;
@@ -37,6 +38,15 @@ public abstract class Movement {
      * @param delta The time in seconds since the last update
      */
     public abstract Vector2 update(float delta);
+
+    /**
+     * Exports all movement based information to a json object(for save games)
+     * <p>
+     * Including the entity id
+     *
+     * @return The movement based information
+     */
+    public abstract JSONObject save();
 
     /**
      * Creates the physics bodies for the player Sprite.

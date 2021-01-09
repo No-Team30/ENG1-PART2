@@ -29,6 +29,7 @@ import tools.*;
 
 import java.nio.file.FileSystemNotFoundException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 /**
@@ -195,6 +196,10 @@ public class Gameplay implements Screen {
             throw new FileSystemNotFoundException("Local file access is unavailable!");
         }
         JSONObject state = new JSONObject();
+        state.put("EnemyManager", this.enemyManager.save());
+        state.put("npcManager", this.npcManager.save());
+        state.put("player", Gameplay.player.save());
+        state.put("systems", Gameplay.systems.stream().map(Systems::save).collect(Collectors.toList()));
         FileHandle handle = Gdx.files.local(LoadGame.saveName);
         handle.writeString(state.toJSONString(), false);
     }

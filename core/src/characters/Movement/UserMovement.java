@@ -3,6 +3,7 @@ package characters.Movement;
 import characters.Entities.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONObject;
 import tools.Controller;
 
 public class UserMovement extends Movement {
@@ -15,7 +16,7 @@ public class UserMovement extends Movement {
      * @param y     The initial y location of the player
      */
     public UserMovement(Entity entity, World world, float x, float y) {
-        super(entity,world, x, y);
+        super(entity, world, x, y);
     }
 
     /**
@@ -44,5 +45,14 @@ public class UserMovement extends Movement {
         this.setPosition(b2body.getPosition().x - size.x / 1,
                 b2body.getPosition().y - size.y / 1 + 6);
         return direction;
+    }
+
+    @Override
+    public JSONObject save() {
+        JSONObject state = new JSONObject();
+        state.put("x_position", this.position.x);
+        state.put("y_position", this.position.y);
+        state.put("user_data", this.b2body.getUserData());
+        return state;
     }
 }

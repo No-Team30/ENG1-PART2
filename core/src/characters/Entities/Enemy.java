@@ -28,7 +28,7 @@ public class Enemy extends Entity {
     public Enemy(World world, float x, float y) {
         super();
         numberofInfiltrators++;
-        this.movementSystem = new AiMovement(this,world, x, y);
+        this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("Infiltrators" + numberofInfiltrators);
         ability = new Ability();
         createEdgeShape(ability);
@@ -113,7 +113,7 @@ public class Enemy extends Entity {
      *
      * @return true if it is in attacking mode
      */
-    public boolean is_attcking_mode() {
+    public boolean is_attacking_mode() {
         return mode.equals("attacking_system");
     }
 
@@ -148,7 +148,18 @@ public class Enemy extends Entity {
     // ...
     @Override
     public JSONObject save() {
-        return new JSONObject();
+        JSONObject state = new JSONObject();
+        state.put("entity_type", "enemy");
+        state.put("mode", this.mode);
+        state.put("ability", this.ability.save());
+        state.put("using_ability", this.usingAbility);
+        state.put("targetSystem", this.targetSystem.save());
+        if (this.currentContactSystem != null) {
+            state.put("currentContactSystem", this.currentContactSystem.save());
+        }
+
+        state.put("movement", this.movementSystem.save());
+        return state;
     }
 
 }

@@ -9,6 +9,7 @@ import map.Distance;
 import map.Map;
 import map.Node;
 import map.Path;
+import org.json.simple.JSONObject;
 
 /**
  * AI Character object for the game.
@@ -264,6 +265,17 @@ public class AiMovement extends Movement {
      */
     public void stop() {
         this.pathIndex = this.path.getCount();
+    }
+
+    @Override
+    public JSONObject save() {
+        JSONObject state = new JSONObject();
+        state.put("x_position", this.position.x);
+        state.put("y_position", this.position.y);
+        state.put("dest_x_position", this.destX);
+        state.put("dest_y_position", this.destY);
+        state.put("user_data", this.b2body.getUserData());
+        return state;
     }
 }
 

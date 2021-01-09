@@ -1,6 +1,7 @@
 package characters.Entities;
 
 import characters.Movement.AiMovement;
+import org.json.simple.JSONObject;
 
 import java.util.Random;
 
@@ -128,7 +129,7 @@ public class Ability {
         float currentSpeed = enemy.movementSystem.speed;
         enemy.movementSystem.speed = currentSpeed * 3f;
         if (target != null) {
-            ((AiMovement)enemy.movementSystem).setDestination(target.movementSystem.b2body.getPosition().x - 400, target.movementSystem.b2body.getPosition().y);
+            ((AiMovement) enemy.movementSystem).setDestination(target.movementSystem.b2body.getPosition().x - 400, target.movementSystem.b2body.getPosition().y);
         }
 
     }
@@ -158,5 +159,13 @@ public class Ability {
         }
     }
 
-
+    /**
+     * Saves the ability data to a json
+     *
+     * @return A json object of the ability
+     */
+    public JSONObject save() {
+        // TODO See what @jiacheng does, in modifying abilites?
+        return new JSONObject();
+    }
 }

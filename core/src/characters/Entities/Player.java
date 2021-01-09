@@ -166,7 +166,17 @@ public class Player extends Entity {
 
     @Override
     public JSONObject save() {
-        return new JSONObject();
+        JSONObject state = new JSONObject();
+        state.put("entity_type", "auber");
+        state.put("arrestedCount", this.arrestedCount);
+        state.put("jailPosition", this.jailPosition);
+        state.put("health", this.health);
+        state.put("nearbyEnemy", this.nearbyEnemy);
+        state.put("ishealing", this.ishealing);
+        state.put("arrestPressed", this.arrestPressed);
+        state.put("arrestedCount", this.arrestedCount);
+        state.put("movement", this.movementSystem.save());
+        return state;
     }
 
     /**

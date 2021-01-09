@@ -3,6 +3,7 @@ package sprites;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONObject;
 
 public class Systems extends InteractiveTileObject {
 
@@ -12,10 +13,10 @@ public class Systems extends InteractiveTileObject {
     /**
      * Creates a new instantiated System object.
      *
-     * @param world Physics world the teleport should query
-     * @param map Tiled map object will be placed in
+     * @param world  Physics world the teleport should query
+     * @param map    Tiled map object will be placed in
      * @param bounds The bounds of where the object will interact with entities
-     * @param name They name of the system
+     * @param name   They name of the system
      */
     public Systems(World world, TiledMap map, Rectangle bounds, String name) {
         super(world, map, bounds);
@@ -34,7 +35,7 @@ public class Systems extends InteractiveTileObject {
 
     /**
      * If the system is a healing pod userdata accordingly.
-
+     *
      * @param name The name of the system
      */
     public void isHealing_pod(String name) {
@@ -47,7 +48,7 @@ public class Systems extends InteractiveTileObject {
 
     /**
      * If the system is a door set userdata accordingly.
-
+     *
      * @param name The name of the system
      */
     public void isDoors(String name) {
@@ -63,7 +64,7 @@ public class Systems extends InteractiveTileObject {
     }
 
     /**
-     *  sabotage status.
+     * sabotage status.
      *
      * @return sabotage status
      */
@@ -122,4 +123,19 @@ public class Systems extends InteractiveTileObject {
     public boolean is_not_sabotaged() {
         return body.getUserData().equals("system_not_sabotaged");
     }
+
+    /**
+     * Saves the system to a json object
+     *
+     * @return A json object of the basic system data
+     */
+    public JSONObject save() {
+        JSONObject state = new JSONObject();
+        state.put("entity_type", "systems");
+
+        state.put("sysName", this.sysName);
+        state.put("hp", this.hp);
+        return state;
+    }
+
 }

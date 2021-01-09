@@ -23,6 +23,9 @@ public class Npc extends Entity {
 
     @Override
     public JSONObject save() {
-        return new JSONObject();
+        JSONObject state = new JSONObject();
+        state.put("entity_type", "npc");
+        state.put("movement", this.movementSystem.save());
+        return state;
     }
 }

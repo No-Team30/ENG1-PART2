@@ -8,7 +8,6 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import sprites.Systems;
 
@@ -197,7 +196,7 @@ public class EnemyManager {
                         generateNextTarget(enemy);
                     }
 
-                } else if (enemy.is_attcking_mode()) {
+                } else if (enemy.is_attacking_mode()) {
                     // Damage system
                     enemy.sabotage(sys);
                 } else if (sys.is_sabotaged()) {
@@ -237,9 +236,9 @@ public class EnemyManager {
 
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("Test", activeEnemies.get(0));
-        JSONArray activeEnemies = new JSONArray();
-        activeEnemies.addAll(EnemyManager.activeEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("activeEnemies", activeEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("jailedEnemies", jailedEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("arrestedEnemies", arrestedEnemies.stream().map(Entity::save).collect(Collectors.toList()));
         return state;
     }
 }
