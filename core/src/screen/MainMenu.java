@@ -23,17 +23,17 @@ import tools.BackgroundRenderer;
  */
 public class MainMenu implements Screen {
 
-    private Viewport viewport;
-    private OrthographicCamera camera;
-    private TextureAtlas atlas;
-    private Stage stage;
-    private Skin skin;
-    private SpriteBatch batch;
-    private BackgroundRenderer backgroundRenderer;
+    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final TextureAtlas atlas;
+    private final Stage stage;
+    private final Skin skin;
+    private final SpriteBatch batch;
+    private final BackgroundRenderer backgroundRenderer;
 
     /**
      * Creates an instantiated instance of the MainMenu screen.
-
+     *
      * @param batch The spritebatch to draw with
      */
     public MainMenu(SpriteBatch batch) {
@@ -68,6 +68,7 @@ public class MainMenu implements Screen {
 
         // main play button (others can be added easily as needed)
         TextButton playButton = new TextButton("Play", skin);
+        TextButton loadButton = new TextButton("Load", skin);
         TextButton demoButton = new TextButton("Demo", skin);
 
         // creates a listener to listen for clicks on the button
@@ -77,6 +78,13 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 GameMain game = (GameMain) Gdx.app.getApplicationListener();
                 game.setScreen(new Gameplay(game));
+            }
+        });
+        loadButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameMain game = (GameMain) Gdx.app.getApplicationListener();
+                game.setScreen(new LoadGame(game));
             }
         });
         demoButton.addListener(new ClickListener() {
@@ -93,6 +101,8 @@ public class MainMenu implements Screen {
         root.row();
         root.add(playButton);
         root.row();
+        root.add(loadButton);
+        root.row();
         root.add(demoButton);
 
         stage.addActor(root);
@@ -103,7 +113,7 @@ public class MainMenu implements Screen {
         viewport.apply();
         backgroundRenderer.update(delta);
         stage.act();
-        
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.position.set(0, 0, 0);
@@ -135,7 +145,7 @@ public class MainMenu implements Screen {
     public void hide() {
 
     }
-    
+
     @Override
     public void dispose() {
         skin.dispose();

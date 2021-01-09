@@ -4,6 +4,7 @@ import characters.Movement.AiMovement;
 import characters.Movement.UserMovement;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONObject;
 import tools.CharacterRenderer;
 import tools.Controller;
 
@@ -161,6 +162,11 @@ public class Player extends Entity {
         // should be called each loop of rendering
         healing(delta);
 
+    }
+
+    @Override
+    public JSONObject save() {
+        return new JSONObject();
     }
 
     /**

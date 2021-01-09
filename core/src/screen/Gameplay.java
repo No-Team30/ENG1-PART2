@@ -1,38 +1,34 @@
 package screen;
 
-import characters.Entities.Player;
 import characters.Entities.EnemyManager;
 import characters.Entities.NpcManager;
+import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
-
-import java.util.ArrayList;
-
 import map.Map;
+import org.json.simple.JSONObject;
 import screen.actors.ArrestedHeader;
 import screen.actors.HealthBar;
 import screen.actors.SystemStatusMenu;
 import screen.actors.Teleport_Menu;
 import sprites.Door;
 import sprites.Systems;
-import tools.B2worldCreator;
-import tools.BackgroundRenderer;
-import tools.CharacterRenderer;
-import tools.DoorControll;
-import tools.LightControl;
-import tools.ObjectContactListener;
-import tools.TeleportProcess;
+import tools.*;
+
+import java.nio.file.FileSystemNotFoundException;
+import java.util.ArrayList;
 
 
 /**
@@ -81,6 +77,8 @@ public class Gameplay implements Screen {
     private final BackgroundRenderer backgroundRenderer;
 
     private final World world;
+
+    private static final int[] backgroundLayers = new int[]{0, 1, 2};
 
     private boolean paused = false;
 
@@ -174,6 +172,12 @@ public class Gameplay implements Screen {
 
     }
 
+    private static final int[] forgroundLayers = new int[]{3};
+    private static boolean isSaveRequested = false;
+
+    public static void requestSave() {
+        Gameplay.isSaveRequested = true;
+    }
 
     @Override
     public void show() {
@@ -181,64 +185,18 @@ public class Gameplay implements Screen {
         Gdx.input.setInputProcessor(hud.stage);
     }
 
-    private static final int[] backgroundLayers = new int[]{0, 1, 2};
-    private static final int[] forgroundLayers = new int[]{3};
-
-    @Override
-    public void render(float delta) {
-
-        // if the game is not paused, update it
-        // else if the pause menu indicates resume, resume the game
-        // else if the pause menu indicates exit, end the game
-        if (!this.paused) {
-            update();
-        } else if (this.hud.pauseMenu.resume()) {
-            resume();
-        } else if (this.hud.pauseMenu.exit()) {
-            Gdx.app.exit();
+    /**
+     * Saves the game state into a json file (LoadGame.saveName)
+     */
+    public void saveGame() {
+        Gameplay.isSaveRequested = false;
+        System.out.println("Saving game");
+        if (!Gdx.files.isLocalStorageAvailable()) {
+            throw new FileSystemNotFoundException("Local file access is unavailable!");
         }
-
-
-        // clear the screen
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // set camera follow the player
-        camera.position.set(0, 0, 0);
-        camera.update();
-
-        // this is needed to be called before the batch.begin(), or screen will freeze
-        game.getBatch().setProjectionMatrix(camera.combined);
-        viewport.apply();
-        backgroundRenderer.render();
-
-        // set camera follow the player
-        camera.position.set(player.movementSystem.b2body.getPosition().x, player.movementSystem.b2body.getPosition().y, 0);
-        camera.update();
-        game.getBatch().setProjectionMatrix(camera.combined);
-
-        // render the tilemap background
-        renderer.setView(camera);
-        renderer.render(backgroundLayers);
-
-        // begin the batch
-        game.getBatch().begin();
-        // render player
-        player.draw(game.getBatch());
-        // render Infiltrators
-        enemyManager.render_enemy(game.getBatch());
-        // render NPC
-        npcManager.renderNpc(game.getBatch());
-        // end the batch
-        game.getBatch().end();
-        // render tilemap that should appear in front of the player
-        renderer.render(forgroundLayers);
-        // render the light
-        lightControl.rayHandler.render();
-        // render the hud
-        hud.viewport.apply();
-        hud.stage.draw();
-
+        JSONObject state = new JSONObject();
+        FileHandle handle = Gdx.files.local(LoadGame.saveName);
+        handle.writeString(state.toJSONString(), false);
     }
 
 
@@ -297,6 +255,66 @@ public class Gameplay implements Screen {
         if (sabotagedCount >= 15 || player.health <= 1) {
             game.setScreen(new WinLoseScreen(game.getBatch(), "YOU LOSE!!", this.isDemo));
         }
+
+    }
+
+    @Override
+    public void render(float delta) {
+        // Execute a save, if it is requested
+        if (Gameplay.isSaveRequested) {
+            this.saveGame();
+        }
+        // if the game is not paused, update it
+        // else if the pause menu indicates resume, resume the game
+        // else if the pause menu indicates exit, end the game
+        if (!this.paused) {
+            update();
+        } else if (this.hud.pauseMenu.resume()) {
+            resume();
+        } else if (this.hud.pauseMenu.exit()) {
+            Gdx.app.exit();
+        }
+
+
+        // clear the screen
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // set camera follow the player
+        camera.position.set(0, 0, 0);
+        camera.update();
+
+        // this is needed to be called before the batch.begin(), or screen will freeze
+        game.getBatch().setProjectionMatrix(camera.combined);
+        viewport.apply();
+        backgroundRenderer.render();
+
+        // set camera follow the player
+        camera.position.set(player.movementSystem.b2body.getPosition().x, player.movementSystem.b2body.getPosition().y, 0);
+        camera.update();
+        game.getBatch().setProjectionMatrix(camera.combined);
+
+        // render the tilemap background
+        renderer.setView(camera);
+        renderer.render(backgroundLayers);
+
+        // begin the batch
+        game.getBatch().begin();
+        // render player
+        player.draw(game.getBatch());
+        // render Infiltrators
+        enemyManager.render_enemy(game.getBatch());
+        // render NPC
+        npcManager.renderNpc(game.getBatch());
+        // end the batch
+        game.getBatch().end();
+        // render tilemap that should appear in front of the player
+        renderer.render(forgroundLayers);
+        // render the light
+        lightControl.rayHandler.render();
+        // render the hud
+        hud.viewport.apply();
+        hud.stage.draw();
 
     }
 }

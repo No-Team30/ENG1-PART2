@@ -2,6 +2,7 @@ package characters.Entities;
 
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONObject;
 
 public class Npc extends Entity {
     public static int numberOfCrew;
@@ -16,7 +17,12 @@ public class Npc extends Entity {
     public Npc(World world, float x, float y) {
         super();
         numberOfCrew++;
-        this.movementSystem = new AiMovement(this,world, x, y);
+        this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("crew" + numberOfCrew);
+    }
+
+    @Override
+    public JSONObject save() {
+        return new JSONObject();
     }
 }

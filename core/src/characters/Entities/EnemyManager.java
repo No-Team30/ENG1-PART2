@@ -8,11 +8,13 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import sprites.Systems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import sprites.Systems;
+import java.util.stream.Collectors;
 
 
 /**
@@ -233,4 +235,11 @@ public class EnemyManager {
         enemy.targetSystem = null;
     }
 
+    public JSONObject save() {
+        JSONObject state = new JSONObject();
+        state.put("Test", activeEnemies.get(0));
+        JSONArray activeEnemies = new JSONArray();
+        activeEnemies.addAll(EnemyManager.activeEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        return state;
+    }
 }

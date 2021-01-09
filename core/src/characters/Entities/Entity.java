@@ -3,6 +3,7 @@ package characters.Entities;
 import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import org.json.simple.JSONObject;
 import tools.CharacterRenderer;
 
 /**
@@ -12,7 +13,7 @@ public abstract class Entity {
     public Movement movementSystem;
     protected CharacterRenderer renderer;
     public static int numberOfEntities;
-    private static CharacterRenderer.Sprite[] sprites = new CharacterRenderer.Sprite[]{
+    private static final CharacterRenderer.Sprite[] sprites = new CharacterRenderer.Sprite[]{
             CharacterRenderer.Sprite.NPC1,
             CharacterRenderer.Sprite.NPC2,
             CharacterRenderer.Sprite.NPC3
@@ -48,4 +49,6 @@ public abstract class Entity {
     public void draw(SpriteBatch batch) {
         renderer.render(this.movementSystem.position, batch);
     }
+
+    public abstract JSONObject save();
 }
