@@ -285,7 +285,7 @@ public class Gameplay implements Screen {
      */
     public void checkGameState() {
 
-        if (player.arrestedCount >= 2) {
+        if (player.arrestedCount >= 8) {
             game.setScreen(new WinLoseScreen(game.getBatch(), "YOU WIN!!", this.isDemo));
         }
         int sabotagedCount = 0;

@@ -1,7 +1,7 @@
 package tools;
 
 import characters.Entities.Player;
-import characters.Entities.Ability;
+import characters.Entities.abilities.*;
 import characters.Entities.Enemy;
 import com.badlogic.gdx.physics.box2d.*;
 
@@ -66,10 +66,10 @@ public class ObjectContactListener implements ContactListener {
             if (is_Infiltrators(fixA)) {
                 // if fixture's userdata is Ability object, then is sensoring area
                 if (fixA.getUserData() != null
-                        && Ability.class.isAssignableFrom(fixA.getUserData().getClass())) {
+                        && AbsAbility.class.isAssignableFrom(fixA.getUserData().getClass())) {
                     // enemy sensors auber
                     if (is_Auber(fixB)) {
-                        Ability ability = (Ability) fixA.getUserData();
+                        AbsAbility ability = (AbsAbility) fixA.getUserData();
                         Player auber = (Player) fixB.getUserData();
                         ability.setTarget(auber);
                         ability.provokeAbility();
@@ -92,9 +92,9 @@ public class ObjectContactListener implements ContactListener {
             } else if (is_Infiltrators(fixB)) {
                 // if fixture's userdata is Ability object, then is sensoring area
                 if (fixB.getUserData() != null
-                        && Ability.class.isAssignableFrom(fixB.getUserData().getClass())) {
+                        && AbsAbility.class.isAssignableFrom(fixB.getUserData().getClass())) {
                     if (is_Auber(fixA)) {
-                        Ability ability = (Ability) fixB.getUserData();
+                        AbsAbility ability = (AbsAbility) fixB.getUserData();
                         Player auber = (Player) fixA.getUserData();
                         ability.setTarget(auber);
                         ability.provokeAbility();

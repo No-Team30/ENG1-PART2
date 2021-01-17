@@ -9,6 +9,11 @@ import tools.CharacterRenderer;
  * Main player object for the game.
  */
 public abstract class Entity {
+    public boolean cantMove = false;
+    public float cantMoveTime = 0;
+    public boolean ghostMode = false;
+    public float ghostModeTime = 0;
+
     public Movement movementSystem;
     protected CharacterRenderer renderer;
     public static int numberOfEntities;
@@ -35,17 +40,44 @@ public abstract class Entity {
     }
 
     /**
-     * Updates the position and animation of the entity.<br>
+     * (NEW)Updates the position and animation of the entity.<br>
      * Should be called every update cycle.
      *
      * @param delta The time in seconds since the last update
      */
     public void update(float delta) {
+        if (cantMoveTime > 0) {
+            cantMoveTime -= delta;
+        }
+        if (cantMoveTime <= 0) {
+            cantMoveTime = 0;
+            cantMove = false;
+        }
+
+        if (ghostModeTime > 0) {
+            ghostModeTime -= delta;
+        }
+        if (ghostModeTime <= 0) {
+            ghostModeTime = 0;
+            ghostMode = false;
+        }
+
+        if (cantMove) return;
+
         Vector2 direction = this.movementSystem.update(delta);
         renderer.update(delta, direction);
     }
 
+    /**
+     * (NEW)draw the position and animation of the entity and some infiltrators who have ghost mode
+     *
+     * @param batch batch
+     */
     public void draw(SpriteBatch batch) {
+
+        if (ghostMode) {
+            return;
+        }
         renderer.render(this.movementSystem.position, batch);
     }
 }

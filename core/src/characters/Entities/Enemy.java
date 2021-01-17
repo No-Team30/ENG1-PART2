@@ -1,5 +1,7 @@
 package characters.Entities;
 
+import characters.Entities.abilities.AbilityFactory;
+import characters.Entities.abilities.AbsAbility;
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
@@ -13,9 +15,10 @@ public class Enemy extends Entity {
     public Systems currentContactSystem; // used for contact listener
     //TODO WHY NO ENUM?
     public String mode;
-    public Ability ability;
+    public AbsAbility ability;
     public static int numberofInfiltrators;
     public boolean usingAbility;
+    public float systemDamage = .1f;
 
     /**
      * Enemy.
@@ -27,9 +30,9 @@ public class Enemy extends Entity {
     public Enemy(World world, float x, float y) {
         super();
         numberofInfiltrators++;
-        this.movementSystem = new AiMovement(this,world, x, y);
+        this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("Infiltrators" + numberofInfiltrators);
-        ability = new Ability();
+        ability = AbilityFactory.randomAbility();
         createEdgeShape(ability);
         mode = "";
         usingAbility = false;
@@ -40,7 +43,7 @@ public class Enemy extends Entity {
      *
      * @param ability Ability to be triggered
      */
-    public void createEdgeShape(Ability ability) {
+    public void createEdgeShape(AbsAbility ability) {
 
         EdgeShape sensoringArea = new EdgeShape();
         sensoringArea.set(new Vector2(64, 32), new Vector2(64, -32));
@@ -86,7 +89,7 @@ public class Enemy extends Entity {
      */
     public void sabotage(Systems system) {
         if (system.hp > 0) {
-            system.hp -= 0.1;
+            system.hp -= systemDamage;
         } else {
             system.hp = 0;
             system.set_sabotaged();
