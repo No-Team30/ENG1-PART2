@@ -4,25 +4,26 @@ import characters.Entities.Enemy;
 import characters.Entities.Player;
 
 /**
- * (NEW)Create ability to slow down player's speed.
+ * Create ability to slow down player's speed.
  */
 public class SlowDownPlayerAbility extends AbsAbility {
     public static final float SLOWDOWN = 0.5f;
 
     /**
-     * (NEW)enemy use ability to let player speed become slower
+     * enemy use ability to let player speed become slower
      *
      * @param player player's speed become slower
      * @param enemy enemy
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
-        float currentSpeed = player.movementSystem.speed;
-        player.movementSystem.speed = currentSpeed * SLOWDOWN;
+        target = player;
+        float currentSpeed = target.movementSystem.speed;
+        target.movementSystem.speed = currentSpeed * SLOWDOWN;
     }
 
     /**
-     *(NEW) player's speed back to normal
+     * player's speed back to normal
      *
      * @param enemy enemy
      */

@@ -4,13 +4,13 @@ import characters.Entities.Enemy;
 import characters.Entities.Player;
 
 /**
- *(NEW) Create ability to increase speed for enemy.
+ * Create ability to damage system with higher.
  */
 public class HigherSystemDamagerAbility extends AbsAbility {
     private float systemDamage = 0;
 
     /**
-     * (NEW)Enemy to attack systems with higher damage .
+     * Enemy to attack systems with higher damage .
      *
      * @param player player
      * @param enemy the enemy who can sabotage system with higher damage.
@@ -21,8 +21,13 @@ public class HigherSystemDamagerAbility extends AbsAbility {
         enemy.systemDamage = systemDamage * 2;
     }
 
+    /**
+     * Enemy's damage back to normal
+     *
+     * @param enemy the enemy whose high damage becomes to normal
+     */
     @Override
     public void removeAbility(Enemy enemy) {
-
+        enemy.systemDamage = systemDamage * 0.5f;
     }
 }

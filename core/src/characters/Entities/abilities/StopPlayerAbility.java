@@ -5,23 +5,38 @@ import characters.Entities.Player;
 import characters.Movement.AiMovement;
 
 /**
- * (NEW)Create ability to stop player moving.
+ * Create ability to stop player moving.
  */
 public class StopPlayerAbility extends AbsAbility {
+    public StopPlayerAbility() {
+        useTime = 5;
+    }
 
     /**
-     * (NEW)enemy use ability to let player stop moving
+     * enemy use ability to let player stop moving
      *
      * @param player player who can not move
-     * @param enemy enemy
+     * @param enemy  enemy
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
-        player.cantMove = true;
-        player.cantMoveTime = Math.max(10, enemy.cantMoveTime);
+        target = player;
+        target.cantMove = true;
+        target.cantMoveTime += useTime;
+
     }
 
+    /**
+     * player can start to move when can't move time is over
+     *
+     * @param enemy  enemy
+     */
     @Override
     public void removeAbility(Enemy enemy) {
+        target.cantMoveTime -= useTime;
+        if (target.cantMoveTime <= 0) {
+            target.cantMoveTime = 0;
+            target.cantMove = false;
+        }
     }
 }

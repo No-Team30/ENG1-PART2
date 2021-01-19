@@ -5,31 +5,29 @@ import characters.Entities.Player;
 import characters.Movement.AiMovement;
 
 /**
- * (NEW)Create ability to increase speed for enemy.
+ * Create ability to increase speed for enemy.
  */
 public class SpeedingUpAbility extends AbsAbility {
-
+    float originalSpeed;
     /**
-     * (NEW)enemy use ability to increase his speed
+     * enemy use ability to increase his speed
      *
      * @param player player
      * @param enemy enemy who speed becomes faster
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
-        float currentSpeed = enemy.movementSystem.speed;
-        enemy.movementSystem.speed = currentSpeed * 3f;
-        if (target != null) {
-            ((AiMovement) enemy.movementSystem).setDestination(target.movementSystem.b2body.getPosition().x - 400, target.movementSystem.b2body.getPosition().y);
-        }
+
+        originalSpeed = enemy.movementSystem.speed;
+        enemy.movementSystem.speed = originalSpeed * 3f;
     }
     /**
-     * (NEW)enemy speed bonus removed
+     * enemy speed bonus removed
      *
      * @param enemy enemy who speed back to normal
      */
     @Override
     public void removeAbility(Enemy enemy) {
-        enemy.movementSystem.speed /= 3f;
+        enemy.movementSystem.speed = originalSpeed;
     }
 }

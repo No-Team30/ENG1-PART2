@@ -4,25 +4,28 @@ import characters.Entities.Enemy;
 import characters.Entities.Player;
 
 /**
- * (NEW) Manage the abilities for infilltrators
+ * Manage the abilities for infilltrators
  */
 public abstract class AbsAbility {
-    public boolean disabled;
+    public boolean isDisabled;
 
     public Player target;
     public float useTime = 30;
+    public float useTimeTiming = 0;
     public float cooldownTime = 30;
-    public boolean ready;
+    public float cooldownTimeTiming = 0;
+
+    public boolean isReady;
     public boolean inUse;
 
     /**
-     * (NEW)Special Ability Enemy should have.
+     * Special Ability Enemy should have.
      */
     public AbsAbility() {
 
         inUse = false;
-        ready = true;
-        disabled = false;
+        isReady = true;
+        isDisabled = false;
     }
 
     /**
@@ -31,7 +34,7 @@ public abstract class AbsAbility {
      * @param disable true when arrested
      */
     public void setDisable(boolean disable) {
-        disabled = disable;
+        isDisabled = disable;
     }
 
     /**
@@ -46,42 +49,43 @@ public abstract class AbsAbility {
     /**
      * provoke ability status.
      */
-    public void provokeAbility() {
-        if (ready && !disabled) {
-            useTime = 30f;
+    public void provokeAbility(Enemy enemy, Player player) {
+        if (isReady && !isDisabled) {
+            useTimeTiming = useTime;
             inUse = true;
-            ready = false;
+            isReady = false;
+            useAbility(enemy, player);
         }
     }
 
     /**
-     * Generate a random ability for enemy.
+     * Use ability
      *
      * @param enemy  The enemy who should use their ability
      * @param player The player to target
      */
     public abstract void useAbility(Enemy enemy, Player player);
 
-    /**(NEW)
-     * cool down timer.
+    /**
+     * update cooldown time and use time
      *
-     * @param delta delta time
+     * @param delta delta time in the game world
      * @param enemy Enemy
      */
     public void update(float delta, Enemy enemy) {
         if (inUse) {
-            if (useTime >= delta) {
-                useTime -= delta;
+            if (useTimeTiming >= delta) {
+                useTimeTiming -= delta;
             } else {
                 removeAbility(enemy);
                 inUse = false;
-                cooldownTime = 30;
+                cooldownTimeTiming = cooldownTime;
             }
-        } else if (!ready) {
-            if (cooldownTime >= delta) {
-                cooldownTime -= delta;
+        } else if (!isReady) {
+            if (cooldownTimeTiming >= delta) {
+                cooldownTimeTiming -= delta;
             } else {
-                ready = true;
+                isReady = true;
             }
         }
     }
@@ -91,5 +95,7 @@ public abstract class AbsAbility {
      *
      * @param enemy Enemy
      */
-    public abstract void removeAbility(Enemy enemy);
+    public void removeAbility(Enemy enemy) {
+
+    }
 }
