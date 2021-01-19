@@ -344,4 +344,8 @@ public class EnemyManager {
     public int getJailedCount() {
         return this.jailedEnemies.size();
     }
+
+    public int getArrestedCount() {
+        return this.arrestedEnemies.size();
+    }
 }

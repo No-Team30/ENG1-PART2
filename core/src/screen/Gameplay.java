@@ -215,7 +215,7 @@ public class Gameplay implements Screen {
         game.getBatch().begin();
         // render player
         player.draw(game.getBatch());
-        // render Infiltrators
+        // render Enemies
         player.enemyManager.render(game.getBatch());
         // render NPC
         npcManager.renderNpc(game.getBatch());

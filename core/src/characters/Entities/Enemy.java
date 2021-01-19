@@ -17,7 +17,7 @@ public class Enemy extends Entity {
     //TODO WHY NO ENUM?
     public String mode;
     public AbsAbility ability;
-    public static int numberofInfiltrators;
+    public static int numberOfEnemies;
     public float systemDamage = .1f;
     public boolean ghostMode = false;
 
@@ -30,9 +30,9 @@ public class Enemy extends Entity {
      */
     public Enemy(World world, float x, float y) {
         super();
-        numberofInfiltrators++;
+        numberOfEnemies++;
         this.movementSystem = new AiMovement(this, world, x, y);
-        this.movementSystem.b2body.setUserData("Infiltrators" + numberofInfiltrators);
+        this.movementSystem.b2body.setUserData("Enemy" + numberOfEnemies);
         ability = AbilityFactory.randomAbility();
         createEdgeShape();
         mode = "";

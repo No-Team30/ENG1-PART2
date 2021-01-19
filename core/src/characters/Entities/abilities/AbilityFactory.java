@@ -3,7 +3,7 @@ package characters.Entities.abilities;
 import java.util.Random;
 
 /**
- * To create new abilities for infiltrators with random method
+ * To create new abilities for enemies with random method
  */
 public class AbilityFactory {
     public static AbsAbility randomAbility() {

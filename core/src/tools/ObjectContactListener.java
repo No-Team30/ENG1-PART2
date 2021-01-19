@@ -2,6 +2,7 @@ package tools;
 
 import characters.Entities.Enemy;
 import characters.Entities.Player;
+import characters.Entities.abilities.AttackPlayerAbility;
 import com.badlogic.gdx.physics.box2d.*;
 import sprites.Door;
 import sprites.Systems;
@@ -19,7 +20,7 @@ public class ObjectContactListener implements ContactListener {
     private boolean isHealingPod;
 
     private final String systemPattern = ".*system.*";
-    private final String infiltratorsPattern = ".*Infiltrators.*";
+    private final String enemyPattern = ".*Enemy.*";
 
 
     /**
@@ -58,7 +59,7 @@ public class ObjectContactListener implements ContactListener {
             }
         }
         Player player = null;
-        Enemy infiltrator = null;
+        Enemy enemy = null;
         Systems systems = null;
 
         if (fixA.getUserData() instanceof Player) {
@@ -68,9 +69,9 @@ public class ObjectContactListener implements ContactListener {
         }
 
         if (fixA.getUserData() instanceof Enemy) {
-            infiltrator = (Enemy) fixA.getUserData();
+            enemy = (Enemy) fixA.getUserData();
         } else if (fixB.getUserData() instanceof Enemy) {
-            infiltrator = (Enemy) fixB.getUserData();
+            enemy = (Enemy) fixB.getUserData();
         }
 
         if (fixA.getUserData() instanceof Systems) {
@@ -79,19 +80,19 @@ public class ObjectContactListener implements ContactListener {
             systems = (Systems) fixB.getUserData();
         }
 
-        if (infiltrator != null) {
+        if (enemy != null) {
             if (player != null) {
-                infiltrator.ability.setTarget(player);
-                infiltrator.ability.provokeAbility(infiltrator, player);
+                enemy.ability.setTarget(player);
+                enemy.ability.provokeAbility(enemy, player);
                 if (player.isArrestPressed()) {
-                    player.enemyManager.arrestEnemy(infiltrator);
+                    player.enemyManager.arrestEnemy(enemy);
                 }
             } else if (systems != null) {
-                Systems targetSystem = infiltrator.get_target_system();
+                Systems targetSystem = enemy.get_target_system();
                 if (targetSystem == systems) {
-                    infiltrator.ability.setDisable(true);
-                    infiltrator.currentContactSystem = systems;
-                    infiltrator.set_attackSystemMode();
+                    enemy.ability.setDisable(true);
+                    enemy.currentContactSystem = systems;
+                    enemy.set_attackSystemMode();
                     targetSystem.set_sabotaging();
                 }
             }
@@ -124,13 +125,13 @@ public class ObjectContactListener implements ContactListener {
 
         // if auber end contact with healing pod, set auber's body data back to auber
         if (isHealingPod
-                && ((String) fixA.getBody().getUserData()).equals("ready_to_heal")) {
+                && fixA.getBody().getUserData().equals("ready_to_heal")) {
             // set the player.UserData to ready_to_heal for healing process
             fixA.getBody().setUserData("auber");
         }
 
         Player player = null;
-        Enemy infiltrator = null;
+        Enemy enemy = null;
         Systems systems = null;
 
         if (is_Auber(fixA)) {
@@ -139,10 +140,10 @@ public class ObjectContactListener implements ContactListener {
             player = (Player) fixB.getUserData();
         }
 
-        if (is_Infiltrators(fixA)) {
-            infiltrator = (Enemy) fixA.getUserData();
-        } else if (is_Infiltrators(fixB)) {
-            infiltrator = (Enemy) fixB.getUserData();
+        if (is_Enemy(fixA)) {
+            enemy = (Enemy) fixA.getUserData();
+        } else if (is_Enemy(fixB)) {
+            enemy = (Enemy) fixB.getUserData();
         }
 
         if (is_System(fixA)) {
@@ -151,14 +152,14 @@ public class ObjectContactListener implements ContactListener {
             systems = (Systems) fixB.getUserData();
         }
 
-        if (infiltrator != null && !infiltrator.isArrested()) {
+        if (enemy != null && !enemy.isArrested()) {
             if (systems != null) {
-                Systems currentContactsystem = infiltrator.currentContactSystem;
+                Systems currentContactsystem = enemy.currentContactSystem;
                 // contact will be listened if enemy finished sabotaging a system
                 // and have generated next target system or enemy stop sabotaging the system
                 // the end contact between enemy and system will be listened
                 if (currentContactsystem == systems) {
-                    infiltrator.ability.setDisable(false);
+                    enemy.ability.setDisable(false);
                     float sysHp = currentContactsystem.hp;
                     if (sysHp > 1) {
                         // if system's hp > 1, set it to not sabotaged status
@@ -167,13 +168,13 @@ public class ObjectContactListener implements ContactListener {
                 }
 
             } else if (player != null) {
-                if (infiltrator.ability instanceof AttackPlayerAbility) {
-                    AttackPlayerAbility ability = (AttackPlayerAbility) infiltrator.ability;
+                if (enemy.ability instanceof AttackPlayerAbility) {
+                    AttackPlayerAbility ability = (AttackPlayerAbility) enemy.ability;
                     ability.contact = false;
                 }
-                if(player.isArrestPressed()){
-                    player.enemyManager.arrestEnemy(infiltrator);
-                    infiltrator.ability.setDisable(true);
+                if (player.isArrestPressed()) {
+                    player.enemyManager.arrestEnemy(enemy);
+                    enemy.ability.setDisable(true);
                 }
             }
         }
@@ -182,13 +183,13 @@ public class ObjectContactListener implements ContactListener {
     }
 
     /**
-     * if the given fixture is an infiltrator.
+     * if the given fixture is an enemy.
      *
      * @param fixture contact fixture
      * @return true if fixture is an Enemy object
      */
-    public boolean is_Infiltrators(Fixture fixture) {
-        return Pattern.matches(infiltratorsPattern, fixture.getBody().getUserData().toString());
+    public boolean is_Enemy(Fixture fixture) {
+        return Pattern.matches(enemyPattern, fixture.getBody().getUserData().toString());
     }
 
     /**
@@ -231,7 +232,7 @@ public class ObjectContactListener implements ContactListener {
 
         // if the character is about to come into contact with a door
         if (is_Doors(fixB)
-                && ((fixA.getBody().getUserData() == "auber") || is_Infiltrators(fixA))) {
+                && ((fixA.getBody().getUserData() == "auber") || is_Enemy(fixA))) {
             // gets the door
             Object data = fixB.getBody().getUserData();
             if (data instanceof Door) {

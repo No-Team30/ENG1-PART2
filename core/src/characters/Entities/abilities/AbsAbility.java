@@ -4,7 +4,7 @@ import characters.Entities.Enemy;
 import characters.Entities.Player;
 
 /**
- * Manage the abilities for infilltrators
+ * Manage the abilities for enemies
  */
 public abstract class AbsAbility {
     public boolean isDisabled;
