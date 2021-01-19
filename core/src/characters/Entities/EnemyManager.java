@@ -188,7 +188,7 @@ public class EnemyManager {
                 // TODO Change the error type
                 throw new RuntimeException("There are no available jail positions!");
             }
-            if (playerPosition.dst(this.availableJailPositions.get(0)) < TILE_SIZE * 3) {
+            if (playerPosition.dst(this.availableJailPositions.get(0)) < TILE_SIZE * 2) {
                 this.jailAllArrestedEnemies();
             } else {
                 for (Enemy enemy : arrestedEnemies) {
@@ -227,12 +227,16 @@ public class EnemyManager {
                     if (information.size() < 17) {
                         generateNextTarget(enemy);
                     }
-                } else if (enemy.is_attcking_mode()) {
-                    // Damage system
-                    enemy.sabotage(sys);
-                } else if (sys.is_sabotaged()) {
-                    // generate next traget if system sabotaged
-                    generateNextTarget(enemy);
+                } else {
+                    if (enemy.is_attcking_mode()) {
+                        // Damage system
+                        enemy.sabotage(sys);
+                    }
+                    if (sys.is_sabotaged()) {
+                        // generate next traget if system sabotaged
+                        generateNextTarget(enemy);
+                        System.out.println("Enemy: " + enemy + " is now targeting: " + enemy.get_target_system());
+                    }
                 }
             }
         }
@@ -321,6 +325,7 @@ public class EnemyManager {
         if (!this.activeEnemies.contains(enemy)) {
             return;
         }
+        System.out.println("Arresting enemy: " + enemy);
         this.arrestedEnemies.add(enemy);
         this.activeEnemies.remove(enemy);
         enemy.ability.setDisable(true);
