@@ -50,15 +50,6 @@ public class B2worldCreator {
             body.createFixture(fdef).setUserData("walls");
             body.setUserData("walls");
         }
-
-
-        //create teleport <- this is interactive tiled map object
-        for (MapObject object : layers.get("teleports").getObjects()) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            // create a new instantiated Teleport object
-            new Teleport(world, map, rect, object.getName());
-        }
-
         // create systems <- this is interactive tiled map object
         for (MapObject object : layers.get("systems").getObjects()) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
@@ -66,6 +57,7 @@ public class B2worldCreator {
             // stor system object in the systems Arraylist
             Gameplay.systems.add(new Systems(world, map, rect, object.getName()));
         }
+
         // Creates the player at the spawn point on the spawn layer of the map
         for (MapObject object : layers.get("spawn").getObjects()) {
             Rectangle point = ((RectangleMapObject) object).getRectangle();
@@ -76,6 +68,13 @@ public class B2worldCreator {
             Gameplay.player = new Player(world, point.x, point.y, map);
             break;
         }
+        //create teleport <- this is interactive tiled map object
+        for (MapObject object : layers.get("teleports").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // create a new instantiated Teleport object
+            new Teleport(world, map, rect, object.getName());
+        }
+
 
         // create doors <- this is interactive tiled map object
         for (MapObject object : layers.get("doors").getObjects()) {
