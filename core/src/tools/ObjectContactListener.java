@@ -2,7 +2,6 @@ package tools;
 
 import characters.Entities.Enemy;
 import characters.Entities.Player;
-import characters.Entities.abilities.AbsAbility;
 import com.badlogic.gdx.physics.box2d.*;
 import sprites.Door;
 import sprites.Systems;
@@ -58,81 +57,42 @@ public class ObjectContactListener implements ContactListener {
                 fixA.getBody().setUserData("ready_to_heal");
             }
         }
+        Player player = null;
+        Enemy infiltrator = null;
+        Systems systems = null;
 
-        // Infiltrators contact
-        if (is_Infiltrators(fixA) || is_Infiltrators(fixB)) {
-
-            if (is_Infiltrators(fixA)) {
-                // if fixture's userdata is Ability object, then is sensoring area
-                if (fixA.getUserData() != null
-                        && AbsAbility.class.isAssignableFrom(fixA.getUserData().getClass())) {
-                    // enemy sensors auber
-                    if (is_Auber(fixB)) {
-                        AbsAbility ability = (AbsAbility) fixA.getUserData();
-                        Player auber = (Player) fixB.getUserData();
-                        ability.setTarget(auber);
-                        ability.provokeAbility();
-                    }
-                } else {
-                    // if contact happened between infiltrator and a system
-                    if (is_System(fixB)) {
-                        // only when NPC contact with the target system, sabotage process will begin
-                        Enemy enemy = (Enemy) fixA.getUserData();
-                        Systems targetSystem = enemy.get_target_system();
-                        Systems contactSystem = (Systems) fixB.getUserData();
-                        if (targetSystem == contactSystem) {
-                            enemy.ability.setDisable(true);
-                            enemy.currentContactSystem = contactSystem;
-                            enemy.set_attackSystemMode();
-                            targetSystem.set_sabotaging();
-                        }
-                    }
-                }
-            } else if (is_Infiltrators(fixB)) {
-                // if fixture's userdata is Ability object, then is sensoring area
-                if (fixB.getUserData() != null
-                        && AbsAbility.class.isAssignableFrom(fixB.getUserData().getClass())) {
-                    if (is_Auber(fixA)) {
-                        AbsAbility ability = (AbsAbility) fixB.getUserData();
-                        Player auber = (Player) fixA.getUserData();
-                        ability.setTarget(auber);
-                        ability.provokeAbility();
-                        System.out.println("auber is under attack");
-                    }
-                } else {
-                    if (is_System(fixA)) {
-                        Enemy enemy = (Enemy) fixB.getUserData();
-                        Systems targetSystem = enemy.get_target_system();
-                        Systems contactSystem = (Systems) fixA.getUserData();
-                        if (targetSystem == contactSystem) {
-                            enemy.ability.setDisable(true);
-                            enemy.currentContactSystem = contactSystem;
-                            enemy.set_attackSystemMode();
-                            targetSystem.set_sabotaging();
-                        }
-                    }
-                }
-            }
+        if (fixA.getUserData() instanceof Player) {
+            player = (Player) fixA.getUserData();
+        } else if (fixB.getUserData() instanceof Player) {
+            player = (Player) fixB.getUserData();
         }
 
-        // auber arrest contact, auber can only arrest enemy if contact with its main body
-        if (is_Auber(fixA) || is_Auber(fixB)) {
-            // if contact happened between auber and infiltrators' body but not sensor area
-            if (is_Auber(fixA) && is_Infiltrators(fixB)
-                    && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
-                Player auber = (Player) fixA.getUserData();
-                Enemy enemy = (Enemy) fixB.getUserData();
-                // if auber is not arresting other infiltrators, 
-                // contacted infiltrators will be arrested
-                if (auber.isArrestPressed()) {
-                    auber.enemyManager.arrestEnemy(enemy);
+        if (fixA.getUserData() instanceof Enemy) {
+            infiltrator = (Enemy) fixA.getUserData();
+        } else if (fixB.getUserData() instanceof Enemy) {
+            infiltrator = (Enemy) fixB.getUserData();
+        }
+
+        if (fixA.getUserData() instanceof Systems) {
+            systems = (Systems) fixA.getUserData();
+        } else if (fixB.getUserData() instanceof Systems) {
+            systems = (Systems) fixB.getUserData();
+        }
+
+        if (infiltrator != null) {
+            if (player != null) {
+                infiltrator.ability.setTarget(player);
+                infiltrator.ability.provokeAbility(infiltrator, player);
+                if (player.isArrestPressed()) {
+                    player.enemyManager.arrestEnemy(infiltrator);
                 }
-            } else if (is_Auber(fixB) && is_Infiltrators(fixA)
-                    && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
-                Player auber = (Player) fixB.getUserData();
-                Enemy enemy = (Enemy) fixA.getUserData();
-                if (auber.isArrestPressed()) {
-                    auber.enemyManager.arrestEnemy(enemy);
+            } else if (systems != null) {
+                Systems targetSystem = infiltrator.get_target_system();
+                if (targetSystem == systems) {
+                    infiltrator.ability.setDisable(true);
+                    infiltrator.currentContactSystem = systems;
+                    infiltrator.set_attackSystemMode();
+                    targetSystem.set_sabotaging();
                 }
             }
         }
@@ -169,69 +129,51 @@ public class ObjectContactListener implements ContactListener {
             fixA.getBody().setUserData("auber");
         }
 
+        Player player = null;
+        Enemy infiltrator = null;
+        Systems systems = null;
 
-        // // infiltrators end contact
-        if (is_Infiltrators(fixA) || is_Infiltrators(fixB)) {
-
-            if (is_Infiltrators(fixA) && is_System(fixB)
-                    && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
-                Enemy enemy = (Enemy) fixA.getUserData();
-                Systems currentContactsystem = enemy.currentContactSystem;
-                Systems endContactSys = (Systems) fixB.getUserData();
-                // contact will be listened if enemy finished sabotaging a system 
-                // and have generated next target system or enemy stop sabotaging the system
-                // the end contact between enemy and system will be listened
-                if (currentContactsystem == endContactSys) {
-                    enemy.ability.setDisable(false);
-                    float sysHp = currentContactsystem.hp;
-                    if (sysHp > 1) {
-                        // if system's hp > 1, set it to not sabotaged status
-                        currentContactsystem.set_not_sabotaged();
-                    }
-                }
-                // left the current contact system, should set it back to null
-                currentContactsystem = null;
-
-            } else if (is_Infiltrators(fixB) && is_System(fixA)
-                    && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
-
-                Enemy enemy = (Enemy) fixB.getUserData();
-                Systems currentContactsystem = enemy.currentContactSystem;
-                Systems endContactSys = (Systems) fixA.getUserData();
-                // contact will be listened if enemy finished sabotaging a system and have
-                // generated next target system or enemy stop sabotaging the system
-                // the end contact between enemy and system it left will be listened
-                if (currentContactsystem == endContactSys) {
-                    enemy.ability.setDisable(false);
-                    float sysHp = currentContactsystem.hp;
-                    if (sysHp > 1) {
-                        // if system's hp > 1, set it to not sabotaged status
-                        currentContactsystem.set_not_sabotaged();
-                    }
-                }
-                // left the current system, should set it back to null
-                currentContactsystem = null;
-
-            }
+        if (is_Auber(fixA)) {
+            player = (Player) fixA.getUserData();
+        } else if (is_Auber(fixB)) {
+            player = (Player) fixB.getUserData();
         }
 
-        // end auber arrest contact
-        if (is_Auber(fixA) || is_Auber(fixB)) {
-            // if contact happened between auber and infiltrators' body but not sensor area
-            if (is_Auber(fixA) && is_Infiltrators(fixB)
-                    && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
-                Player auber = (Player) fixA.getUserData();
-                Enemy enemy = (Enemy) fixB.getUserData();
-                if (auber.isArrestPressed()) {
-                    auber.enemyManager.arrestEnemy(null);
+        if (is_Infiltrators(fixA)) {
+            infiltrator = (Enemy) fixA.getUserData();
+        } else if (is_Infiltrators(fixB)) {
+            infiltrator = (Enemy) fixB.getUserData();
+        }
+
+        if (is_System(fixA)) {
+            systems = (Systems) fixA.getUserData();
+        } else if (is_System(fixB)) {
+            systems = (Systems) fixB.getUserData();
+        }
+
+        if (infiltrator != null && !infiltrator.isArrested()) {
+            if (systems != null) {
+                Systems currentContactsystem = infiltrator.currentContactSystem;
+                // contact will be listened if enemy finished sabotaging a system
+                // and have generated next target system or enemy stop sabotaging the system
+                // the end contact between enemy and system will be listened
+                if (currentContactsystem == systems) {
+                    infiltrator.ability.setDisable(false);
+                    float sysHp = currentContactsystem.hp;
+                    if (sysHp > 1) {
+                        // if system's hp > 1, set it to not sabotaged status
+                        currentContactsystem.set_not_sabotaged();
+                    }
                 }
-            } else if (is_Auber(fixB) && is_Infiltrators(fixA)
-                    && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
-                Player auber = (Player) fixB.getUserData();
-                Enemy enemy = (Enemy) fixA.getUserData();
-                if (auber.isArrestPressed()) {
-                    auber.enemyManager.arrestEnemy(null);
-                    enemy.ability.setDisable(false);
+
+            } else if (player != null) {
+                if (infiltrator.ability instanceof AttackPlayerAbility) {
+                    AttackPlayerAbility ability = (AttackPlayerAbility) infiltrator.ability;
+                    ability.contact = false;
+                }
+                if(player.isArrestPressed()){
+                    player.enemyManager.arrestEnemy(infiltrator);
+                    infiltrator.ability.setDisable(true);
                 }
             }
         }

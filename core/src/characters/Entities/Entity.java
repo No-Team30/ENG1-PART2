@@ -11,8 +11,6 @@ import tools.CharacterRenderer;
 public abstract class Entity {
     public boolean cantMove = false;
     public float cantMoveTime = 0;
-    public boolean ghostMode = false;
-    public float ghostModeTime = 0;
 
     public Movement movementSystem;
     protected CharacterRenderer renderer;
@@ -40,47 +38,21 @@ public abstract class Entity {
     }
 
     /**
-     * (NEW)Updates the position and animation of the entity.<br>
+     * Updates the position and animation of the entity and update whether this entity can move or not
      * Should be called every update cycle.
      *
      * @param delta The time in seconds since the last update
      */
     public void update(float delta) {
-        if (cantMoveTime > 0) {
-            cantMoveTime -= delta;
-        }
-        if (cantMoveTime <= 0) {
-            cantMoveTime = 0;
-            cantMove = false;
-        }
-
-        if (ghostModeTime > 0) {
-            ghostModeTime -= delta;
-        }
-        if (ghostModeTime <= 0) {
-            ghostModeTime = 0;
-            ghostMode = false;
-        }
-
         if (cantMove) return;
 
         Vector2 direction = this.movementSystem.update(delta);
         renderer.update(delta, direction);
     }
 
-    /**
-     * (NEW)draw the position and animation of the entity and some infiltrators who have ghost mode
-     *
-     * @param batch batch
-     */
     public void draw(SpriteBatch batch) {
-
-        if (ghostMode) {
-            return;
-        }
-        renderer.render(this.getPosition(), batch);
+        renderer.render(this.movementSystem.getPosition(), batch);
     }
-
     /**
      * @return The Vector2 coordinate of the entity
      */

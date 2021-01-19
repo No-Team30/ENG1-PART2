@@ -214,11 +214,8 @@ public class EnemyManager {
         // Try and use special ability, otherwise try and damage systems
         for (Enemy enemy : activeEnemies) {
             enemy.update(delta);
-            if (enemy.ability.inUse && !enemy.usingAbility) {
-                Player target = enemy.ability.target;
-                enemy.ability.useAbility(enemy, target);
-                enemy.usingAbility = true;
-            } else {
+            if (enemy.ability != null && !enemy.ability.inUse) {
+
                 // get targeted system object
                 Systems sys = enemy.get_target_system();
                 // TODO If no system left to sabotage, should start attacking Auber
