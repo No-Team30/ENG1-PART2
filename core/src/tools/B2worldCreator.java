@@ -1,7 +1,6 @@
 package tools;
 
 import characters.Entities.Player;
-import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -14,8 +13,6 @@ import sprites.Door;
 import sprites.Jail;
 import sprites.Systems;
 import sprites.Teleport;
-
-import java.util.ArrayList;
 
 
 /**
@@ -54,17 +51,6 @@ public class B2worldCreator {
             body.setUserData("walls");
         }
 
-        // Creates the player at the spawn point on the spawn layer of the map
-        for (MapObject object : layers.get("spawn").getObjects()) {
-            Rectangle point = ((RectangleMapObject) object).getRectangle();
-            Vector2 jailPosition = new Vector2();
-            Rectangle jail = ((RectangleMapObject) layers.get("jail").getObjects().get(0)).getRectangle();
-            jailPosition.x = jail.x;
-            jailPosition.y = jail.y;
-            Gameplay.player = new Player(world, point.x, point.y, jailPosition);
-            break;
-
-        }
 
         //create teleport <- this is interactive tiled map object
         for (MapObject object : layers.get("teleports").getObjects()) {
@@ -79,6 +65,16 @@ public class B2worldCreator {
             // create a new instantiated System object
             // stor system object in the systems Arraylist
             Gameplay.systems.add(new Systems(world, map, rect, object.getName()));
+        }
+        // Creates the player at the spawn point on the spawn layer of the map
+        for (MapObject object : layers.get("spawn").getObjects()) {
+            Rectangle point = ((RectangleMapObject) object).getRectangle();
+            Vector2 jailPosition = new Vector2();
+            Rectangle jail = ((RectangleMapObject) layers.get("jail").getObjects().get(0)).getRectangle();
+            jailPosition.x = jail.x;
+            jailPosition.y = jail.y;
+            Gameplay.player = new Player(world, point.x, point.y, map);
+            break;
         }
 
         // create doors <- this is interactive tiled map object

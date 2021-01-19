@@ -32,9 +32,9 @@ public class AiMovement extends Movement {
      * @param movement The existing movement system to inherit from
      */
     public AiMovement(Entity entity, UserMovement movement) {
-        super(entity, movement.world, movement.position.x, movement.position.y);
-        this.destX = movement.position.x;
-        this.destY = movement.position.y;
+        super(entity, movement.world, movement.getPosition().x, movement.getPosition().y);
+        this.destX = movement.getPosition().x;
+        this.destY = movement.getPosition().y;
         // Maybe not needed?
         numberOfAiEntities++;
 
@@ -81,7 +81,7 @@ public class AiMovement extends Movement {
         Vector2 direction = this.decideDirection();
         this.move(delta, direction);
         // position sprite properly within the box
-        position.set(b2body.getPosition().x - size.x / 1,
+        this.setPosition(b2body.getPosition().x - size.x / 1,
                 b2body.getPosition().y - size.y / 1 + 4);
         return direction;
     }
@@ -215,8 +215,8 @@ public class AiMovement extends Movement {
     public boolean findValidPath(float x, float y) {
         float targeted_x_position = x;
         float targeted_y_position = y;
-        float original_x = position.x;
-        float original_y = position.y;
+        float original_x = getPosition().x;
+        float original_y = getPosition().y;
         int startScale = 1;
         // Expands the circle of backup paths each time, we fail
         int endScale = 1;
@@ -226,8 +226,8 @@ public class AiMovement extends Movement {
         int[][] offsetOptions = new int[][]{new int[]{0, 0}, new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 1}, new int[]{1, 1}, new int[]{1, 0}, new int[]{1, -1}, new int[]{0, -1}, new int[]{-1, -1}};
         // Adjust the end position, until a valid path is found, or we fail
         while (!this.isValidPath(targeted_x_position, targeted_y_position)) {
-            position.x = original_x + (startScale * offsetOptions[startOffsetIndex][0]);
-            position.y = original_y + (startScale * offsetOptions[startOffsetIndex][1]);
+            getPosition().x = original_x + (startScale * offsetOptions[startOffsetIndex][0]);
+            getPosition().y = original_y + (startScale * offsetOptions[startOffsetIndex][1]);
             targeted_x_position = x + (endScale * offsetOptions[endOffsetIndex][0]);
             targeted_y_position = y + (endScale * offsetOptions[endOffsetIndex][1]);
             startOffsetIndex += 1;

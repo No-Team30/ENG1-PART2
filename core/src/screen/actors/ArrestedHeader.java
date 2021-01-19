@@ -26,7 +26,7 @@ public class ArrestedHeader extends Label {
      * @param auber player
      */
     public void update_Arrested(Player auber) {
-        int arrestedCount = auber.arrestedCount;
+        int arrestedCount = auber.enemyManager.getJailedCount();
         setText(getName() + arrestedCount + "/8 (Press A to arrest)");
         if (arrestedCount > 0) {
             setColor(Color.GREEN);

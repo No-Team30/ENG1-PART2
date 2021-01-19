@@ -1,14 +1,13 @@
 package tools;
 
-import characters.Entities.Player;
-import characters.Entities.abilities.*;
 import characters.Entities.Enemy;
+import characters.Entities.Player;
+import characters.Entities.abilities.AbsAbility;
 import com.badlogic.gdx.physics.box2d.*;
-
-import java.util.regex.Pattern;
-
 import sprites.Door;
 import sprites.Systems;
+
+import java.util.regex.Pattern;
 
 
 public class ObjectContactListener implements ContactListener {
@@ -53,7 +52,7 @@ public class ObjectContactListener implements ContactListener {
         }
 
         // if auber contact with healing pod and healing pod is not sabotaged
-        if (isHealingPod && ((String) fixA.getBody().getUserData()).equals("auber")) {
+        if (isHealingPod && fixA.getBody().getUserData().equals("auber")) {
             // set the player.UserData to ready_to_heal for healing process
             if (fixB.getBody().getUserData() == "healingPod_not_sabotaged") {
                 fixA.getBody().setUserData("ready_to_heal");
@@ -125,19 +124,15 @@ public class ObjectContactListener implements ContactListener {
                 Enemy enemy = (Enemy) fixB.getUserData();
                 // if auber is not arresting other infiltrators, 
                 // contacted infiltrators will be arrested
-                if (!auber.is_arresting() && auber.not_arrested(enemy)) {
-                    auber.setNearby_enemy(enemy);
-                    //enemy.set_standByMode();
-                    enemy.ability.setDisable(true);
+                if (auber.isArrestPressed()) {
+                    auber.enemyManager.arrestEnemy(enemy);
                 }
             } else if (is_Auber(fixB) && is_Infiltrators(fixA)
                     && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
                 Player auber = (Player) fixB.getUserData();
                 Enemy enemy = (Enemy) fixA.getUserData();
-                if (!auber.is_arresting() && auber.not_arrested(enemy)) {
-                    auber.setNearby_enemy(enemy);
-                    //enemy.set_standByMode();
-                    enemy.ability.setDisable(true);
+                if (auber.isArrestPressed()) {
+                    auber.enemyManager.arrestEnemy(enemy);
                 }
             }
         }
@@ -169,7 +164,7 @@ public class ObjectContactListener implements ContactListener {
 
         // if auber end contact with healing pod, set auber's body data back to auber
         if (isHealingPod
-                && ((String) fixA.getBody().getUserData()).toString().equals("ready_to_heal")) {
+                && ((String) fixA.getBody().getUserData()).equals("ready_to_heal")) {
             // set the player.UserData to ready_to_heal for healing process
             fixA.getBody().setUserData("auber");
         }
@@ -227,16 +222,15 @@ public class ObjectContactListener implements ContactListener {
                     && Enemy.class.isAssignableFrom(fixB.getUserData().getClass())) {
                 Player auber = (Player) fixA.getUserData();
                 Enemy enemy = (Enemy) fixB.getUserData();
-                if (!auber.arrestPressed) {
-                    auber.setNearby_enemy(null);
-                    enemy.ability.setDisable(false);
+                if (auber.isArrestPressed()) {
+                    auber.enemyManager.arrestEnemy(null);
                 }
             } else if (is_Auber(fixB) && is_Infiltrators(fixA)
                     && Enemy.class.isAssignableFrom(fixA.getUserData().getClass())) {
                 Player auber = (Player) fixB.getUserData();
                 Enemy enemy = (Enemy) fixA.getUserData();
-                if (!auber.arrestPressed) {
-                    auber.setNearby_enemy(null);
+                if (auber.isArrestPressed()) {
+                    auber.enemyManager.arrestEnemy(null);
                     enemy.ability.setDisable(false);
                 }
             }
