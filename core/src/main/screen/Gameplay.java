@@ -28,6 +28,7 @@ import sprites.Systems;
 import tools.*;
 
 import java.util.ArrayList;
+
 import tools.*;
 
 import java.nio.file.FileSystemNotFoundException;
@@ -197,7 +198,7 @@ public class Gameplay implements Screen {
             throw new FileSystemNotFoundException("Local file access is unavailable!");
         }
         JSONObject state = new JSONObject();
-        state.put("EnemyManager", this.enemyManager.save());
+        //state.put("EnemyManager", this.enemyManager.save());
         state.put("npcManager", this.npcManager.save());
         state.put("player", Gameplay.player.save());
         state.put("systems", Gameplay.systems.stream().map(Systems::save).collect(Collectors.toList()));
@@ -249,7 +250,7 @@ public class Gameplay implements Screen {
      */
     public void checkGameState() {
 
-        if (player.arrestedCount >= 2) {
+        if (player.enemyManager.hasPlayerWon()) {
             game.setScreen(new WinLoseScreen(game.getBatch(), "YOU WIN!!", this.isDemo));
         }
         int sabotagedCount = 0;

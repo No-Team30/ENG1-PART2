@@ -137,7 +137,7 @@ public class Player extends Entity {
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("entity_type", "auber");
+/*        state.put("entity_type", "auber");
         state.put("arrestedCount", this.arrestedCount);
         state.put("jailPosition", this.jailPosition);
         state.put("health", this.health);
@@ -145,7 +145,7 @@ public class Player extends Entity {
         state.put("ishealing", this.ishealing);
         state.put("arrestPressed", this.arrestPressed);
         state.put("arrestedCount", this.arrestedCount);
-        state.put("movement", this.movementSystem.save());
+        state.put("movement", this.movementSystem.save());*/
         return state;
     }
 }

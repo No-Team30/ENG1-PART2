@@ -1,0 +1,533 @@
+{
+  "systems": [
+    {
+      "entity_type": "systems",
+      "sysName": "cryoPod1",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "cryoPod2",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "healingPod",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "lights",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "doors",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "o2Tank",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "vendingMachine",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "table",
+      "hp": 97.20004
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "food",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "ship1",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "ship2",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "podBayDoors",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "escapePod1",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "escapePod2",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "powerSupply",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "reactor",
+      "hp": 100.0
+    },
+    {
+      "entity_type": "systems",
+      "sysName": "navigation",
+      "hp": 100.0
+    }
+  ],
+  "EnemyManager": {
+    "activeEnemies": [
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 1137.7172,
+          "dest_y_position": 255.5,
+          "x_position": 183.54286,
+          "dest_x_position": 96.0,
+          "user_data": "Infiltrators1"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "ship1",
+          "hp": 100.0
+        }
+      },
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 1009.71716,
+          "dest_y_position": 703.5,
+          "x_position": 247.54294,
+          "dest_x_position": 624.0,
+          "user_data": "Infiltrators2"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "vendingMachine",
+          "hp": 100.0
+        }
+      },
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 817.71686,
+          "dest_y_position": 47.5,
+          "x_position": 439.54297,
+          "dest_x_position": 192.0,
+          "user_data": "Infiltrators3"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "podBayDoors",
+          "hp": 100.0
+        }
+      },
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 955.12866,
+          "dest_y_position": 1231.5,
+          "x_position": 627.6435,
+          "dest_x_position": 240.0,
+          "user_data": "Infiltrators4"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "healingPod",
+          "hp": 100.0
+        }
+      },
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 727.6435,
+          "dest_y_position": 1327.5,
+          "x_position": 471.12872,
+          "dest_x_position": 688.0,
+          "user_data": "Infiltrators5"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "lights",
+          "hp": 100.0
+        }
+      },
+      {
+        "mode": "attacking_system",
+        "currentContactSystem": {
+          "entity_type": "systems",
+          "sysName": "table",
+          "hp": 97.20004
+        },
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 635.12866,
+          "dest_y_position": 671.5,
+          "x_position": 467.64346,
+          "dest_x_position": 512.0,
+          "user_data": "Infiltrators6"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "table",
+          "hp": 97.20004
+        }
+      },
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 700.8552,
+          "dest_y_position": 111.5,
+          "x_position": 587.81085,
+          "dest_x_position": 64.0,
+          "user_data": "Infiltrators7"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "escapePod2",
+          "hp": 100.0
+        }
+      },
+      {
+        "mode": "",
+        "entity_type": "enemy",
+        "using_ability": false,
+        "ability": {},
+        "movement": {
+          "y_position": 465.71698,
+          "dest_y_position": 303.5,
+          "x_position": 439.54294,
+          "dest_x_position": 816.0,
+          "user_data": "Infiltrators8"
+        },
+        "targetSystem": {
+          "entity_type": "systems",
+          "sysName": "powerSupply",
+          "hp": 100.0
+        }
+      }
+    ],
+    "arrestedEnemies": [],
+    "jailedEnemies": []
+  },
+  "npcManager": {
+    "npc": [
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1031.2275,
+          "dest_y_position": 1232.0,
+          "x_position": 760.85455,
+          "dest_x_position": 304.0,
+          "user_data": "crew1"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1201.7172,
+          "dest_y_position": 848.0,
+          "x_position": 311.54294,
+          "dest_x_position": 432.0,
+          "user_data": "crew2"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 817.71686,
+          "dest_y_position": 688.0,
+          "x_position": 439.54297,
+          "dest_x_position": 464.0,
+          "user_data": "crew3"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 699.12866,
+          "dest_y_position": 720.0,
+          "x_position": 499.64343,
+          "dest_x_position": 592.0,
+          "user_data": "crew4"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 700.8552,
+          "dest_y_position": 496.0,
+          "x_position": 587.81085,
+          "dest_x_position": 432.0,
+          "user_data": "crew5"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 507.5429,
+          "dest_y_position": 176.0,
+          "x_position": 397.71692,
+          "dest_x_position": 272.0,
+          "user_data": "crew6"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 156.8552,
+          "dest_y_position": 176.0,
+          "x_position": 267.81076,
+          "dest_x_position": 80.0,
+          "user_data": "crew7"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 187.12868,
+          "dest_y_position": 272.0,
+          "x_position": 115.64349,
+          "dest_x_position": 560.0,
+          "user_data": "crew8"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 252.85522,
+          "dest_y_position": 176.0,
+          "x_position": 555.81085,
+          "dest_x_position": 176.0,
+          "user_data": "crew9"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 215.64351,
+          "dest_y_position": 1232.0,
+          "x_position": 183.12868,
+          "dest_x_position": 560.0,
+          "user_data": "crew10"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1212.8547,
+          "dest_y_position": 1008.0,
+          "x_position": 579.2277,
+          "dest_x_position": 784.0,
+          "user_data": "crew11"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1031.2275,
+          "dest_y_position": 1232.0,
+          "x_position": 760.85455,
+          "dest_x_position": 432.0,
+          "user_data": "crew12"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1243.5428,
+          "dest_y_position": 1168.0,
+          "x_position": 397.7169,
+          "dest_x_position": 176.0,
+          "user_data": "crew13"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1148.8547,
+          "dest_y_position": 1040.0,
+          "x_position": 195.22755,
+          "dest_x_position": 240.0,
+          "user_data": "crew14"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1009.71716,
+          "dest_y_position": 848.0,
+          "x_position": 247.54294,
+          "dest_x_position": 432.0,
+          "user_data": "crew15"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 817.71686,
+          "dest_y_position": 944.0,
+          "x_position": 439.54297,
+          "dest_x_position": 592.0,
+          "user_data": "crew16"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 913.71686,
+          "dest_y_position": 720.0,
+          "x_position": 599.5429,
+          "dest_x_position": 592.0,
+          "user_data": "crew17"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 700.8552,
+          "dest_y_position": 400.0,
+          "x_position": 587.81085,
+          "dest_x_position": 208.0,
+          "user_data": "crew18"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 439.64346,
+          "dest_y_position": 208.0,
+          "x_position": 215.12866,
+          "dest_x_position": 688.0,
+          "user_data": "crew19"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 247.64352,
+          "dest_y_position": 304.0,
+          "x_position": 695.12866,
+          "dest_x_position": 784.0,
+          "user_data": "crew20"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 308.0,
+          "dest_y_position": 720.0,
+          "x_position": 784.0,
+          "dest_x_position": 592.0,
+          "user_data": "crew21"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 156.8552,
+          "dest_y_position": 176.0,
+          "x_position": 267.81076,
+          "dest_x_position": 80.0,
+          "user_data": "crew22"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 187.12868,
+          "dest_y_position": 272.0,
+          "x_position": 115.64349,
+          "dest_x_position": 336.0,
+          "user_data": "crew23"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 283.54294,
+          "dest_y_position": 944.0,
+          "x_position": 301.71695,
+          "dest_x_position": 304.0,
+          "user_data": "crew24"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 913.71686,
+          "dest_y_position": 176.0,
+          "x_position": 311.54297,
+          "dest_x_position": 176.0,
+          "user_data": "crew25"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 215.64351,
+          "dest_y_position": 1232.0,
+          "x_position": 183.12868,
+          "dest_x_position": 560.0,
+          "user_data": "crew26"
+        }
+      },
+      {
+        "entity_type": "npc",
+        "movement": {
+          "y_position": 1212.8547,
+          "dest_y_position": 1008.0,
+          "x_position": 579.2277,
+          "dest_x_position": 784.0,
+          "user_data": "crew27"
+        }
+      }
+    ]
+  },
+  "player": {
+    "jailPosition": (907.333,
+    1326.0),
+    "entity_type": "auber",
+    "ishealing": false,
+    "arrestPressed": false,
+    "nearbyEnemy": null,
+    "health": 100.0,
+    "arrestedCount": 0,
+    "movement": {
+      "y_position": 737.98505,
+      "x_position": 512.0,
+      "user_data": "auber"
+    }
+  }
+}

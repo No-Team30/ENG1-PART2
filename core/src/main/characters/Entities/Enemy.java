@@ -164,7 +164,7 @@ public class Enemy extends Entity {
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("entity_type", "enemy");
+/*        state.put("entity_type", "enemy");
         state.put("mode", this.mode);
         state.put("ability", this.ability.save());
         state.put("using_ability", this.usingAbility);
@@ -173,7 +173,7 @@ public class Enemy extends Entity {
             state.put("currentContactSystem", this.currentContactSystem.save());
         }
 
-        state.put("movement", this.movementSystem.save());
+        state.put("movement", this.movementSystem.save());*/
         return state;
     }
 

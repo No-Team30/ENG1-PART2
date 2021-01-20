@@ -50,9 +50,9 @@ public class UserMovement extends Movement {
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("x_position", this.position.x);
+/*        state.put("x_position", this.position.x);
         state.put("y_position", this.position.y);
-        state.put("user_data", this.b2body.getUserData());
+        state.put("user_data", this.b2body.getUserData());*/
         return state;
     }
 }
