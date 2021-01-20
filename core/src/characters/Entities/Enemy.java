@@ -1,6 +1,9 @@
 package characters.Entities;
 
+import characters.Entities.abilities.AbilityFactory;
+import characters.Entities.abilities.AbsAbility;
 import characters.Movement.AiMovement;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -14,9 +17,10 @@ public class Enemy extends Entity {
     public Systems currentContactSystem; // used for contact listener
     //TODO WHY NO ENUM?
     public String mode;
-    public Ability ability;
-    public static int numberofInfiltrators;
-    public boolean usingAbility;
+    public AbsAbility ability;
+    public static int numberOfEnemies;
+    public float systemDamage = .1f;
+    public boolean ghostMode = false;
 
     /**
      * Enemy.
@@ -27,21 +31,19 @@ public class Enemy extends Entity {
      */
     public Enemy(World world, float x, float y) {
         super();
-        numberofInfiltrators++;
+        numberOfEnemies++;
         this.movementSystem = new AiMovement(this, world, x, y);
-        this.movementSystem.b2body.setUserData("Infiltrators" + numberofInfiltrators);
-        ability = new Ability();
-        createEdgeShape(ability);
+        this.movementSystem.b2body.setUserData("Enemy" + numberOfEnemies);
+        ability = AbilityFactory.randomAbility();
+        createEdgeShape();
         mode = "";
-        usingAbility = false;
     }
 
     /**
      * Create an EdgeShape for enemy to sense auber for special ability.
      *
-     * @param ability Ability to be triggered
      */
-    public void createEdgeShape(Ability ability) {
+    public void createEdgeShape() {
 
         EdgeShape sensoringArea = new EdgeShape();
         sensoringArea.set(new Vector2(64, 32), new Vector2(64, -32));
@@ -49,17 +51,29 @@ public class Enemy extends Entity {
         fixtureDef.shape = sensoringArea;
         fixtureDef.isSensor = true;
         // store ability in sensor userdata to retrieve it in contactListener
-        this.movementSystem.b2body.createFixture(fixtureDef).setUserData(ability);
+        this.movementSystem.b2body.createFixture(fixtureDef).setUserData(this);
 
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-        ability.update(delta, this);
-        if (!ability.inUse) {
-            usingAbility = false;
+        if (ability!=null){
+            ability.update(delta, this);
         }
+    }
+
+    /**
+     * draw the enemy who have ghost mode ability
+     *
+     * @param batch batch to draw the ghost mode enemy
+     */
+    @Override
+    public void draw(SpriteBatch batch) {
+        if (ghostMode) {
+            return;
+        }
+        super.draw(batch);
     }
 
     /**
@@ -87,7 +101,7 @@ public class Enemy extends Entity {
      */
     public void sabotage(Systems system) {
         if (system.hp > 0) {
-            system.hp -= 0.1;
+            system.hp -= systemDamage;
         } else {
             system.hp = 0;
             system.set_sabotaged();
@@ -131,6 +145,7 @@ public class Enemy extends Entity {
      */
     public void set_ArrestedMode() {
         mode = "arrested";
+        ability.setDisable(true);
     }
 
     /**

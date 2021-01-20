@@ -27,6 +27,9 @@ import sprites.Door;
 import sprites.Systems;
 import tools.*;
 
+import java.util.ArrayList;
+import tools.*;
+
 import java.nio.file.FileSystemNotFoundException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -36,6 +39,8 @@ import java.util.stream.Collectors;
  * Main gameplay object, holds all game data.
  */
 public class Gameplay implements Screen {
+
+    public static final int TILE_SIZE = 64;
 
     private final GameMain game;
 
@@ -48,8 +53,6 @@ public class Gameplay implements Screen {
      * Whether the game is in demo mode
      */
     private final Boolean isDemo;
-
-    public EnemyManager enemyManager;
 
     public NpcManager npcManager;
 
@@ -139,8 +142,6 @@ public class Gameplay implements Screen {
         systemStatusMenu.generate_systemLabels(systems);
         // create arrest_status header
         arrestedHeader = hud.arrestedHeader;
-        // create enemy_manager instance
-        enemyManager = new EnemyManager(world, map, systems);
         // create Npc_manager instance
         npcManager = new NpcManager(world, map);
 
@@ -161,7 +162,7 @@ public class Gameplay implements Screen {
         healthBar.updateHp(player);
         lightControl.light_update(systems);
         DoorControll.updateDoors(systems, delta);
-        enemyManager.update_enemy(delta);
+        player.enemyManager.update(delta, player.getPosition());
         npcManager.updateNpc(delta);
         systemStatusMenu.update_status(systems);
         arrestedHeader.update_Arrested(player);
@@ -307,8 +308,8 @@ public class Gameplay implements Screen {
         game.getBatch().begin();
         // render player
         player.draw(game.getBatch());
-        // render Infiltrators
-        enemyManager.render_enemy(game.getBatch());
+        // render Enemies
+        player.enemyManager.render(game.getBatch());
         // render NPC
         npcManager.renderNpc(game.getBatch());
         // end the batch

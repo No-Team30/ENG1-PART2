@@ -2,33 +2,32 @@ package characters.Entities;
 
 import characters.Movement.AiMovement;
 import characters.Movement.UserMovement;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
 import tools.CharacterRenderer;
 import tools.Controller;
 
-import java.util.ArrayList;
+import static screen.Gameplay.TILE_SIZE;
 
 
 /**
  * Main player object for the game.
  */
 public class Player extends Entity {
-    /**
-     * The x and y coordinates of the Jail
-     */
-    private final Vector2 jailPosition;
-    public Enemy nearbyEnemy;
-    public float health;
+    public final EnemyManager enemyManager;
     public boolean ishealing;
-    public boolean arrestPressed;
-    public int arrestedCount = 0;
 
     /**
      * The time since the target for the AI movement system was last updated
      */
-    private float timeSinceEnemyTargetUpdated = 0;
+    //TODO Can we remove this?
+    private final float timeSinceEnemyTargetUpdated = 0;
+    /**
+     * The x and y coordinates of the Jail
+     */
+    public float health;
+    private boolean arrestPressed;
     /**
      * How often to change the target of the ai system (in seconds)
      */
@@ -46,12 +45,11 @@ public class Player extends Entity {
      * @param x     The inital x location of the player
      * @param y     The inital y location of the player
      */
-    public Player(World world, float x, float y, Vector2 jailPosition) {
+    public Player(World world, float x, float y, TiledMap map) {
         super(CharacterRenderer.Sprite.AUBER);
         //WARN This can be null
         this.movementSystem = new UserMovement(this, world, x, y);
-        // Should only contain the x and y coordinates
-        this.jailPosition = jailPosition;
+        this.enemyManager = new EnemyManager(world, map);
         this.movementSystem.b2body.setUserData("auber");
         this.health = 100f;
         this.ishealing = false;
@@ -102,66 +100,38 @@ public class Player extends Entity {
         super.update(delta);
         // Handles demo mode movement
         // Player AI movement, targets the closest nearby enemy
-        this.timeSinceEnemyTargetUpdated += delta;
-        if (this.movementSystem instanceof AiMovement && this.timeSinceEnemyTargetUpdated > this.refreshAiEnemyTarget) {
-            this.timeSinceEnemyTargetUpdated = 0;
-            Enemy closest_enemy = null;
-            int closest_distance = Integer.MAX_VALUE;
-            // TODO Optimisation Could maybe store all non arrested enemies
-            ArrayList<Enemy> enemiesToArrest = new ArrayList<>();
-            for (Enemy enemy : EnemyManager.activeEnemies) {
-                int enemyDistance = (int) enemy.movementSystem.position.dst(this.movementSystem.position);
-                if (enemyDistance < AI_ARREST_RANGE) {
-                    // Cannot arrest enemy here, because you cannot modify activeEnemies, inside a loop
-                    enemiesToArrest.add(enemy);
-                } else if (enemyDistance < closest_distance) {
-                    closest_distance = enemyDistance;
-                    closest_enemy = enemy;
-                }
+        if (this.movementSystem instanceof AiMovement) {
+            // Find the closest enemy, and arrest if in range
+            Enemy closest_enemy = this.enemyManager.getClosestActiveEnemy(this.getPosition());
+            if (closest_enemy != null && this.distanceTo(closest_enemy) < AI_ARREST_RANGE) {
+                enemyManager.arrestEnemy(closest_enemy);
+                closest_enemy = null;
             }
-            for (Enemy enemy : enemiesToArrest) {
-                System.out.println("    Arresting Enemy: " + enemy.movementSystem.b2body.getUserData() + " at: " + enemy.movementSystem.position);
-                arrest(enemy);
-            }
-
             // If we have arrested an enemy, and are not at the jail, go to the jail
             // Otherwise go to the closest enemy
-
-            if (EnemyManager.arrestedEnemies.size() > 0 && this.movementSystem.position.dst(this.jailPosition) > 64 * 2) {
-                ((AiMovement) this.movementSystem).setDestination(this.jailPosition);
+            if (this.enemyManager.haveEnemiesBeenArrested() && this.distanceTo(this.enemyManager.getJailPosition()) > TILE_SIZE * 2) {
+                ((AiMovement) this.movementSystem).setDestination(this.enemyManager.getJailPosition());
                 ((AiMovement) this.movementSystem).moveToDestination();
             } else if (closest_enemy != null) {
-                ((AiMovement) this.movementSystem).setDestination(closest_enemy.movementSystem.position);
+                ((AiMovement) this.movementSystem).setDestination(closest_enemy.getPosition());
                 ((AiMovement) this.movementSystem).moveToDestination();
             }
         }
         if (Controller.isArrestPressed()) {
             arrestPressed = true;
         }
-        if (nearbyEnemy != null && arrestPressed && !nearbyEnemy.isArrested()) {
-            System.out.println("Arrested: " + nearbyEnemy.movementSystem.b2body.getUserData() + " arrestPressed: ");
-            arrest(nearbyEnemy);
-        }
-        // Set all arrested enemies to follow the Player
-        for (Enemy enemy : EnemyManager.arrestedEnemies) {
-            ((AiMovement) enemy.movementSystem).setDestination(this.movementSystem.position);
-            ((AiMovement) enemy.movementSystem).moveToDestination();
-        }
-        // If we are at the jail, put arrested enemies in jail (Within 2 squares distance of the jail)
-        if (this.movementSystem.position.dst(this.jailPosition) < 64 * 2) {
-            while (EnemyManager.arrestedEnemies.size() > 0) {
-                this.arrestedCount += 1;
-                Enemy enemy = EnemyManager.arrestedEnemies.remove(0);
-                EnemyManager.jailedEnemies.add(enemy);
-                enemy.targetSystem = null;
-                enemy.movementSystem.b2body.setTransform(jailPosition, 0);
-                ((AiMovement) enemy.movementSystem).stop();
-            }
-        }
-
         // should be called each loop of rendering
         healing(delta);
 
+    }
+
+
+    public boolean isArrestPressed() {
+        return this.arrestPressed;
+    }
+
+    public void setArrestPressed(boolean value) {
+        this.arrestPressed = value;
     }
 
     @Override
@@ -178,49 +148,4 @@ public class Player extends Entity {
         state.put("movement", this.movementSystem.save());
         return state;
     }
-
-    /**
-     * Arrest enemy.
-     *
-     * @param enemy The enemy object
-     */
-    public void arrest(Enemy enemy) {
-        EnemyManager.arrestedEnemies.add(enemy);
-        EnemyManager.activeEnemies.remove(enemy);
-        // stop enemy's sabotaging if it does
-        enemy.set_ArrestedMode();
-        // set enemy destination to auber's left,enemy should follow auber until it is in jail
-        ((AiMovement) enemy.movementSystem).setDestination(this.movementSystem.position.x, this.movementSystem.position.y);
-        ((AiMovement) enemy.movementSystem).moveToDestination();
-
-    }
-
-    /**
-     * set the nearby enemy.
-     *
-     * @param enemy The enemy object
-     */
-    public void setNearby_enemy(Enemy enemy) {
-        nearbyEnemy = enemy;
-    }
-
-    /**
-     * If auber is arresting an enemy.
-     *
-     * @return true if auber is currently arresting an enemy
-     */
-    public boolean is_arresting() {
-        return nearbyEnemy != null;
-    }
-
-    /**
-     * avoid arresting enemy already in jail twice.
-     *
-     * @param enemy The enemy object
-     * @return True if enemy is not in arrested or jailed enemy arraylist
-     */
-    public boolean not_arrested(Enemy enemy) {
-        return EnemyManager.activeEnemies.contains(enemy);
-    }
-
 }

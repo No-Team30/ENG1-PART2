@@ -1,18 +1,15 @@
 package tools;
 
-import characters.Entities.EnemyManager;
 import characters.Entities.Player;
-import characters.Movement.AiMovement;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import screen.actors.Teleport_Menu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import screen.actors.Teleport_Menu;
 
 /**
  * Teleport_process.
@@ -20,7 +17,7 @@ import screen.actors.Teleport_Menu;
 public class TeleportProcess {
 
     public Teleport_Menu selectedRoom;
-    public Player auber;
+    private final Player auber;
     public HashMap<String, ArrayList<Float>> teleporterPosition;
     public HashMap<Integer, ArrayList<Float>> jailPosition;
 
@@ -54,18 +51,6 @@ public class TeleportProcess {
             teleport.add(tele.y);
             teleporterPosition.put(object.getName(), teleport);
         }
-        // Test , should change with proper jail name for position
-        int jailCount = 0;
-        for (MapObject object : layers.get("jail").getObjects()) {
-            Rectangle jail = ((RectangleMapObject) object).getRectangle();
-            ArrayList<Float> jails = new ArrayList<>();
-            jails.add(jail.x);
-            jails.add(jail.y);
-            jailPosition.put(jailCount, jails);
-            jailCount++;
-            System.out.println(jailPosition);
-        }
-
     }
 
     /**
@@ -74,20 +59,22 @@ public class TeleportProcess {
     public void validate() {
 
         // if auber not in contact with a teleporter, the menu(selected box) should be disabled
-        if (((String) auber.movementSystem.b2body.getUserData()).equals("auber")) {
+        if (auber.movementSystem.b2body.getUserData().equals("auber")) {
             selectedRoom.setDisabled(true);
         }
         // if auber's contact with teleporter detected, enable the selectBox
-        if (((String) auber.movementSystem.b2body.getUserData()).equals("ready_to_teleport")
+        if (auber.movementSystem.b2body.getUserData().equals("ready_to_teleport")
                 && selectedRoom.isDisabled()) {
             selectedRoom.setDisabled(false);
         } else if ((!(selectedRoom.getSelected()).equals("Teleport")
-                && !((String) selectedRoom.getSelected()).equals("Jail"))
+                && !selectedRoom.getSelected().equals("Jail"))
                 && ((auber.movementSystem.b2body.getUserData()).equals("ready_to_teleport"))) {
             transform();
-        } else if ((selectedRoom.getSelected()).equals("Jail") && auber.is_arresting()) {
-            jail_transform();
-        } else if ((selectedRoom.getSelected()).equals("Jail") && !auber.is_arresting()) {
+        } else if ((selectedRoom.getSelected()).equals("Jail") && auber.enemyManager.haveEnemiesBeenArrested()) {
+            auber.enemyManager.jailAllArrestedEnemies();
+            selectedRoom.setSelected("Teleport");
+            selectedRoom.setDisabled(true);
+        } else if ((selectedRoom.getSelected()).equals("Jail")) {
             selectedRoom.setSelected("Teleport");
         }
     }
@@ -108,32 +95,4 @@ public class TeleportProcess {
         selectedRoom.setSelected("Teleport");
         selectedRoom.setDisabled(true);
     }
-
-
-    static int jail_index = 0;
-
-    /**
-     * transform auber and arrested infiltrator to jail.
-     */
-    public void jail_transform() {
-
-        float jailX = jailPosition.get(jail_index).get(0);
-        float jailY = jailPosition.get(jail_index).get(1);
-        jail_index++;
-        //auber.b2body.setTransform(jail_X,jail_Y,0);
-        auber.nearbyEnemy.movementSystem.b2body.setTransform(jailX, jailY, 0);
-        ((AiMovement) auber.nearbyEnemy.movementSystem).stop();
-        // add the enemy to arrested list, shouldn't be arrested again
-        EnemyManager.jailedEnemies.add(auber.nearbyEnemy);
-        System.out.println("Added " + auber.nearbyEnemy.movementSystem.b2body.getUserData() + " to jailed");
-        EnemyManager.activeEnemies.remove(auber.nearbyEnemy);
-        auber.arrestedCount++;
-        // remove enemy's target system if it has one
-        auber.nearbyEnemy.targetSystem = null;
-        auber.nearbyEnemy = null;
-        auber.arrestPressed = false;
-        selectedRoom.setSelected("Teleport");
-        selectedRoom.setDisabled(true);
-    }
-
 }
