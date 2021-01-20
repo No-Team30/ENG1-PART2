@@ -4,12 +4,13 @@ import characters.Entities.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 
 public abstract class Movement {
-    private final Entity entity;
+    private final Entity userData;
     public World world;
     public Body b2body;
-    public float speed = 60f;
+    public float speed;
 
     private Vector2 position;
     protected Vector2 size;
@@ -22,8 +23,8 @@ public abstract class Movement {
      * @param x     The initial x location of the player
      * @param y     The initial y location of the player
      */
-    public Movement(Entity entity, World world, float x, float y) {
-        this.entity = entity;
+    public Movement(Entity userData, World world, float x, float y) {
+        this.userData = userData;
         this.world = world;
         this.position = new Vector2(x, y);
         size = new Vector2(24, 24);
@@ -31,6 +32,37 @@ public abstract class Movement {
         this.createBody();
 
     }
+
+    Movement(Entity userData, World world, JSONObject object) {
+        LoadGame.validateAndLoadObject(object, "object_type", "movement");
+        this.world = world;
+        this.userData = userData;
+        this.position = new Vector2(LoadGame.loadObject(object, "x_position", Float.class), LoadGame.loadObject(object,
+                "y_position", Float.class));
+        this.size = new Vector2(LoadGame.loadObject(object, "x_size", Float.class), LoadGame.loadObject(object,
+                "y_size", Float.class));
+        this.speed = LoadGame.loadObject(object, "speed", Float.class);
+        this.createBody();
+    }
+
+    /**
+     * Builds a new movement_type from the JSON Object
+     *
+     * @param object The JSON Object to build the movement system from
+     * @throws IllegalArgumentException if 'movement_type' parameter, does not match any known movement system
+     */
+    public static Movement loadMovement(Entity userData, World world, JSONObject object) {
+        switch (LoadGame.loadObject(object, "movement_type", String.class)) {
+            case "user_movement":
+                return new UserMovement(userData, world, object);
+            case "ai_movement":
+                return new AiMovement(userData, world, object);
+            default:
+                throw new IllegalArgumentException("movement_type parameter, does not match any known movement " +
+                        "types");
+        }
+    }
+
 
     /**
      * Updates the player, should be called every update cycle.
@@ -46,7 +78,16 @@ public abstract class Movement {
      *
      * @return The movement based information
      */
-    public abstract JSONObject save();
+    public JSONObject save() {
+        JSONObject state = new JSONObject();
+        state.put("object_type", "movement");
+        state.put("x_position", this.getPosition().x);
+        state.put("y_position", this.getPosition().y);
+        state.put("speed", this.speed);
+        state.put("x_size", this.size.x);
+        state.put("y_size", this.size.y);
+        return new JSONObject();
+    }
 
     /**
      * Creates the physics bodies for the player Sprite.
@@ -64,7 +105,7 @@ public abstract class Movement {
         fdef.shape = shape;
 
         b2body.setLinearDamping(20f);
-        b2body.createFixture(fdef).setUserData(entity);
+        b2body.createFixture(fdef).setUserData(this.userData);
 
         shape.dispose();
     }

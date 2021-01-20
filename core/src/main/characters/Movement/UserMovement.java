@@ -4,6 +4,7 @@ import characters.Entities.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 import tools.Controller;
 
 public class UserMovement extends Movement {
@@ -15,8 +16,19 @@ public class UserMovement extends Movement {
      * @param x     The initial x location of the player
      * @param y     The initial y location of the player
      */
-    public UserMovement(Entity entity, World world, float x, float y) {
-        super(entity, world, x, y);
+    public UserMovement(Entity userData, World world, float x, float y) {
+        super(userData, world, x, y);
+    }
+
+
+    /**
+     * Builds an user controlled movement system from the provided JSON Object
+     *
+     * @param object The JSON object to load from
+     */
+    public UserMovement(Entity userData, World world, JSONObject object) {
+        super(userData, world, object);
+        LoadGame.validateAndLoadObject(object, "movement_type", "user_movement");
     }
 
     /**
@@ -49,10 +61,8 @@ public class UserMovement extends Movement {
 
     @Override
     public JSONObject save() {
-        JSONObject state = new JSONObject();
-/*        state.put("x_position", this.position.x);
-        state.put("y_position", this.position.y);
-        state.put("user_data", this.b2body.getUserData());*/
+        JSONObject state = super.save();
+        state.put("movement_type", "user_movement");
         return state;
     }
 }

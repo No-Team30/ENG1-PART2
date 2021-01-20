@@ -10,6 +10,7 @@ import map.Map;
 import map.Node;
 import map.Path;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 
 /**
  * AI Character object for the game.
@@ -23,21 +24,16 @@ public class AiMovement extends Movement {
     private Path path;
     private int pathIndex;
 
-    private static int numberOfAiEntities = 0;
-
-
     /**
      * Converts a User Input Based movement system to an Ai controlled one
      *
-     * @param entity   The entity to alter
+     * @param userData The user data of the entity to alter
      * @param movement The existing movement system to inherit from
      */
-    public AiMovement(Entity entity, UserMovement movement) {
-        super(entity, movement.world, movement.getPosition().x, movement.getPosition().y);
+    public AiMovement(Entity userData, UserMovement movement) {
+        super(userData, movement.world, movement.getPosition().x, movement.getPosition().y);
         this.destX = movement.getPosition().x;
         this.destY = movement.getPosition().y;
-        // Maybe not needed?
-        numberOfAiEntities++;
 
         path = new Path();
         pathFinder = new IndexedAStarPathFinder<Node>(Map.graph);
@@ -50,16 +46,28 @@ public class AiMovement extends Movement {
      * @param x     The inital x location of the character
      * @param y     The inital y location of the character
      */
-    public AiMovement(Entity entity, World world, float x, float y) {
-        super(entity, world, x, y);
+    public AiMovement(Entity userData, World world, float x, float y) {
+        super(userData, world, x, y);
         this.destX = x;
         this.destY = y;
-        // Maybe not needed?
-        numberOfAiEntities++;
 
         path = new Path();
         pathFinder = new IndexedAStarPathFinder<Node>(Map.graph);
 
+    }
+
+    /**
+     * Builds an Ai movement system from the provided JSON Object
+     *
+     * @param object The JSON object to load from
+     */
+    public AiMovement(Entity userData, World world, JSONObject object) {
+        super(userData, world, object);
+        LoadGame.validateAndLoadObject(object, "movement_type", "ai_movement");
+        this.destX = LoadGame.loadObject(object, "dest_x_position", Float.class);
+        this.destY = LoadGame.loadObject(object, "dest_y_position", Float.class);
+        path = new Path();
+        pathFinder = new IndexedAStarPathFinder<Node>(Map.graph);
     }
 
     /**
@@ -176,7 +184,7 @@ public class AiMovement extends Movement {
      * @param y y coordinate of destination in pixels
      * @return true if there is a path between character and destination, false otherwise
      */
-    public boolean isValidPath(float x, float y) {
+    private boolean isValidPath(float x, float y) {
         Vector2 position = this.b2body.getPosition();
 
         Node startNode = Map.graph.getNodeByXy((int) position.x, (int) position.y);
@@ -213,7 +221,7 @@ public class AiMovement extends Movement {
      * @param y The y coordinate to target
      * @return true if we managed to find a valid path
      */
-    public boolean findValidPath(float x, float y) {
+    private boolean findValidPath(float x, float y) {
         float targeted_x_position = x;
         float targeted_y_position = y;
         float original_x = getPosition().x;
@@ -269,12 +277,10 @@ public class AiMovement extends Movement {
 
     @Override
     public JSONObject save() {
-        JSONObject state = new JSONObject();
-/*        state.put("x_position", this.position.x);
-        state.put("y_position", this.position.y);
+        JSONObject state = super.save();
+        state.put("movement_type", "ai_movement");
         state.put("dest_x_position", this.destX);
         state.put("dest_y_position", this.destY);
-        state.put("user_data", this.b2body.getUserData());*/
         return state;
     }
 }

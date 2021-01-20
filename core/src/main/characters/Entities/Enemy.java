@@ -39,9 +39,12 @@ public class Enemy extends Entity {
         mode = "";
     }
 
+    public Enemy(World world, JSONObject a) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     /**
      * Create an EdgeShape for enemy to sense auber for special ability.
-     *
      */
     public void createEdgeShape() {
 

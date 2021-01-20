@@ -1,10 +1,12 @@
 package characters.Entities;
 
 import characters.Movement.AiMovement;
+import characters.Movement.Movement;
 import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 import tools.CharacterRenderer;
 import tools.Controller;
 
@@ -15,23 +17,23 @@ import static screen.Gameplay.TILE_SIZE;
  * Main player object for the game.
  */
 public class Player extends Entity {
-    public final EnemyManager enemyManager;
-    public boolean ishealing;
-
     /**
-     * The time since the target for the AI movement system was last updated
+     * The handler for all enemy entities
      */
-    //TODO Can we remove this?
-    private final float timeSinceEnemyTargetUpdated = 0;
+    public final EnemyManager enemyManager;
     /**
-     * The x and y coordinates of the Jail
+     * Whether the player is healing
+     */
+    public boolean isHealing;
+    /**
+     * The health of the player
      */
     public float health;
-    private boolean arrestPressed;
     /**
-     * How often to change the target of the ai system (in seconds)
+     * Whether the arrest key has been pressed
      */
-    private final float refreshAiEnemyTarget = 0.25f;
+    private boolean isArrestPressed;
+
 
     /**
      * The range in which the AI Player can arrest Enemies (In pixels)
@@ -52,10 +54,27 @@ public class Player extends Entity {
         this.enemyManager = new EnemyManager(world, map);
         this.movementSystem.b2body.setUserData("auber");
         this.health = 100f;
-        this.ishealing = false;
-        arrestPressed = false;
+        this.isHealing = false;
+        isArrestPressed = false;
 
     }
+
+    /**
+     * Builds a Player instance from the provided JSON Object
+     *
+     * @param object The json object to load the data from
+     */
+    public Player(World world, TiledMap map, JSONObject object) {
+        super(CharacterRenderer.Sprite.AUBER);
+        LoadGame.validateAndLoadObject(object, "entity_type", "auber");
+        this.health = LoadGame.loadObject(object, "health", Float.class);
+        this.isHealing = LoadGame.loadObject(object, "is_healing", Boolean.class);
+        this.isArrestPressed = LoadGame.loadObject(object, "is_arrest_pressed", Boolean.class);
+        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "enemy_manager",
+                JSONObject.class));
+        this.enemyManager = new EnemyManager(world, LoadGame.loadObject(object, "enemy_manager", JSONObject.class));
+    }
+
 
     /**
      * Sets whether or not Player is currently healing.
@@ -63,7 +82,7 @@ public class Player extends Entity {
      * @param isheal set ishealing to true or false
      */
     public void setHealing(boolean isheal) {
-        ishealing = isheal;
+        isHealing = isheal;
     }
 
     /**
@@ -84,7 +103,7 @@ public class Player extends Entity {
             setHealing(false);
         }
         // healing process
-        if (ishealing) {
+        if (isHealing) {
             // adjust healing amount accordingly
             health += 20f * delta;
             if (health > 100f) {
@@ -118,7 +137,7 @@ public class Player extends Entity {
             }
         }
         if (Controller.isArrestPressed()) {
-            arrestPressed = true;
+            isArrestPressed = true;
         }
         // should be called each loop of rendering
         healing(delta);
@@ -127,25 +146,23 @@ public class Player extends Entity {
 
 
     public boolean isArrestPressed() {
-        return this.arrestPressed;
+        return this.isArrestPressed;
     }
 
     public void setArrestPressed(boolean value) {
-        this.arrestPressed = value;
+        this.isArrestPressed = value;
     }
 
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
-/*        state.put("entity_type", "auber");
-        state.put("arrestedCount", this.arrestedCount);
-        state.put("jailPosition", this.jailPosition);
+        state.put("entity_type", "auber");
         state.put("health", this.health);
-        state.put("nearbyEnemy", this.nearbyEnemy);
-        state.put("ishealing", this.ishealing);
-        state.put("arrestPressed", this.arrestPressed);
-        state.put("arrestedCount", this.arrestedCount);
-        state.put("movement", this.movementSystem.save());*/
+        state.put("is_healing", this.isHealing);
+        state.put("is_arrest_pressed", this.isArrestPressed);
+        state.put("movement", this.movementSystem.save());
+        state.put("enemy_manager", this.enemyManager.save());
+
         return state;
     }
 }

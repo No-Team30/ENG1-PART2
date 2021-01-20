@@ -10,14 +10,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import sprites.Systems;
 import screen.Gameplay;
+import screen.LoadGame;
 import sprites.Systems;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static screen.Gameplay.TILE_SIZE;
 
@@ -28,24 +31,23 @@ import static screen.Gameplay.TILE_SIZE;
 public class EnemyManager {
 
     public World world;
-    public TiledMap map;
     /**
      * Enemies that are wandering around damaging systems
      */
-    private final ArrayList<Enemy> activeEnemies = new ArrayList<>();
+    private final ArrayList<Enemy> activeEnemies;
     /**
      * Enemies that are in jail
      */
-    private final ArrayList<Enemy> jailedEnemies = new ArrayList<>();
+    private final ArrayList<Enemy> jailedEnemies;
     /**
      * Enemies that are following the Player
      */
-    private final ArrayList<Enemy> arrestedEnemies = new ArrayList<>();
+    private final ArrayList<Enemy> arrestedEnemies;
     public ArrayList<float[]> spawn_position = new ArrayList<>();
     /**
      * Presumably a map containing which systems are targeted by which enemy
      **/
-    public static HashMap<Systems, Enemy> information;
+    //public static HashMap<Systems, Enemy> information;
     public ArrayList<Vector2> availableJailPositions;
     private float timeSinceEnemyTargetUpdated;
 
@@ -57,14 +59,64 @@ public class EnemyManager {
      */
     public EnemyManager(World world, TiledMap map) {
         this.world = world;
-        this.map = map;
         this.availableJailPositions = generate_jail_positions(map);
         this.timeSinceEnemyTargetUpdated = 0;
-        information = new HashMap<>();
+        //information = new HashMap<>();
+        this.activeEnemies = new ArrayList<>();
+        this.arrestedEnemies = new ArrayList<>();
+        this.jailedEnemies = new ArrayList<>();
         generate_spawn_position(map);
         generate_enemy(world);
+    }
 
-        initial_sabotageTarget();
+    public EnemyManager(World world, JSONObject object) {
+        LoadGame.validateAndLoadObject(object, "object_type", "enemy_manager");
+        this.world = world;
+
+        this.activeEnemies = new ArrayList<>();
+        for (Object enemyObject : LoadGame.loadObject(object, "active_enemies", JSONArray.class)) {
+            if (!(enemyObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("Active enemies does not contain enemy JSON Object");
+            }
+            Enemy enemy = new Enemy(world, (JSONObject) enemyObject);
+            generateNextTarget(enemy);
+            activeEnemies.add(enemy);
+        }
+
+        this.arrestedEnemies = new ArrayList<>();
+        for (Object enemyObject : LoadGame.loadObject(object, "arrested_enemies", JSONArray.class)) {
+            if (!(enemyObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("Active enemies does not contain enemy JSON Object");
+            }
+            Enemy enemy = new Enemy(world, (JSONObject) enemyObject);
+            enemy.ability.setDisable(true);
+            enemy.set_ArrestedMode();
+            arrestedEnemies.add(enemy);
+        }
+
+        this.jailedEnemies = new ArrayList<>();
+        for (Object enemyObject : LoadGame.loadObject(object, "jailed_enemies", JSONArray.class)) {
+            if (!(enemyObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("Active enemies does not contain enemy JSON Object");
+            }
+            Enemy enemy = new Enemy(world, (JSONObject) enemyObject);
+            enemy.ability.setDisable(true);
+            enemy.set_ArrestedMode();
+            enemy.targetSystem = null;
+            ((AiMovement) enemy.movementSystem).stop();
+            jailedEnemies.add(enemy);
+        }
+
+        this.availableJailPositions = new ArrayList<>();
+        for (Object jailObject : LoadGame.loadObject(object, "available_jail_positions", JSONArray.class)) {
+            if (!(jailObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("Active enemies does not contain enemy JSON Object");
+            }
+            LoadGame.validateAndLoadObject((JSONObject) jailObject, "object_type", "jail_position");
+            Float x = LoadGame.loadObject((JSONObject) jailObject, "x_position", Float.class);
+            Float y = LoadGame.loadObject((JSONObject) jailObject, "y_position", Float.class);
+            this.availableJailPositions.add(new Vector2(x, y));
+        }
     }
 
     public static ArrayList<Vector2> generate_jail_positions(TiledMap map) {
@@ -104,54 +156,12 @@ public class EnemyManager {
      * @param world World object
      */
     public void generate_enemy(World world) {
-
         for (int i = 0; i < 8; i++) {
             float[] position = spawn_position.get(i);
             // pic needs to be changed with enemy pic
             Enemy enemy = new Enemy(world, position[0], position[1]);
+            generateNextTarget(enemy);
             activeEnemies.add(enemy);
-
-        }
-
-    }
-
-    /**
-     * generate 8 initial targets for enemies.
-     */
-    public void initial_sabotageTarget() {
-
-        ArrayList<Integer> randomIndex = new ArrayList<>();
-        // generate random target positions
-        for (int i = 0; i < 8; i++) {
-            // generate a double  [0,1]
-            double randomD = Math.random();
-            // generate a index [0,15]
-            int index = (int) (randomD * 15);
-            // take away healing pod for initial traget, for difficulty
-            while (randomIndex.contains(index)
-                    && !Gameplay.systems.get(index).sysName.equals("headlingPod")) {
-                randomD = Math.random();
-                index = (int) (randomD * 15);
-            }
-            randomIndex.add(index);
-        }
-
-        // set targets
-        for (int i = 0; i < randomIndex.size(); i++) {
-            int index = randomIndex.get(i);
-            Systems sys = Gameplay.systems.get(index);
-
-            float endX = sys.getposition()[0];
-            float endY = sys.getposition()[1];
-
-            Enemy enemy = activeEnemies.get(i);
-            // set the target
-            enemy.set_target_system(sys);
-            // set the destination
-            ((AiMovement) enemy.movementSystem).setDestination(endX, endY);
-            ((AiMovement) enemy.movementSystem).moveToDestination();
-            // update the information hash table, aviod enemy targeting the same system
-            information.put(sys, enemy);
 
         }
 
@@ -197,9 +207,8 @@ public class EnemyManager {
                 for (Enemy enemy : arrestedEnemies) {
                     if (enemy.get_target_system() != null) {
                         // remove it from information for other enemies to target that system.
-                        if (enemy.get_target_system().is_not_sabotaged()
-                                && information.containsKey(enemy.get_target_system())) {
-                            information.remove(enemy.get_target_system());
+                        if (enemy.get_target_system().is_not_sabotaged()) {
+                            enemy.get_target_system().setTargetedByEnemy(false);
                             enemy.targetSystem = null;
                         }
                     }
@@ -224,9 +233,8 @@ public class EnemyManager {
                 // TODO If no system left to sabotage, should start attacking Auber
                 if (sys == null) {
                     // Still have systems not sabotaged, should keep generating next target
-                    if (information.size() < 17) {
-                        generateNextTarget(enemy);
-                    }
+                    generateNextTarget(enemy);
+
                 } else {
                     if (enemy.is_attacking_mode()) {
                         // Damage system
@@ -250,13 +258,18 @@ public class EnemyManager {
      */
     // Appears to find the first system not in information?, and sets that as the enemies target?
     public void generateNextTarget(Enemy enemy) {
-        for (Systems system : Gameplay.systems) {
-            if (!information.containsKey(system)) {
+        // Randomise the order systems are assigned
+        List<Integer> systemOrder =
+                IntStream.rangeClosed(0, Gameplay.systems.size() - 1).boxed().collect(Collectors.toList());
+        Collections.shuffle(systemOrder);
+        for (int index : systemOrder) {
+            Systems system = Gameplay.systems.get(index);
+            if (!system.isTargetedByEnemy() && !system.is_sabotaged()) {
                 float endx = system.getposition()[0];
                 float endy = system.getposition()[1];
                 ((AiMovement) enemy.movementSystem).setDestination(endx, endy);
                 enemy.set_target_system(system);
-                information.put(system, enemy);
+                system.setTargetedByEnemy(true);
                 ((AiMovement) enemy.movementSystem).moveToDestination();
                 // set enemy back to standBy mode before it contacts with the next target system,
                 // otherwise the system will lose HP before contact
@@ -351,11 +364,22 @@ public class EnemyManager {
     public int getArrestedCount() {
         return this.arrestedEnemies.size();
     }
+
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("activeEnemies", activeEnemies.stream().map(Entity::save).collect(Collectors.toList()));
-        state.put("jailedEnemies", jailedEnemies.stream().map(Entity::save).collect(Collectors.toList()));
-        state.put("arrestedEnemies", arrestedEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("object_type", "enemy_manager");
+        state.put("active_enemies", activeEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("arrested_enemies", arrestedEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("jailed_enemies", jailedEnemies.stream().map(Entity::save).collect(Collectors.toList()));
+        JSONArray jailPositions = new JSONArray();
+        for (Vector2 coords : this.availableJailPositions) {
+            JSONObject position = new JSONObject();
+            position.put("object_type", "jail_position");
+            position.put("x_position", coords.x);
+            position.put("y_position", coords.y);
+            jailPositions.add(position);
+        }
+        state.put("available_jail_positions", jailPositions);
         return state;
     }
 }

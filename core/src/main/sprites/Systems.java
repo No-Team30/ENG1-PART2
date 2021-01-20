@@ -9,6 +9,10 @@ public class Systems extends InteractiveTileObject {
 
     public String sysName;
     public float hp;
+    /**
+     * Whether there is an enemy targeting this system
+     */
+    private boolean isTargetedByEnemy;
 
     /**
      * Creates a new instantiated System object.
@@ -20,6 +24,7 @@ public class Systems extends InteractiveTileObject {
      */
     public Systems(World world, TiledMap map, Rectangle bounds, String name) {
         super(world, map, bounds);
+        this.isTargetedByEnemy = false;
         sysName = name;
         hp = 100;
         // use the fixture.userdata to store the system object.
@@ -124,6 +129,14 @@ public class Systems extends InteractiveTileObject {
         return body.getUserData().equals("system_not_sabotaged");
     }
 
+    public boolean isTargetedByEnemy() {
+        return this.isTargetedByEnemy;
+    }
+
+    public void setTargetedByEnemy(boolean value) {
+        this.isTargetedByEnemy = value;
+    }
+
     /**
      * Saves the system to a json object
      *
@@ -132,7 +145,6 @@ public class Systems extends InteractiveTileObject {
     public JSONObject save() {
         JSONObject state = new JSONObject();
         state.put("entity_type", "systems");
-
         state.put("sysName", this.sysName);
         state.put("hp", this.hp);
         return state;

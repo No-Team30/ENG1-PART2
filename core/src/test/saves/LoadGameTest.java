@@ -1,13 +1,14 @@
-package tools;
+package saves;
 
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import screen.LoadGame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class LoadDataTest {
+class LoadGameTest {
 
     @Test
     @DisplayName("Load Object - Exist and Correct Type")
@@ -20,7 +21,7 @@ class LoadDataTest {
             someData.put(data[0], data[1]);
         }
         for (Object[] data : testData) {
-            Object someValue = LoadData.loadObject(someData, (String) data[0], data[1].getClass());
+            Object someValue = LoadGame.loadObject(someData, (String) data[0], data[1].getClass());
             assertEquals(data[1], someValue);
         }
     }
@@ -44,7 +45,7 @@ class LoadDataTest {
         }
         for (int index = 0; index < testData.length; index++) {
             int finalIndex = index;
-            assertThrows(IllegalArgumentException.class, () -> LoadData.loadObject(someData,
+            assertThrows(IllegalArgumentException.class, () -> LoadGame.loadObject(someData,
                     (String) testData[finalIndex][0], types[finalIndex]));
         }
     }
@@ -60,7 +61,7 @@ class LoadDataTest {
         Object[][] testData = {{"Key1", "SomeStringValue"}, {"Key2", 'a'}, {"Key3", 5}, {
                 "Key4", 5.0}, {"Key5", false}};
         for (Object[] data : testData) {
-            assertThrows(IllegalArgumentException.class, () -> LoadData.loadObject(someData,
+            assertThrows(IllegalArgumentException.class, () -> LoadGame.loadObject(someData,
                     (String) data[0], data[1].getClass()));
         }
     }
@@ -77,7 +78,7 @@ class LoadDataTest {
         }
 
         for (Object[] data : testData) {
-            assertEquals(data[1], LoadData.validateAndLoadObject(someData,
+            assertEquals(data[1], LoadGame.validateAndLoadObject(someData,
                     (String) data[0], data[1]));
         }
     }
@@ -99,7 +100,7 @@ class LoadDataTest {
         for (int index = 0; index < testData.length; index++) {
             assertEquals(testData[index][1].getClass(), validationData[index].getClass());
             int finalIndex = index;
-            assertThrows(IllegalArgumentException.class, () -> LoadData.validateAndLoadObject(someData,
+            assertThrows(IllegalArgumentException.class, () -> LoadGame.validateAndLoadObject(someData,
                     (String) testData[finalIndex][0], validationData[finalIndex]));
         }
     }
@@ -123,7 +124,7 @@ class LoadDataTest {
         }
         for (int index = 0; index < testData.length; index++) {
             int finalIndex = index;
-            assertThrows(IllegalArgumentException.class, () -> LoadData.validateAndLoadObject(someData,
+            assertThrows(IllegalArgumentException.class, () -> LoadGame.validateAndLoadObject(someData,
                     (String) testData[finalIndex][0], types[finalIndex]));
         }
     }
@@ -139,7 +140,7 @@ class LoadDataTest {
         Object[][] testData = {{"Key1", "SomeStringValue"}, {"Key2", 'a'}, {"Key3", 5}, {
                 "Key4", 5.0}, {"Key5", false}};
         for (Object[] data : testData) {
-            assertThrows(IllegalArgumentException.class, () -> LoadData.validateAndLoadObject(someData,
+            assertThrows(IllegalArgumentException.class, () -> LoadGame.validateAndLoadObject(someData,
                     (String) data[0], data[1]));
         }
     }
