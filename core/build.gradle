@@ -1,6 +1,25 @@
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/main" ]
+sourceSets {
+    main {
+        java { srcDir("src/main") }
+    }
+    test {
+        java { srcDir("src/test") }
+    }
+}
 
 eclipse.project.name = appName + "-core"
+dependencies {
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntime('org.junit.jupiter:junit-jupiter')
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
