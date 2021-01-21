@@ -3,12 +3,14 @@ package characters.Entities;
 import characters.Entities.abilities.AbilityFactory;
 import characters.Entities.abilities.AbsAbility;
 import characters.Movement.AiMovement;
+import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 import sprites.Systems;
 
 public class Enemy extends Entity {
@@ -39,8 +41,20 @@ public class Enemy extends Entity {
         mode = "";
     }
 
-    public Enemy(World world, JSONObject a) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public Enemy(World world, JSONObject object) {
+        super();
+        LoadGame.validateAndLoadObject(object, "entity_type", "enemy");
+        this.mode = LoadGame.loadObject(object, "mode", String.class);
+        this.ability = AbsAbility.loadAbility(LoadGame.loadObject(object, "ability", JSONObject.class));
+        Object targetSystem = object.get("target_system");
+        if (targetSystem instanceof JSONObject) {
+            this.targetSystem = Systems.loadFromJSON(world, null, (JSONObject) targetSystem);
+        } else {
+            this.targetSystem = null;
+        }
+
+        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
+                JSONObject.class));
     }
 
     /**
@@ -61,7 +75,7 @@ public class Enemy extends Entity {
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (ability!=null){
+        if (ability != null) {
             ability.update(delta, this);
         }
     }
@@ -167,16 +181,16 @@ public class Enemy extends Entity {
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
-/*        state.put("entity_type", "enemy");
+        state.put("object_type", "entity");
+        state.put("entity_type", "enemy");
         state.put("mode", this.mode);
         state.put("ability", this.ability.save());
-        state.put("using_ability", this.usingAbility);
         state.put("targetSystem", this.targetSystem.save());
         if (this.currentContactSystem != null) {
             state.put("currentContactSystem", this.currentContactSystem.save());
         }
 
-        state.put("movement", this.movementSystem.save());*/
+        state.put("movement", this.movementSystem.save());
         return state;
     }
 

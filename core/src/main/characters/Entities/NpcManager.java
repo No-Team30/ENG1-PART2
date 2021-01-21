@@ -7,8 +7,11 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,8 +26,8 @@ public class NpcManager {
 
     public World world;
     public TiledMap map;
-    public static ArrayList<Npc> npcs = new ArrayList<>();
-    public static ArrayList<float[]> spawnPositions = new ArrayList<>();
+    public ArrayList<Npc> npcs = new ArrayList<>();
+    public ArrayList<Vector2> spawnPositions = new ArrayList<>();
 
 
     /**
@@ -42,6 +45,35 @@ public class NpcManager {
     }
 
     /**
+     * Loads a new NPC Manager from a JSON Object.
+     *
+     * @param world  The game world
+     * @param object The container for the NPC data
+     */
+    public NpcManager(World world, JSONObject object) {
+        LoadGame.validateAndLoadObject(object, "object_type", "npc_manager");
+        this.world = world;
+        this.npcs = new ArrayList<>();
+        for (Object npcObject : LoadGame.loadObject(object, "npcs", JSONArray.class)) {
+            if (!(npcObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("npc_manager does not contain npc JSON Object");
+            }
+            npcs.add(new Npc(world, (JSONObject) npcObject));
+        }
+        spawnPositions = new ArrayList<>();
+        for (Object spawnObject : LoadGame.loadObject(object, "spawn_positions", JSONArray.class)) {
+            if (!(spawnObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("npc_manager does not contain npc JSON Object");
+            }
+            JSONObject spawnJSON = (JSONObject) spawnObject;
+            LoadGame.validateAndLoadObject(spawnJSON, "object_type", "spawn_position");
+            Vector2 spawn = new Vector2(LoadGame.loadObject(spawnJSON, "x_position", Float.class),
+                    LoadGame.loadObject(spawnJSON, "y_position", Float.class));
+            spawnPositions.add(spawn);
+        }
+    }
+
+    /**
      * generate random spawn positions for npc.
      *
      * @param map The world map to generate inital position
@@ -53,7 +85,7 @@ public class NpcManager {
         while (spawnPositions.size() < 20) {
             for (MapObject object : npcSpawn.getObjects()) {
                 Rectangle point = ((RectangleMapObject) object).getRectangle();
-                float[] position = new float[]{point.x, point.y};
+                Vector2 position = new Vector2(point.x, point.y);
                 double randomPo = Math.random();
                 if (randomPo > 0.5 && !spawnPositions.contains(position)) {
                     spawnPositions.add(position);
@@ -73,16 +105,16 @@ public class NpcManager {
 
         for (int i = 0; i < spawnPositions.size(); i++) {
 
-            float[] position = spawnPositions.get(i);
+            Vector2 spawn = spawnPositions.get(i);
             // set destination for npc
             if (i == spawnPositions.size() - 1) {
                 destcount = 0;
             }
-            float[] dest = spawnPositions.get(destcount);
+            Vector2 dest = spawnPositions.get(destcount);
             destcount += 1;
             // pic for NPC needed
-            Npc npc = new Npc(world, position[0], position[1]);
-            ((AiMovement) npc.movementSystem).setDestination(dest[0], dest[1]);
+            Npc npc = new Npc(world, spawn.x, spawn.y);
+            ((AiMovement) npc.movementSystem).setDestination(dest.x, dest.y);
             ((AiMovement) npc.movementSystem).moveToDestination();
             npcs.add(npc);
 
@@ -129,14 +161,23 @@ public class NpcManager {
         Random random = new Random();
         index = random.nextInt(20);
 
-        float[] destination = spawnPositions.get(index);
-        ((AiMovement) npc.movementSystem).setDestination(destination[0], destination[1]);
+        Vector2 destination = spawnPositions.get(index);
+        ((AiMovement) npc.movementSystem).setDestination(destination);
         ((AiMovement) npc.movementSystem).moveToDestination();
     }
 
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("npc", npcs.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("object_type", "npc_manager");
+        state.put("npcs", npcs.stream().map(Entity::save).collect(Collectors.toList()));
+        state.put("spawn_positions",
+                spawnPositions.stream().map(position -> {
+                    JSONObject exportPosition = new JSONObject();
+                    exportPosition.put("object_type", "spawn_position");
+                    exportPosition.put("x_position", position.x);
+                    exportPosition.put("y_position", position.y);
+                    return exportPosition;
+                }).collect(Collectors.toList()));
         return state;
     }
 

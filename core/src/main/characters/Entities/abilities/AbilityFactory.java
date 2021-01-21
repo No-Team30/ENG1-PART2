@@ -20,7 +20,7 @@ public class AbilityFactory {
             case 4:
                 return new StopPlayerAbility();
             case 5:
-                return new HigherSystemDamagerAbility();
+                return new HigherSystemDamageAbility();
         }
         return null;
     }

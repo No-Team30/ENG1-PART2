@@ -2,6 +2,8 @@ package characters.Entities.abilities;
 
 import characters.Entities.Enemy;
 import characters.Entities.Player;
+import org.json.simple.JSONObject;
+import screen.LoadGame;
 
 /**
  * Create ability to make damage to player.
@@ -13,6 +15,20 @@ public class AttackPlayerAbility extends AbsAbility {
 
     public AttackPlayerAbility() {
         useTime = 30f;
+    }
+
+
+    public AttackPlayerAbility(JSONObject object) {
+        super(object);
+        LoadGame.validateAndLoadObject(object, "object_type", "ability");
+        LoadGame.validateAndLoadObject(object, "ability_type", "attack_player");
+    }
+
+    @Override
+    public JSONObject save() {
+        JSONObject state = super.save();
+        state.put("ability_type", "attack_player");
+        return state;
     }
 
     /**

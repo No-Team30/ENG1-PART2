@@ -52,14 +52,15 @@ public abstract class Movement {
      * @throws IllegalArgumentException if 'movement_type' parameter, does not match any known movement system
      */
     public static Movement loadMovement(Entity userData, World world, JSONObject object) {
-        switch (LoadGame.loadObject(object, "movement_type", String.class)) {
+        String movementType = LoadGame.loadObject(object, "movement_type", String.class);
+        switch (movementType) {
             case "user_movement":
                 return new UserMovement(userData, world, object);
             case "ai_movement":
                 return new AiMovement(userData, world, object);
             default:
                 throw new IllegalArgumentException("movement_type parameter, does not match any known movement " +
-                        "types");
+                        "types + (" + movementType + ")");
         }
     }
 
@@ -73,8 +74,6 @@ public abstract class Movement {
 
     /**
      * Exports all movement based information to a json object(for save games)
-     * <p>
-     * Including the entity id
      *
      * @return The movement based information
      */
@@ -86,7 +85,7 @@ public abstract class Movement {
         state.put("speed", this.speed);
         state.put("x_size", this.size.x);
         state.put("y_size", this.size.y);
-        return new JSONObject();
+        return state;
     }
 
     /**

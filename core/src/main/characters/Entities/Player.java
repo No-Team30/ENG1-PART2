@@ -70,7 +70,7 @@ public class Player extends Entity {
         this.health = LoadGame.loadObject(object, "health", Float.class);
         this.isHealing = LoadGame.loadObject(object, "is_healing", Boolean.class);
         this.isArrestPressed = LoadGame.loadObject(object, "is_arrest_pressed", Boolean.class);
-        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "enemy_manager",
+        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
                 JSONObject.class));
         this.enemyManager = new EnemyManager(world, LoadGame.loadObject(object, "enemy_manager", JSONObject.class));
     }
@@ -156,6 +156,7 @@ public class Player extends Entity {
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
+        state.put("object_type", "entity");
         state.put("entity_type", "auber");
         state.put("health", this.health);
         state.put("is_healing", this.isHealing);

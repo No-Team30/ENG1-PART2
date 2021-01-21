@@ -1,6 +1,5 @@
 package screen;
 
-import characters.Entities.EnemyManager;
 import characters.Entities.NpcManager;
 import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
@@ -25,10 +24,6 @@ import screen.actors.SystemStatusMenu;
 import screen.actors.Teleport_Menu;
 import sprites.Door;
 import sprites.Systems;
-import tools.*;
-
-import java.util.ArrayList;
-
 import tools.*;
 
 import java.nio.file.FileSystemNotFoundException;
@@ -75,13 +70,13 @@ public class Gameplay implements Screen {
 
     private final TmxMapLoader maploader;
 
-    private final TiledMap map;
+    protected final TiledMap map;
 
     private final OrthogonalTiledMapRenderer renderer;
 
     private final BackgroundRenderer backgroundRenderer;
 
-    private final World world;
+    protected final World world;
 
     private static final int[] backgroundLayers = new int[]{0, 1, 2};
 
@@ -199,9 +194,9 @@ public class Gameplay implements Screen {
         }
         JSONObject state = new JSONObject();
         //state.put("EnemyManager", this.enemyManager.save());
-        state.put("npcManager", this.npcManager.save());
+        state.put("npc_manager", this.npcManager.save());
         state.put("player", Gameplay.player.save());
-        state.put("systems", Gameplay.systems.stream().map(Systems::save).collect(Collectors.toList()));
+        state.put("systems", systems.stream().map(Systems::save).collect(Collectors.toList()));
         FileHandle handle = Gdx.files.local(LoadGame.saveName);
         handle.writeString(state.toJSONString(), false);
     }

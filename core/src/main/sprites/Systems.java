@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
+import screen.LoadGame;
 
 public class Systems extends InteractiveTileObject {
 
@@ -36,6 +37,36 @@ public class Systems extends InteractiveTileObject {
         isHealing_pod(name);
         isDoors(name);
 
+    }
+
+    Systems(World world, TiledMap map, Rectangle bounds, String name, Float hp, String userData, Boolean isTargetedByEnemy) {
+        super(world, map, bounds);
+        this.isTargetedByEnemy = isTargetedByEnemy;
+        sysName = name;
+        this.hp = hp;
+        // use the fixture.userdata to store the system object.
+        this.fixture.setUserData(this);
+        // use the body.userdata to store the saboage status. used for contact listener
+        this.fixture.getBody().setUserData(userData);
+        this.fixture.setSensor(true);
+        // check whether is a healing pod or not
+        isHealing_pod(name);
+        isDoors(name);
+    }
+
+    public static Systems loadFromJSON(World world, TiledMap map, JSONObject object) {
+        LoadGame.validateAndLoadObject(object, "object_type", "system");
+        String name = LoadGame.loadObject(object, "sys_name", String.class);
+        Float hp = LoadGame.loadObject(object, "hp", Float.class);
+        String userData = LoadGame.loadObject(object, "user_data", String.class);
+        Boolean targetedEnemy = LoadGame.loadObject(object, "is_targeted_enemy", Boolean.class);
+
+        Float x_position = LoadGame.loadObject(object, "x_position", Float.class);
+        Float y_position = LoadGame.loadObject(object, "y_position", Float.class);
+        Float width = LoadGame.loadObject(object, "width", Float.class);
+        Float height = LoadGame.loadObject(object, "height", Float.class);
+        Rectangle bounds = new Rectangle(x_position, y_position, width, height);
+        return new Systems(world, map, bounds, name, hp, userData, targetedEnemy);
     }
 
     /**
@@ -144,9 +175,15 @@ public class Systems extends InteractiveTileObject {
      */
     public JSONObject save() {
         JSONObject state = new JSONObject();
-        state.put("entity_type", "systems");
-        state.put("sysName", this.sysName);
+        state.put("object_type", "system");
+        state.put("sys_name", this.sysName);
         state.put("hp", this.hp);
+        state.put("user_data", this.body.getUserData());
+        state.put("is_targeted_enemy", this.isTargetedByEnemy);
+        state.put("x_position", this.bounds.x);
+        state.put("y_position", this.bounds.y);
+        state.put("width", this.bounds.width);
+        state.put("height", this.bounds.height);
         return state;
     }
 

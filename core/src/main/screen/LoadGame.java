@@ -1,13 +1,18 @@
 package screen;
 
+import characters.Entities.NpcManager;
+import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.team3.game.GameMain;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import sprites.Systems;
 
 import java.nio.file.FileSystemNotFoundException;
+import java.util.ArrayList;
 
 public class LoadGame extends Gameplay {
     public static final String saveName = "SaveGame.json";
@@ -24,10 +29,23 @@ public class LoadGame extends Gameplay {
         }
         try {
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(handle.readString());
+            this.npcManager = new NpcManager(this.world, LoadGame.loadObject(jsonObject, "npc_manager",
+                    JSONObject.class));
+            player = new Player(this.world, this.map, LoadGame.loadObject(jsonObject, "player",
+                    JSONObject.class));
+
+            Gameplay.systems = new ArrayList<>();
+            for (Object systemObject : LoadGame.loadObject(jsonObject, "systems", JSONArray.class)) {
+                if (!(systemObject instanceof JSONObject)) {
+                    throw new IllegalArgumentException("system does not contain npc JSON Object");
+                }
+                JSONObject systemJSON = (JSONObject) systemObject;
+                LoadGame.validateAndLoadObject(systemJSON, "object_type", "system");
+                Gameplay.systems.add(Systems.loadFromJSON(world, this.map, systemJSON));
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        JSONObject jsonObject = new JSONObject();
     }
 
     /**
@@ -44,7 +62,7 @@ public class LoadGame extends Gameplay {
         T parameter = (T) loadObject(object, parameterName, expectedValue.getClass());
         if (!parameter.equals(expectedValue)) {
             throw new IllegalArgumentException("Parameter (" + parameterName + ") does not equal (" +
-                    expectedValue + ")");
+                    expectedValue + ")\nObject: " + object);
         }
         return parameter;
     }
@@ -60,9 +78,16 @@ public class LoadGame extends Gameplay {
     public static <T> T loadObject(JSONObject object, String parameterName, Class<T> type) {
         Object parameter = object.get(parameterName);
         if (parameter == null) {
-            throw new IllegalArgumentException("Parameter (" + parameterName + ") does not exist in JSON Object");
+            throw new IllegalArgumentException("Parameter (" + parameterName + ") does not exist in JSON Object\nObject: " + object);
         }
         if (!(type.isInstance(parameter))) {
+            // As when exporting to JSON Floats can be converted to Doubles, and vide versa
+            if (type == Float.class && parameter.getClass() == Double.class) {
+                return (type.cast((((Double) parameter).floatValue())));
+            }
+            if (type == Double.class && parameter.getClass() == Float.class) {
+                return (type.cast((((Float) parameter).doubleValue())));
+            }
             throw new IllegalArgumentException("Parameter: " + parameterName + " is of incorrect type. Expected: " + type +
                     " Received: " + parameter.getClass());
         }
