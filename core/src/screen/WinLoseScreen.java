@@ -22,6 +22,8 @@ import com.team3.game.GameMain;
  */
 public class WinLoseScreen implements Screen {
 
+    private final Boolean isDemo;
+    private float elapsedTime = 0f;
     private Viewport viewport;
     private OrthographicCamera camera;
     private TextureAtlas atlas;
@@ -31,12 +33,13 @@ public class WinLoseScreen implements Screen {
 
     /**
      * Create an instantiated instance of the win or lose screen.
-
-     * @param batch spriteBatch of the game
+     *
+     * @param batch  spriteBatch of the game
      * @param status win or lose
+     * @param isDemo
      */
-    public WinLoseScreen(SpriteBatch batch, String status) {
-
+    public WinLoseScreen(SpriteBatch batch, String status, Boolean isDemo) {
+        this.isDemo = isDemo;
         this.status = status;
         atlas = new TextureAtlas("skin/hudskin/comic-ui.atlas");
         skin = new Skin(Gdx.files.internal("skin/hudskin/comic-ui.json"), atlas);
@@ -86,8 +89,8 @@ public class WinLoseScreen implements Screen {
 
         root.add(gamestatus);
         root.row();
-        //root.add(playButton).spaceBottom(10).spaceTop(10);
-        //root.row();
+        root.add(playButton).spaceBottom(10).spaceTop(10);
+        root.row();
         root.add(exitButton);
 
         stage.addActor(root);
@@ -95,6 +98,14 @@ public class WinLoseScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        this.elapsedTime += delta;
+        // Auto replay demo mode after 10 seconds
+        if (this.isDemo && this.elapsedTime >= 1) {
+            // TODO Crashes on restarting the game
+            GameMain game = (GameMain) Gdx.app.getApplicationListener();
+            game.create();
+            game.setScreen(new GameDemo(game));
+        }
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

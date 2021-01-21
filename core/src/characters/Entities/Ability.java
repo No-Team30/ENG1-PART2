@@ -1,6 +1,7 @@
-package characters.ai;
+package characters.Entities;
 
-import characters.Player;
+import characters.Movement.AiMovement;
+
 import java.util.Random;
 
 public class Ability {
@@ -14,9 +15,8 @@ public class Ability {
     public boolean inUse;
 
     /**
-    * Special Ability Enemy should have.
-    *
-    */
+     * Special Ability Enemy should have.
+     */
     public Ability() {
 
         inUse = false;
@@ -30,24 +30,24 @@ public class Ability {
 
     /**
      * Generate a random ability for enemy.
-
-     * @param enemy The enemy who should use their ability
+     *
+     * @param enemy  The enemy who should use their ability
      * @param player The player to target
      */
     public void useAbility(Enemy enemy, Player player) {
 
         switch (randomIndex) {
-          case 0:
-              slowDownPlayer(player);
-              break;
-          case 1:
-              speeding(enemy);
-              break;
-          case 2:
-              attackPlayer(player);
-              break;
-          default:
-              break;
+            case 0:
+                slowDownPlayer(player);
+                break;
+            case 1:
+                speeding(enemy);
+                break;
+            case 2:
+                attackPlayer(player);
+                break;
+            default:
+                break;
         }
 
     }
@@ -65,7 +65,7 @@ public class Ability {
 
     /**
      * cool down timer.
-
+     *
      * @param delta delta time
      * @param enemy Enemy
      */
@@ -108,27 +108,27 @@ public class Ability {
 
     /**
      * Slow down player's speed.
-
+     *
      * @param auber The player character to slow
      */
     public void slowDownPlayer(Player auber) {
 
-        float currentSpeed = auber.speed;
-        auber.speed = currentSpeed * .5f;
+        float currentSpeed = auber.movementSystem.speed;
+        auber.movementSystem.speed = currentSpeed * .5f;
 
     }
 
     /**
      * Increase speed for enemy.
-
+     *
      * @param enemy the enemy who sould use the speed ability
      */
     public void speeding(Enemy enemy) {
 
-        float currentSpeed = enemy.speed;
-        enemy.speed = currentSpeed * 3f;
+        float currentSpeed = enemy.movementSystem.speed;
+        enemy.movementSystem.speed = currentSpeed * 3f;
         if (target != null) {
-            enemy.setDest(target.b2body.getPosition().x - 400, target.b2body.getPosition().y);
+            ((AiMovement)enemy.movementSystem).setDestination(target.movementSystem.b2body.getPosition().x - 400, target.movementSystem.b2body.getPosition().y);
         }
 
     }
@@ -136,7 +136,7 @@ public class Ability {
 
     /**
      * Make damage to player.
-
+     *
      * @param player Player to attack
      */
     public void attackPlayer(Player player) {
@@ -152,9 +152,9 @@ public class Ability {
      * @param enemy Enemy
      */
     public void removeAbility(Enemy enemy) {
-        enemy.speed = 1000f;
+        enemy.movementSystem.speed = 1000f;
         if (target != null) {
-            target.speed = 60f;
+            target.movementSystem.speed = 60f;
         }
     }
 

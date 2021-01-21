@@ -1,17 +1,21 @@
 package tools;
 
-import characters.Player;
+import characters.Entities.Player;
+import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import screen.Gameplay;
 import sprites.Door;
 import sprites.Jail;
 import sprites.Systems;
 import sprites.Teleport;
+
+import java.util.ArrayList;
 
 
 /**
@@ -53,7 +57,11 @@ public class B2worldCreator {
         // Creates the player at the spawn point on the spawn layer of the map
         for (MapObject object : layers.get("spawn").getObjects()) {
             Rectangle point = ((RectangleMapObject) object).getRectangle();
-            Gameplay.player = new Player(world, point.x, point.y);
+            Vector2 jailPosition = new Vector2();
+            Rectangle jail = ((RectangleMapObject) layers.get("jail").getObjects().get(0)).getRectangle();
+            jailPosition.x = jail.x;
+            jailPosition.y = jail.y;
+            Gameplay.player = new Player(world, point.x, point.y, jailPosition);
             break;
 
         }
@@ -80,7 +88,7 @@ public class B2worldCreator {
             // adds door object to the Doors Arraylist
             Gameplay.doors.add(new Door(world, map, rect, object.getName().equals("jailDoor")));
         }
-        
+
         // create jails
         int jailNumber = 0;
         for (MapObject object : layers.get("jail").getObjects()) {
