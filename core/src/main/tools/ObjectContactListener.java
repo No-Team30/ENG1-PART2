@@ -41,6 +41,10 @@ public class ObjectContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
         // use reg to check whether the object contacted is a teleporter or not
+        if (fixB.getBody().getUserData() == null) {
+            System.out.println(fixB);
+            System.out.println("Failed");
+        }
         isTeleport = Pattern.matches(teleportPattern, fixB.getBody().getUserData().toString());
         // use reg to check whether the object contacted is a healpod
         isHealingPod = Pattern.matches(healingPattern, fixB.getBody().getUserData().toString());

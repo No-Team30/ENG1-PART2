@@ -35,6 +35,7 @@ public class Npc extends Entity {
         LoadGame.validateAndLoadObject(object, "entity_type", "npc");
         this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
                 JSONObject.class));
+        this.movementSystem.b2body.setUserData("crew" + numberOfCrew);
 
     }
 

@@ -43,6 +43,7 @@ public abstract class Movement {
                 "y_size", Float.class));
         this.speed = LoadGame.loadObject(object, "speed", Float.class);
         this.createBody();
+        this.b2body.setUserData(LoadGame.loadObject(object, "user_data", Object.class));
     }
 
     /**
@@ -85,6 +86,7 @@ public abstract class Movement {
         state.put("speed", this.speed);
         state.put("x_size", this.size.x);
         state.put("y_size", this.size.y);
+        state.put("user_data", this.b2body.getUserData());
         return state;
     }
 

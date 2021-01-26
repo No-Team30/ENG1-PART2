@@ -15,22 +15,22 @@
       "y_position": 1183.5,
       "x_position": 128.0,
       "object_type": "system",
-      "hp": 61.600586,
+      "hp": 100.0,
       "width": 32.0,
       "sys_name": "cryoPod2",
-      "is_targeted_enemy": true,
-      "user_data": "system_sabotaging",
+      "is_targeted_enemy": false,
+      "user_data": "system_not_sabotaged",
       "height": 32.0
     },
     {
       "y_position": 1215.5,
       "x_position": 224.0,
       "object_type": "system",
-      "hp": 51.40074,
+      "hp": 100.0,
       "width": 32.0,
       "sys_name": "healingPod",
-      "is_targeted_enemy": true,
-      "user_data": "system_sabotaging",
+      "is_targeted_enemy": false,
+      "user_data": "healingPod_not_sabotaged",
       "height": 32.0
     },
     {
@@ -51,7 +51,7 @@
       "hp": 100.0,
       "width": 32.0,
       "sys_name": "doors",
-      "is_targeted_enemy": false,
+      "is_targeted_enemy": true,
       "user_data": "doors_not_sabotaged",
       "height": 32.0
     },
@@ -62,7 +62,7 @@
       "hp": 100.0,
       "width": 96.0,
       "sys_name": "o2Tank",
-      "is_targeted_enemy": false,
+      "is_targeted_enemy": true,
       "user_data": "system_not_sabotaged",
       "height": 64.0
     },
@@ -70,7 +70,7 @@
       "y_position": 671.5,
       "x_position": 608.0,
       "object_type": "system",
-      "hp": 39.200928,
+      "hp": 97.000046,
       "width": 32.0,
       "sys_name": "vendingMachine",
       "is_targeted_enemy": true,
@@ -92,11 +92,11 @@
       "y_position": 575.5,
       "x_position": 384.0,
       "object_type": "system",
-      "hp": 92.70011,
+      "hp": 100.0,
       "width": 32.0,
       "sys_name": "food",
       "is_targeted_enemy": true,
-      "user_data": "system_sabotaging",
+      "user_data": "system_not_sabotaged",
       "height": 96.0
     },
     {
@@ -128,7 +128,7 @@
       "hp": 100.0,
       "width": 192.0,
       "sys_name": "podBayDoors",
-      "is_targeted_enemy": true,
+      "is_targeted_enemy": false,
       "user_data": "system_not_sabotaged",
       "height": 32.0
     },
@@ -161,7 +161,7 @@
       "hp": 100.0,
       "width": 32.0,
       "sys_name": "powerSupply",
-      "is_targeted_enemy": false,
+      "is_targeted_enemy": true,
       "user_data": "system_not_sabotaged",
       "height": 32.0
     },
@@ -194,72 +194,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 892.7744,
-          "dest_y_position": 848.0,
-          "x_position": 630.4504,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 432.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 858.35767,
-          "dest_y_position": 240.0,
-          "x_position": 569.2654,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 144.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 1211.4753,
-          "dest_y_position": 944.0,
-          "x_position": 411.48248,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 752.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 922.7432,
-          "dest_y_position": 848.0,
-          "x_position": 247.53424,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 432.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 955.50494,
+          "y_position": 1023.88293,
           "dest_y_position": 1232.0,
-          "x_position": 603.3695,
+          "x_position": 761.40765,
           "object_type": "movement",
           "movement_type": "ai_movement",
           "dest_x_position": 432.0,
+          "user_data": "crew1",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -269,117 +210,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 955.0675,
-          "dest_y_position": 1008.0,
-          "x_position": 604.43463,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 784.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 441.16733,
-          "dest_y_position": 176.0,
-          "x_position": 631.0316,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 496.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 382.53217,
-          "dest_y_position": 1200.0,
-          "x_position": 184.79721,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 784.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 287.8192,
-          "dest_y_position": 944.0,
-          "x_position": 185.25848,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 752.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 351.07983,
-          "dest_y_position": 1232.0,
-          "x_position": 183.48059,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 304.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 447.37878,
-          "dest_y_position": 944.0,
-          "x_position": 183.19653,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 304.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 460.9774,
-          "dest_y_position": 944.0,
-          "x_position": 375.40454,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 752.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 666.37335,
-          "dest_y_position": 176.0,
-          "x_position": 473.40167,
+          "y_position": 1243.4424,
+          "dest_y_position": 1168.0,
+          "x_position": 405.26825,
           "object_type": "movement",
           "movement_type": "ai_movement",
           "dest_x_position": 176.0,
+          "user_data": "crew2",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -389,27 +226,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 507.5553,
-          "dest_y_position": 1040.0,
-          "x_position": 423.01007,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 240.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 386.47577,
+          "y_position": 1200.1204,
           "dest_y_position": 1232.0,
-          "x_position": 184.60168,
+          "x_position": 181.6241,
           "object_type": "movement",
           "movement_type": "ai_movement",
           "dest_x_position": 304.0,
+          "user_data": "crew3",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -419,27 +242,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 286.25092,
-          "dest_y_position": 496.0,
-          "x_position": 662.9525,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 688.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 793.93256,
+          "y_position": 1213.4077,
           "dest_y_position": 944.0,
-          "x_position": 407.73688,
+          "x_position": 315.8829,
           "object_type": "movement",
           "movement_type": "ai_movement",
-          "dest_x_position": 304.0,
+          "dest_x_position": 592.0,
+          "user_data": "crew4",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -449,12 +258,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 1211.2882,
-          "dest_y_position": 176.0,
-          "x_position": 373.5259,
+          "y_position": 921.2683,
+          "dest_y_position": 688.0,
+          "x_position": 599.4422,
           "object_type": "movement",
           "movement_type": "ai_movement",
-          "dest_x_position": 80.0,
+          "dest_x_position": 464.0,
+          "user_data": "crew5",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -464,27 +274,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 1183.6445,
-          "dest_y_position": 1200.0,
-          "x_position": 311.05286,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 784.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 636.85614,
+          "y_position": 665.2683,
           "dest_y_position": 624.0,
-          "x_position": 407.36542,
+          "x_position": 471.4423,
           "object_type": "movement",
           "movement_type": "ai_movement",
           "dest_x_position": 432.0,
+          "user_data": "crew6",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -494,42 +290,13 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 703.23236,
-          "dest_y_position": 1008.0,
-          "x_position": 503.38666,
+          "y_position": 605.4078,
+          "dest_y_position": 304.0,
+          "x_position": 443.8829,
           "object_type": "movement",
           "movement_type": "ai_movement",
           "dest_x_position": 784.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 219.88403,
-          "dest_y_position": 1264.0,
-          "x_position": 663.2562,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 688.0,
-          "y_size": 24.0,
-          "speed": 1000.0,
-          "x_size": 24.0
-        }
-      },
-      {
-        "entity_type": "npc",
-        "object_type": "entity",
-        "movement": {
-          "y_position": 188.68358,
-          "dest_y_position": 80.0,
-          "x_position": 418.7855,
-          "object_type": "movement",
-          "movement_type": "ai_movement",
-          "dest_x_position": 144.0,
+          "user_data": "crew7",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -544,7 +311,8 @@
           "x_position": 784.0,
           "object_type": "movement",
           "movement_type": "ai_movement",
-          "dest_x_position": 80.0,
+          "dest_x_position": 496.0,
+          "user_data": "crew8",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -554,12 +322,221 @@
         "entity_type": "npc",
         "object_type": "entity",
         "movement": {
-          "y_position": 748.11505,
-          "dest_y_position": 1264.0,
-          "x_position": 567.2288,
+          "y_position": 217.26831,
+          "dest_y_position": 80.0,
+          "x_position": 151.44228,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 144.0,
+          "user_data": "crew9",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 112.12036,
+          "dest_y_position": 272.0,
+          "x_position": 149.62408,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 336.0,
+          "user_data": "crew10",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 249.26834,
+          "dest_y_position": 496.0,
+          "x_position": 343.4423,
           "object_type": "movement",
           "movement_type": "ai_movement",
           "dest_x_position": 688.0,
+          "user_data": "crew11",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 477.38937,
+          "dest_y_position": 272.0,
+          "x_position": 690.95447,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 560.0,
+          "user_data": "crew12",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 253.40775,
+          "dest_y_position": 1264.0,
+          "x_position": 571.8829,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 688.0,
+          "user_data": "crew13",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 1241.2686,
+          "dest_y_position": 848.0,
+          "x_position": 695.44214,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 432.0,
+          "user_data": "crew14",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 825.2683,
+          "dest_y_position": 720.0,
+          "x_position": 439.4423,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 592.0,
+          "user_data": "crew15",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 701.3892,
+          "dest_y_position": 400.0,
+          "x_position": 594.95447,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 208.0,
+          "user_data": "crew16",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 432.12027,
+          "dest_y_position": 208.0,
+          "x_position": 213.62408,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 688.0,
+          "user_data": "crew17",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 219.44228,
+          "dest_y_position": 176.0,
+          "x_position": 661.2683,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 496.0,
+          "user_data": "crew18",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 157.38933,
+          "dest_y_position": 176.0,
+          "x_position": 498.95447,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 272.0,
+          "user_data": "crew19",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 157.38933,
+          "dest_y_position": 176.0,
+          "x_position": 274.9544,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 80.0,
+          "user_data": "crew20",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 208.12038,
+          "dest_y_position": 496.0,
+          "x_position": 85.62407,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 240.0,
+          "user_data": "crew21",
+          "y_size": 24.0,
+          "speed": 1000.0,
+          "x_size": 24.0
+        }
+      },
+      {
+        "entity_type": "npc",
+        "object_type": "entity",
+        "movement": {
+          "y_position": 505.6242,
+          "dest_y_position": 1008.0,
+          "x_position": 268.12027,
+          "object_type": "movement",
+          "movement_type": "ai_movement",
+          "dest_x_position": 784.0,
+          "user_data": "crew22",
           "y_size": 24.0,
           "speed": 1000.0,
           "x_size": 24.0
@@ -568,16 +545,6 @@
     ],
     "object_type": "npc_manager",
     "spawn_positions": [
-      {
-        "y_position": 1264.0,
-        "x_position": 688.0,
-        "object_type": "spawn_position"
-      },
-      {
-        "y_position": 1200.0,
-        "x_position": 784.0,
-        "object_type": "spawn_position"
-      },
       {
         "y_position": 1008.0,
         "x_position": 784.0,
@@ -589,8 +556,13 @@
         "object_type": "spawn_position"
       },
       {
-        "y_position": 848.0,
-        "x_position": 432.0,
+        "y_position": 1168.0,
+        "x_position": 176.0,
+        "object_type": "spawn_position"
+      },
+      {
+        "y_position": 1232.0,
+        "x_position": 304.0,
         "object_type": "spawn_position"
       },
       {
@@ -599,18 +571,18 @@
         "object_type": "spawn_position"
       },
       {
-        "y_position": 720.0,
-        "x_position": 592.0,
+        "y_position": 688.0,
+        "x_position": 464.0,
         "object_type": "spawn_position"
       },
       {
-        "y_position": 176.0,
-        "x_position": 496.0,
+        "y_position": 624.0,
+        "x_position": 432.0,
         "object_type": "spawn_position"
       },
       {
-        "y_position": 176.0,
-        "x_position": 272.0,
+        "y_position": 304.0,
+        "x_position": 784.0,
         "object_type": "spawn_position"
       },
       {
@@ -624,26 +596,6 @@
         "object_type": "spawn_position"
       },
       {
-        "y_position": 176.0,
-        "x_position": 80.0,
-        "object_type": "spawn_position"
-      },
-      {
-        "y_position": 944.0,
-        "x_position": 752.0,
-        "object_type": "spawn_position"
-      },
-      {
-        "y_position": 176.0,
-        "x_position": 176.0,
-        "object_type": "spawn_position"
-      },
-      {
-        "y_position": 400.0,
-        "x_position": 208.0,
-        "object_type": "spawn_position"
-      },
-      {
         "y_position": 272.0,
         "x_position": 336.0,
         "object_type": "spawn_position"
@@ -654,28 +606,28 @@
         "object_type": "spawn_position"
       },
       {
-        "y_position": 944.0,
-        "x_position": 304.0,
+        "y_position": 272.0,
+        "x_position": 560.0,
         "object_type": "spawn_position"
       },
       {
-        "y_position": 1232.0,
-        "x_position": 304.0,
+        "y_position": 1264.0,
+        "x_position": 688.0,
         "object_type": "spawn_position"
       },
       {
-        "y_position": 1040.0,
-        "x_position": 240.0,
-        "object_type": "spawn_position"
-      },
-      {
-        "y_position": 624.0,
+        "y_position": 848.0,
         "x_position": 432.0,
         "object_type": "spawn_position"
       },
       {
-        "y_position": 496.0,
-        "x_position": 432.0,
+        "y_position": 720.0,
+        "x_position": 592.0,
+        "object_type": "spawn_position"
+      },
+      {
+        "y_position": 400.0,
+        "x_position": 208.0,
         "object_type": "spawn_position"
       },
       {
@@ -684,8 +636,18 @@
         "object_type": "spawn_position"
       },
       {
-        "y_position": 304.0,
-        "x_position": 784.0,
+        "y_position": 176.0,
+        "x_position": 496.0,
+        "object_type": "spawn_position"
+      },
+      {
+        "y_position": 176.0,
+        "x_position": 272.0,
+        "object_type": "spawn_position"
+      },
+      {
+        "y_position": 176.0,
+        "x_position": 80.0,
         "object_type": "spawn_position"
       },
       {
@@ -697,106 +659,7 @@
   },
   "player": {
     "enemy_manager": {
-      "arrested_enemies": [
-        {
-          "mode": "arrested",
-          "currentContactSystem": {
-            "y_position": 1215.5,
-            "x_position": 224.0,
-            "object_type": "system",
-            "hp": 51.40074,
-            "width": 32.0,
-            "sys_name": "healingPod",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 32.0
-          },
-          "entity_type": "enemy",
-          "object_type": "entity",
-          "ability": {
-            "cooldown_time": 30.0,
-            "is_ready": true,
-            "object_type": "ability",
-            "use_time": 30.0,
-            "is_disabled": true,
-            "in_use": false,
-            "use_time_timing": 0.0,
-            "ability_type": "attack_player",
-            "cooldown_time_timing": 0.0
-          },
-          "movement": {
-            "y_position": 1180.737,
-            "dest_y_position": 1184.1228,
-            "x_position": 201.91849,
-            "object_type": "movement",
-            "movement_type": "ai_movement",
-            "dest_x_position": 190.7442,
-            "y_size": 24.0,
-            "speed": 1000.0,
-            "x_size": 24.0
-          },
-          "targetSystem": {
-            "y_position": 1215.5,
-            "x_position": 224.0,
-            "object_type": "system",
-            "hp": 51.40074,
-            "width": 32.0,
-            "sys_name": "healingPod",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 32.0
-          }
-        },
-        {
-          "mode": "arrested",
-          "currentContactSystem": {
-            "y_position": 1183.5,
-            "x_position": 128.0,
-            "object_type": "system",
-            "hp": 61.600586,
-            "width": 32.0,
-            "sys_name": "cryoPod2",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 32.0
-          },
-          "entity_type": "enemy",
-          "object_type": "entity",
-          "ability": {
-            "cooldown_time": 30.0,
-            "is_ready": true,
-            "object_type": "ability",
-            "use_time": 10.0,
-            "is_disabled": true,
-            "in_use": false,
-            "use_time_timing": 0.0,
-            "ability_type": "ghost_mode",
-            "cooldown_time_timing": 0.0
-          },
-          "movement": {
-            "y_position": 1175.9958,
-            "dest_y_position": 1149.9987,
-            "x_position": 120.82672,
-            "object_type": "movement",
-            "movement_type": "ai_movement",
-            "dest_x_position": 147.20673,
-            "y_size": 24.0,
-            "speed": 1000.0,
-            "x_size": 24.0
-          },
-          "targetSystem": {
-            "y_position": 1183.5,
-            "x_position": 128.0,
-            "object_type": "system",
-            "hp": 61.600586,
-            "width": 32.0,
-            "sys_name": "cryoPod2",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 32.0
-          }
-        }
-      ],
+      "arrested_enemies": [],
       "jailed_enemies": [],
       "object_type": "enemy_manager",
       "active_enemies": [
@@ -812,16 +675,56 @@
             "is_disabled": false,
             "in_use": false,
             "use_time_timing": 0.0,
-            "ability_type": "speed_up",
+            "ability_type": "slow_player",
             "cooldown_time_timing": 0.0
           },
           "movement": {
-            "y_position": 892.796,
+            "y_position": 1296.1204,
+            "dest_y_position": 1328.0,
+            "x_position": 693.6242,
+            "object_type": "movement",
+            "movement_type": "ai_movement",
+            "dest_x_position": 752.0,
+            "user_data": "Enemy1",
+            "y_size": 24.0,
+            "speed": 1000.0,
+            "x_size": 24.0
+          },
+          "targetSystem": {
+            "y_position": 1312.0,
+            "x_position": 736.0,
+            "object_type": "system",
+            "hp": 100.0,
+            "width": 32.0,
+            "sys_name": "doors",
+            "is_targeted_enemy": true,
+            "user_data": "doors_not_sabotaged",
+            "height": 32.0
+          }
+        },
+        {
+          "mode": "",
+          "entity_type": "enemy",
+          "object_type": "entity",
+          "ability": {
+            "cooldown_time": 30.0,
+            "is_ready": true,
+            "object_type": "ability",
+            "use_time": 30.0,
+            "is_disabled": false,
+            "in_use": false,
+            "use_time_timing": 0.0,
+            "ability_type": "attack_player",
+            "cooldown_time_timing": 0.0
+          },
+          "movement": {
+            "y_position": 1177.2686,
             "dest_y_position": 671.5,
-            "x_position": 631.55786,
+            "x_position": 791.44214,
             "object_type": "movement",
             "movement_type": "ai_movement",
             "dest_x_position": 512.0,
+            "user_data": "Enemy2",
             "y_size": 24.0,
             "speed": 1000.0,
             "x_size": 24.0
@@ -844,22 +747,190 @@
           "object_type": "entity",
           "ability": {
             "cooldown_time": 30.0,
-            "is_ready": false,
+            "is_ready": true,
             "object_type": "ability",
-            "use_time": 10.0,
+            "use_time": 30.0,
             "is_disabled": false,
-            "in_use": true,
-            "use_time_timing": 3.0169299,
-            "ability_type": "ghost_mode",
+            "in_use": false,
+            "use_time_timing": 0.0,
+            "ability_type": "higher_system_damage",
             "cooldown_time_timing": 0.0
           },
           "movement": {
-            "y_position": 637.2237,
+            "y_position": 985.2684,
+            "dest_y_position": 303.5,
+            "x_position": 791.44214,
+            "object_type": "movement",
+            "movement_type": "ai_movement",
+            "dest_x_position": 816.0,
+            "user_data": "Enemy3",
+            "y_size": 24.0,
+            "speed": 1000.0,
+            "x_size": 24.0
+          },
+          "targetSystem": {
+            "y_position": 287.5,
+            "x_position": 800.0,
+            "object_type": "system",
+            "hp": 100.0,
+            "width": 32.0,
+            "sys_name": "powerSupply",
+            "is_targeted_enemy": true,
+            "user_data": "system_not_sabotaged",
+            "height": 32.0
+          }
+        },
+        {
+          "mode": "",
+          "entity_type": "enemy",
+          "object_type": "entity",
+          "ability": {
+            "cooldown_time": 30.0,
+            "is_ready": true,
+            "object_type": "ability",
+            "use_time": 30.0,
+            "is_disabled": false,
+            "in_use": false,
+            "use_time_timing": 0.0,
+            "ability_type": "higher_system_damage",
+            "cooldown_time_timing": 0.0
+          },
+          "movement": {
+            "y_position": 1243.4424,
+            "dest_y_position": 111.5,
+            "x_position": 405.26825,
+            "object_type": "movement",
+            "movement_type": "ai_movement",
+            "dest_x_position": 64.0,
+            "user_data": "Enemy4",
+            "y_size": 24.0,
+            "speed": 1000.0,
+            "x_size": 24.0
+          },
+          "targetSystem": {
+            "y_position": 95.5,
+            "x_position": 32.0,
+            "object_type": "system",
+            "hp": 100.0,
+            "width": 64.0,
+            "sys_name": "escapePod2",
+            "is_targeted_enemy": true,
+            "user_data": "system_not_sabotaged",
+            "height": 32.0
+          }
+        },
+        {
+          "mode": "",
+          "entity_type": "enemy",
+          "object_type": "entity",
+          "ability": {
+            "cooldown_time": 30.0,
+            "is_ready": true,
+            "object_type": "ability",
+            "use_time": 5.0,
+            "is_disabled": false,
+            "in_use": false,
+            "use_time_timing": 0.0,
+            "ability_type": "stop_player",
+            "cooldown_time_timing": 0.0
+          },
+          "movement": {
+            "y_position": 829.3892,
+            "dest_y_position": 1151.5,
+            "x_position": 434.9544,
+            "object_type": "movement",
+            "movement_type": "ai_movement",
+            "dest_x_position": 688.0,
+            "user_data": "Enemy5",
+            "y_size": 24.0,
+            "speed": 1000.0,
+            "x_size": 24.0
+          },
+          "targetSystem": {
+            "y_position": 1119.5,
+            "x_position": 640.0,
+            "object_type": "system",
+            "hp": 100.0,
+            "width": 96.0,
+            "sys_name": "o2Tank",
+            "is_targeted_enemy": true,
+            "user_data": "system_not_sabotaged",
+            "height": 64.0
+          }
+        },
+        {
+          "mode": "attacking_system",
+          "currentContactSystem": {
+            "y_position": 671.5,
+            "x_position": 608.0,
+            "object_type": "system",
+            "hp": 97.000046,
+            "width": 32.0,
+            "sys_name": "vendingMachine",
+            "is_targeted_enemy": true,
+            "user_data": "system_sabotaging",
+            "height": 64.0
+          },
+          "entity_type": "enemy",
+          "object_type": "entity",
+          "ability": {
+            "cooldown_time": 30.0,
+            "is_ready": true,
+            "object_type": "ability",
+            "use_time": 30.0,
+            "is_disabled": true,
+            "in_use": false,
+            "use_time_timing": 0.0,
+            "ability_type": "higher_system_damage",
+            "cooldown_time_timing": 0.0
+          },
+          "movement": {
+            "y_position": 697.2683,
+            "dest_y_position": 703.5,
+            "x_position": 599.4422,
+            "object_type": "movement",
+            "movement_type": "ai_movement",
+            "dest_x_position": 624.0,
+            "user_data": "Enemy6",
+            "y_size": 24.0,
+            "speed": 1000.0,
+            "x_size": 24.0
+          },
+          "targetSystem": {
+            "y_position": 671.5,
+            "x_position": 608.0,
+            "object_type": "system",
+            "hp": 97.000046,
+            "width": 32.0,
+            "sys_name": "vendingMachine",
+            "is_targeted_enemy": true,
+            "user_data": "system_sabotaging",
+            "height": 64.0
+          }
+        },
+        {
+          "mode": "",
+          "entity_type": "enemy",
+          "object_type": "entity",
+          "ability": {
+            "cooldown_time": 30.0,
+            "is_ready": true,
+            "object_type": "ability",
+            "use_time": 30.0,
+            "is_disabled": false,
+            "in_use": false,
+            "use_time_timing": 0.0,
+            "ability_type": "speed_up",
+            "cooldown_time_timing": 0.0
+          },
+          "movement": {
+            "y_position": 377.2683,
             "dest_y_position": 255.5,
-            "x_position": 407.36285,
+            "x_position": 215.44226,
             "object_type": "movement",
             "movement_type": "ai_movement",
             "dest_x_position": 96.0,
+            "user_data": "Enemy7",
             "y_size": 24.0,
             "speed": 1000.0,
             "x_size": 24.0
@@ -882,71 +953,23 @@
           "object_type": "entity",
           "ability": {
             "cooldown_time": 30.0,
-            "is_ready": false,
+            "is_ready": true,
             "object_type": "ability",
             "use_time": 10.0,
             "is_disabled": false,
-            "in_use": true,
-            "use_time_timing": 1.2999278,
+            "in_use": false,
+            "use_time_timing": 0.0,
             "ability_type": "ghost_mode",
             "cooldown_time_timing": 0.0
           },
           "movement": {
-            "y_position": 444.75497,
-            "dest_y_position": 47.5,
-            "x_position": 404.80444,
-            "object_type": "movement",
-            "movement_type": "ai_movement",
-            "dest_x_position": 192.0,
-            "y_size": 24.0,
-            "speed": 1000.0,
-            "x_size": 24.0
-          },
-          "targetSystem": {
-            "y_position": 31.5,
-            "x_position": 96.0,
-            "object_type": "system",
-            "hp": 100.0,
-            "width": 192.0,
-            "sys_name": "podBayDoors",
-            "is_targeted_enemy": true,
-            "user_data": "system_not_sabotaged",
-            "height": 32.0
-          }
-        },
-        {
-          "mode": "attacking_system",
-          "currentContactSystem": {
-            "y_position": 575.5,
-            "x_position": 384.0,
-            "object_type": "system",
-            "hp": 92.70011,
-            "width": 32.0,
-            "sys_name": "food",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 96.0
-          },
-          "entity_type": "enemy",
-          "object_type": "entity",
-          "ability": {
-            "cooldown_time": 30.0,
-            "is_ready": true,
-            "object_type": "ability",
-            "use_time": 30.0,
-            "is_disabled": true,
-            "in_use": false,
-            "use_time_timing": 0.0,
-            "ability_type": "attack_player",
-            "cooldown_time_timing": 0.0
-          },
-          "movement": {
-            "y_position": 605.39484,
+            "y_position": 223.88289,
             "dest_y_position": 623.5,
-            "x_position": 376.72354,
+            "x_position": 665.4077,
             "object_type": "movement",
             "movement_type": "ai_movement",
             "dest_x_position": 400.0,
+            "user_data": "Enemy8",
             "y_size": 24.0,
             "speed": 1000.0,
             "x_size": 24.0
@@ -955,99 +978,12 @@
             "y_position": 575.5,
             "x_position": 384.0,
             "object_type": "system",
-            "hp": 92.70011,
+            "hp": 100.0,
             "width": 32.0,
             "sys_name": "food",
             "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 96.0
-          }
-        },
-        {
-          "mode": "attacking_system",
-          "currentContactSystem": {
-            "y_position": 671.5,
-            "x_position": 608.0,
-            "object_type": "system",
-            "hp": 39.200928,
-            "width": 32.0,
-            "sys_name": "vendingMachine",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 64.0
-          },
-          "entity_type": "enemy",
-          "object_type": "entity",
-          "ability": {
-            "cooldown_time": 30.0,
-            "is_ready": true,
-            "object_type": "ability",
-            "use_time": 30.0,
-            "is_disabled": true,
-            "in_use": false,
-            "use_time_timing": 0.0,
-            "ability_type": "speed_up",
-            "cooldown_time_timing": 0.0
-          },
-          "movement": {
-            "y_position": 668.83374,
-            "dest_y_position": 703.5,
-            "x_position": 599.05237,
-            "object_type": "movement",
-            "movement_type": "ai_movement",
-            "dest_x_position": 624.0,
-            "y_size": 24.0,
-            "speed": 1000.0,
-            "x_size": 24.0
-          },
-          "targetSystem": {
-            "y_position": 671.5,
-            "x_position": 608.0,
-            "object_type": "system",
-            "hp": 39.200928,
-            "width": 32.0,
-            "sys_name": "vendingMachine",
-            "is_targeted_enemy": true,
-            "user_data": "system_sabotaging",
-            "height": 64.0
-          }
-        },
-        {
-          "mode": "",
-          "entity_type": "enemy",
-          "object_type": "entity",
-          "ability": {
-            "cooldown_time": 30.0,
-            "is_ready": true,
-            "object_type": "ability",
-            "use_time": 30.0,
-            "is_disabled": false,
-            "in_use": false,
-            "use_time_timing": 0.0,
-            "ability_type": "slow_player",
-            "cooldown_time_timing": 0.0
-          },
-          "movement": {
-            "y_position": 475.03867,
-            "dest_y_position": 111.5,
-            "x_position": 280.6597,
-            "object_type": "movement",
-            "movement_type": "ai_movement",
-            "dest_x_position": 64.0,
-            "y_size": 24.0,
-            "speed": 1000.0,
-            "x_size": 24.0
-          },
-          "targetSystem": {
-            "y_position": 95.5,
-            "x_position": 32.0,
-            "object_type": "system",
-            "hp": 100.0,
-            "width": 64.0,
-            "sys_name": "escapePod2",
-            "is_targeted_enemy": true,
             "user_data": "system_not_sabotaged",
-            "height": 32.0
+            "height": 96.0
           }
         }
       ],
@@ -1094,16 +1030,17 @@
         }
       ]
     },
-    "is_arrest_pressed": true,
+    "is_arrest_pressed": false,
     "entity_type": "auber",
     "object_type": "entity",
     "health": 100.0,
     "is_healing": false,
     "movement": {
-      "y_position": 1149.9963,
-      "x_position": 144.77211,
+      "y_position": 737.98505,
+      "x_position": 512.0,
       "object_type": "movement",
       "movement_type": "user_movement",
+      "user_data": "auber",
       "y_size": 24.0,
       "speed": 1000.0,
       "x_size": 24.0

@@ -2,11 +2,14 @@ package screen.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
+import sprites.Systems;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
-import sprites.Systems;
 
 
 public class SystemStatusMenu extends VerticalGroup {
@@ -49,7 +52,7 @@ public class SystemStatusMenu extends VerticalGroup {
      * @param systems Arraylist of System objects
      */
     public void generate_systemLabels(ArrayList<Systems> systems) {
-
+        System.out.println("Generasting lables  for: " + systems);
         for (Systems system : systems) {
             Label sys = new Label(system.getSystemName(), myskin, "alt");
             sys.setColor(Color.WHITE);
