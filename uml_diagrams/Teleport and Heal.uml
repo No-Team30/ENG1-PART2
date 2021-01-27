@@ -1,0 +1,6 @@
+@startuml
+actor User
+User -> Keyboard: presses left key
+Keyboard -> Game: input recieved;
+Game -> Auber: moves left
+@enduml

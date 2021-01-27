@@ -1,0 +1,12 @@
+@startuml
+state "Ready To Heal" as ReadyToHeal
+state "Max Health" as MaxHealth
+
+[*] --> Idle
+Idle --> Idle
+Idle --> ReadyToHeal: Auber contacts healing pod
+ReadyToHeal --> Healing: Auber HP is less than max health
+Healing --> Healing: Auber HP is less than max health
+Healing --> MaxHealth: Auber HP is at max health
+MaxHealth --> [*]
+@enduml
