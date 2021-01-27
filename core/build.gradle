@@ -4,16 +4,16 @@ sourceCompatibility = 1.8
 sourceSets {
     main {
         java { srcDir("src/main") }
+        resources{srcDir("assets/")}
     }
     test {
         java { srcDir("src/test") }
+        resources{srcDir("assets/")}
     }
 }
-
 eclipse.project.name = appName + "-core"
 dependencies {
     testImplementation(platform('org.junit:junit-bom:5.7.0'))
-
     testImplementation('org.junit.jupiter:junit-jupiter')
     testRuntime('org.junit.jupiter:junit-jupiter')
 }

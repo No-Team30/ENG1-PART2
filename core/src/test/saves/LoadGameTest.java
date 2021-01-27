@@ -26,6 +26,7 @@ class LoadGameTest {
 
 /*    private Gameplay gameplay;
     public LoadGameTest(){
+        GdxTestRunner runner =new GdxTestRunner()
         GameMain game =new GameMain();
         Application test=new HeadlessApplication(game);
         //gameplay=new Gameplay(game);
@@ -172,6 +173,7 @@ class LoadGameTest {
     @DisplayName("Checks map exists")
     void TestMap() {
         TmxMapLoader maploader = new TmxMapLoader();
+        assertNotNull(maploader);
         // load the tiled map
         TiledMap map = maploader.load("Map/Map.tmx");
         Map.create(map);
@@ -183,7 +185,7 @@ class LoadGameTest {
     void TestSpawn() {
         TmxMapLoader maploader = new TmxMapLoader();
         // load the tiled map
-        TiledMap map = maploader.load("Map/Map.tmx");
+        TiledMap map = maploader.load("/home/sam/Projects/ENG1-PART2/core/src/test/saves/Map.tmx");
         Map.create(map);
         assertNotNull(map);
         MapLayer layers = map.getLayers().get("spawn");
@@ -198,22 +200,45 @@ class LoadGameTest {
         JSONObject savedPlayer = player.save();
         Player loadedPlayer = new Player(buildWorld(), buildMap(), savedPlayer);
         assertNull(Gameplay.player);
+        assertTrue(MovementSystemsEqual(player.movementSystem, loadedPlayer.movementSystem), "Movement systems are not equal");
+        assertEquals(player.health, loadedPlayer.health, "Player health isn't loaded properly");
+        assertEquals(player.isHealing, loadedPlayer.isHealing, "Player isHealing isn't loaded properly");
+        assertEquals(player.isArrestPressed(), loadedPlayer.isArrestPressed(), "Arrest key isn't loaded properly");
     }
 
     Boolean MovementSystemsEqual(Movement a, Movement b) {
-        return !(a instanceof AiMovement) || !(b instanceof AiMovement);
-    }
-
-    Boolean AiMovementSystemsEqual(AiMovement a, AiMovement b) {
         if (!a.getPosition().equals(b.getPosition())) {
             return false;
         }
-        if (!a.)
-            return true;
+        if (a.speed != b.speed) {
+            return false;
+        }
+        if (!a.b2body.getUserData().equals(b.b2body.getUserData())) {
+            return false;
+        }
+        if (!a.getSize().equals(b.getSize())) {
+            return false;
+        }
+        if (a instanceof AiMovement) {
+            if (!(b instanceof AiMovement)) {
+                return false;
+            } else return (AiMovementSystemsEqual((AiMovement) a, (AiMovement) b));
+        }
+        if (a instanceof UserMovement) {
+            if (!(b instanceof UserMovement)) {
+                return false;
+            } else return !UserMovementSystemsEqual((UserMovement) a, (UserMovement) b);
+        }
+        return true;
     }
 
-    Boolean AiMovementSystemsEqual(UserMovement a, UserMovement b) {
-        return !(a instanceof AiMovement) || !(b instanceof AiMovement);
+    Boolean AiMovementSystemsEqual(AiMovement a, AiMovement b) {
+        return a.destX == b.destX && a.destY == b.destY;
+    }
+
+    Boolean UserMovementSystemsEqual(UserMovement a, UserMovement b) {
+        // If any additional parameters are added to UserMovement, they should be added here
+        return true;
     }
 
     World buildWorld() {

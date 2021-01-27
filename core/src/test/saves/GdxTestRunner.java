@@ -20,6 +20,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -37,13 +39,18 @@ public class GdxTestRunner extends BlockJUnit4ClassRunner implements Application
     public GdxTestRunner(Class<?> klass) throws InitializationError {
         super(klass);
         HeadlessApplicationConfiguration conf = new HeadlessApplicationConfiguration();
-
+        System.out.println("Stastring");
         new HeadlessApplication(this, conf);
         Gdx.gl = mock(GL20.class);
     }
 
     @Override
     public void create() {
+        System.out.println("Waht fucm,");
+        TmxMapLoader maploader = new TmxMapLoader();
+        // load the tiled map
+        TiledMap map = maploader.load("Map/Map.tmx");
+        //Map.create(map);
     }
 
     @Override

@@ -13,6 +13,11 @@ public abstract class Movement {
     public float speed;
 
     private Vector2 position;
+
+    public Vector2 getSize() {
+        return size;
+    }
+
     protected Vector2 size;
 
 
