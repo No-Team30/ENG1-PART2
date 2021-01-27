@@ -2,5 +2,6 @@
 actor User
 User -> Keyboard: presses left key
 Keyboard -> Game: input recieved;
-Game -> Auber: moves left
+Game -> UserMovement:Parse Input
+UserMovement -> Auber: moves left
 @enduml
