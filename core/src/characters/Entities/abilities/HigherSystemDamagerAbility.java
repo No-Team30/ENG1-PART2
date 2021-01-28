@@ -4,11 +4,10 @@ import characters.Entities.Enemy;
 import characters.Entities.Player;
 
 /**
- * Create ability to damage system with higher.
+ * Create ability to damage system with higher damage.
  */
 public class HigherSystemDamagerAbility extends AbsAbility {
-    private float systemDamage = 0;
-
+    private double damageConstant = 2;
     /**
      * Enemy to attack systems with higher damage .
      *
@@ -17,8 +16,7 @@ public class HigherSystemDamagerAbility extends AbsAbility {
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
-        systemDamage = enemy.systemDamage;
-        enemy.systemDamage = systemDamage * 2;
+        enemy.systemDamage *= damageConstant;
     }
 
     /**
@@ -28,6 +26,6 @@ public class HigherSystemDamagerAbility extends AbsAbility {
      */
     @Override
     public void removeAbility(Enemy enemy) {
-        enemy.systemDamage = systemDamage * 0.5f;
+        enemy.systemDamage /= damageConstant;
     }
 }

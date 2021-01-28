@@ -18,7 +18,7 @@ public class AttackPlayerAbility extends AbsAbility {
     /**
      * Determining whether to use attack ability.
      *
-     * @param player the player who sould be attacked by enemy
+     * @param player the player who would be attacked by enemy
      * @param enemy  enemy who can attack the player
      */
     @Override
@@ -31,7 +31,7 @@ public class AttackPlayerAbility extends AbsAbility {
     /**
      * Update the usage time of attacking ability
      *
-     * @param delta delta time to update the use time
+     * @param delta the time elapsed since this function was last called
      * @param enemy  enemy who can attack the player
      */
     @Override
@@ -55,11 +55,13 @@ public class AttackPlayerAbility extends AbsAbility {
         if (isDisabled) return;
         if (deltaChanged <= 0) return;
 
-        float currentHp = target.health;
         float damage = DAMAGE * deltaChanged;
-
-        target.health = currentHp - damage;
+        target.health -= damage;
         deltaChanged = 0;
+    }
+
+    @Override
+    public void removeAbility(Enemy enemy) {
     }
 
 }

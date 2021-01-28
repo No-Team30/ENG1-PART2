@@ -8,7 +8,7 @@ import characters.Movement.AiMovement;
  * Create ability to increase speed for enemy.
  */
 public class SpeedingUpAbility extends AbsAbility {
-    float originalSpeed;
+    private double speedConstant = 3;
     /**
      * enemy use ability to increase his speed
      *
@@ -18,8 +18,7 @@ public class SpeedingUpAbility extends AbsAbility {
     @Override
     public void useAbility(Enemy enemy, Player player) {
 
-        originalSpeed = enemy.movementSystem.speed;
-        enemy.movementSystem.speed = originalSpeed * 3f;
+        enemy.movementSystem.speed *= speedConstant;
     }
     /**
      * enemy speed bonus removed
@@ -28,6 +27,7 @@ public class SpeedingUpAbility extends AbsAbility {
      */
     @Override
     public void removeAbility(Enemy enemy) {
-        enemy.movementSystem.speed = originalSpeed;
+        enemy.movementSystem.speed /= speedConstant;
     }
 }
+

@@ -47,7 +47,7 @@ public abstract class AbsAbility {
     }
 
     /**
-     * provoke ability status.
+     *  checking ability whether cooldown and in provoke ability status or not and use ability
      */
     public void provokeAbility(Enemy enemy, Player player) {
         if (isReady && !isDisabled) {
@@ -67,9 +67,10 @@ public abstract class AbsAbility {
     public abstract void useAbility(Enemy enemy, Player player);
 
     /**
-     * update cooldown time and use time
+     * Updates the duration the ability has been active for,
+     * and removes it if it has expired. Will also update the cooldown time.
      *
-     * @param delta delta time in the game world
+     * @param delta the time elapsed since this function was last called
      * @param enemy Enemy
      */
     public void update(float delta, Enemy enemy) {
@@ -95,7 +96,5 @@ public abstract class AbsAbility {
      *
      * @param enemy Enemy
      */
-    public void removeAbility(Enemy enemy) {
-
-    }
+    public abstract void removeAbility(Enemy enemy);
 }

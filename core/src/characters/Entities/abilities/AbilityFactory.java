@@ -3,9 +3,20 @@ package characters.Entities.abilities;
 import java.util.Random;
 
 /**
- * To create new abilities for enemies with random method
+ *  the factory to create different abilities
  */
 public class AbilityFactory {
+
+    /**
+     * To create new abilities for enemies with random method,could be one of:
+     * @see AttackPlayerAbility
+     * @see GhostModeAbility
+     * @see SlowDownPlayerAbility
+     * @see SpeedingUpAbility
+     * @see StopPlayerAbility
+     * @see HigherSystemDamagerAbility
+     *
+     */
     public static AbsAbility randomAbility() {
         Random random = new Random();
         switch (random.nextInt(6)) {

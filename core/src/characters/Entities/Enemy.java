@@ -2,6 +2,8 @@ package characters.Entities;
 
 import characters.Entities.abilities.AbilityFactory;
 import characters.Entities.abilities.AbsAbility;
+import characters.Entities.abilities.GhostModeAbility;
+import characters.Entities.abilities.SpeedingUpAbility;
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -9,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import sprites.Systems;
+
+import java.util.Random;
 
 public class Enemy extends Entity {
 
@@ -34,31 +38,21 @@ public class Enemy extends Entity {
         this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("Enemy" + numberOfEnemies);
         ability = AbilityFactory.randomAbility();
-        createEdgeShape();
         mode = "";
     }
 
-    /**
-     * Create an EdgeShape for enemy to sense auber for special ability.
-     *
-     */
-    public void createEdgeShape() {
-
-        EdgeShape sensoringArea = new EdgeShape();
-        sensoringArea.set(new Vector2(64, 32), new Vector2(64, -32));
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = sensoringArea;
-        fixtureDef.isSensor = true;
-        // store ability in sensor userdata to retrieve it in contactListener
-        this.movementSystem.b2body.createFixture(fixtureDef).setUserData(this);
-
-    }
-
+    Random random = new Random();
     @Override
     public void update(float delta) {
         super.update(delta);
         if (ability!=null){
             ability.update(delta, this);
+        }
+        // random use ability
+        if(ability.isReady
+                && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
+                && random.nextInt(1000) < 5){
+            ability.provokeAbility(this,null);
         }
     }
 

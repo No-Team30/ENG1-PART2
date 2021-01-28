@@ -294,7 +294,7 @@ public class EnemyManager {
 
     /**
      * Returns the active enemy that is closest to the given position
-     * Could be null, if there are no active enemies
+     * Could be null and throw NullPointerException, if there are no active enemies
      *
      * @param position The position of the enemy
      */
