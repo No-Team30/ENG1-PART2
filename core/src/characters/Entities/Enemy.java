@@ -42,6 +42,17 @@ public class Enemy extends Entity {
     }
 
     Random random = new Random();
+    public  static double randomUseAbilityRate = 0.5;
+
+
+    /**
+     * 1.call super's update
+     * 2.if there is a ability for enemy, call the function update of ability to update,
+     * used to support the continuous release,class ability, for example: attackPlayerAbility
+     * 3.If ability is ready,
+     * the ability is used randomly with a probability of randomUseAbilityRate per second.
+     * @param delta The time in seconds since the last update
+     */
     @Override
     public void update(float delta) {
         super.update(delta);
@@ -51,7 +62,7 @@ public class Enemy extends Entity {
         // random use ability
         if(ability.isReady
                 && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
-                && random.nextInt(1000) < 5){
+                && random.nextDouble()  < randomUseAbilityRate * delta ){
             ability.provokeAbility(this,null);
         }
     }

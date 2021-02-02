@@ -17,9 +17,10 @@ public class SlowDownPlayerAbility extends AbsAbility {
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
-        target = player;
-        float currentSpeed = target.movementSystem.speed;
-        target.movementSystem.speed = currentSpeed * SLOWDOWN;
+        if (target != null) {
+            target = player;
+            target.movementSystem.speed *= SLOWDOWN;
+        }
     }
 
     /**

@@ -9,7 +9,12 @@ import characters.Entities.Player;
 public class AttackPlayerAbility extends AbsAbility {
     public final float DAMAGE = 10f;
     public boolean contact = false;
-    protected float deltaChanged = 0f;
+    /**
+     * This time is used to scale the damage applied to Auber,
+     * by the time elapsed since damage was last applied.
+     * Ensuring that the total damage applied。
+     */
+    protected float  timeElapsedSinceDamageApplied = 0f;
 
     public AttackPlayerAbility() {
         useTime = 30f;
@@ -39,7 +44,7 @@ public class AttackPlayerAbility extends AbsAbility {
         super.update(delta, enemy);
         if (isDisabled) return;
         if (contact && useTime > 0) {
-            this.deltaChanged += delta;
+            this. timeElapsedSinceDamageApplied += delta;
             useAbility(enemy, target);
         }
     }
@@ -53,11 +58,10 @@ public class AttackPlayerAbility extends AbsAbility {
     public void useAbility(Enemy enemy, Player player) {
         target = player;
         if (isDisabled) return;
-        if (deltaChanged <= 0) return;
+        if ( timeElapsedSinceDamageApplied <= 0) return;
 
-        float damage = DAMAGE * deltaChanged;
-        target.health -= damage;
-        deltaChanged = 0;
+        target.health -= DAMAGE *  timeElapsedSinceDamageApplied;
+        timeElapsedSinceDamageApplied = 0;
     }
 
     @Override
