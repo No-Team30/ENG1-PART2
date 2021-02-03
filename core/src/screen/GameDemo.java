@@ -13,6 +13,6 @@ public class GameDemo extends Gameplay {
         Gameplay.player.movementSystem = new AiMovement(Gameplay.player, (UserMovement) Gameplay.player.movementSystem);
         Gameplay.player.movementSystem.b2body.setUserData("auber_demo");
         Gameplay.player.movementSystem.speed = 10000;
-        Gameplay.player.arrestPressed = true;
+        Gameplay.player.setArrestPressed(true);
     }
 }

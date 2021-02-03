@@ -1,7 +1,6 @@
 package tools;
 
 import characters.Entities.Player;
-import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -14,8 +13,6 @@ import sprites.Door;
 import sprites.Jail;
 import sprites.Systems;
 import sprites.Teleport;
-
-import java.util.ArrayList;
 
 
 /**
@@ -53,6 +50,13 @@ public class B2worldCreator {
             body.createFixture(fdef).setUserData("walls");
             body.setUserData("walls");
         }
+        // create systems <- this is interactive tiled map object
+        for (MapObject object : layers.get("systems").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // create a new instantiated System object
+            // stor system object in the systems Arraylist
+            Gameplay.systems.add(new Systems(world, map, rect, object.getName()));
+        }
 
         // Creates the player at the spawn point on the spawn layer of the map
         for (MapObject object : layers.get("spawn").getObjects()) {
@@ -61,11 +65,9 @@ public class B2worldCreator {
             Rectangle jail = ((RectangleMapObject) layers.get("jail").getObjects().get(0)).getRectangle();
             jailPosition.x = jail.x;
             jailPosition.y = jail.y;
-            Gameplay.player = new Player(world, point.x, point.y, jailPosition);
+            Gameplay.player = new Player(world, point.x, point.y, map);
             break;
-
         }
-
         //create teleport <- this is interactive tiled map object
         for (MapObject object : layers.get("teleports").getObjects()) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
@@ -73,13 +75,6 @@ public class B2worldCreator {
             new Teleport(world, map, rect, object.getName());
         }
 
-        // create systems <- this is interactive tiled map object
-        for (MapObject object : layers.get("systems").getObjects()) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            // create a new instantiated System object
-            // stor system object in the systems Arraylist
-            Gameplay.systems.add(new Systems(world, map, rect, object.getName()));
-        }
 
         // create doors <- this is interactive tiled map object
         for (MapObject object : layers.get("doors").getObjects()) {

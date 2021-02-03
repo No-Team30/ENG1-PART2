@@ -10,7 +10,7 @@ public abstract class Movement {
     public Body b2body;
     public float speed = 60f;
 
-    public Vector2 position;
+    private Vector2 position;
     protected Vector2 size;
 
 
@@ -68,4 +68,7 @@ public abstract class Movement {
         this.position.y = y;
     }
 
+    public Vector2 getPosition() {
+        return this.position;
+    }
 }

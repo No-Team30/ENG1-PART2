@@ -1,8 +1,7 @@
 package screen;
 
-import characters.Entities.Player;
-import characters.Entities.EnemyManager;
 import characters.Entities.NpcManager;
+import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -12,13 +11,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
-
-import java.util.ArrayList;
-
 import map.Map;
 import screen.actors.ArrestedHeader;
 import screen.actors.HealthBar;
@@ -26,19 +22,17 @@ import screen.actors.SystemStatusMenu;
 import screen.actors.Teleport_Menu;
 import sprites.Door;
 import sprites.Systems;
-import tools.B2worldCreator;
-import tools.BackgroundRenderer;
-import tools.CharacterRenderer;
-import tools.DoorControll;
-import tools.LightControl;
-import tools.ObjectContactListener;
-import tools.TeleportProcess;
+import tools.*;
+
+import java.util.ArrayList;
 
 
 /**
  * Main gameplay object, holds all game data.
  */
 public class Gameplay implements Screen {
+
+    public static final int TILE_SIZE = 64;
 
     private final GameMain game;
 
@@ -51,8 +45,6 @@ public class Gameplay implements Screen {
      * Whether the game is in demo mode
      */
     private final Boolean isDemo;
-
-    public EnemyManager enemyManager;
 
     public NpcManager npcManager;
 
@@ -140,8 +132,6 @@ public class Gameplay implements Screen {
         systemStatusMenu.generate_systemLabels(systems);
         // create arrest_status header
         arrestedHeader = hud.arrestedHeader;
-        // create enemy_manager instance
-        enemyManager = new EnemyManager(world, map, systems);
         // create Npc_manager instance
         npcManager = new NpcManager(world, map);
 
@@ -162,7 +152,7 @@ public class Gameplay implements Screen {
         healthBar.updateHp(player);
         lightControl.light_update(systems);
         DoorControll.updateDoors(systems, delta);
-        enemyManager.update_enemy(delta);
+        player.enemyManager.update(delta, player.getPosition());
         npcManager.updateNpc(delta);
         systemStatusMenu.update_status(systems);
         arrestedHeader.update_Arrested(player);
@@ -225,8 +215,8 @@ public class Gameplay implements Screen {
         game.getBatch().begin();
         // render player
         player.draw(game.getBatch());
-        // render Infiltrators
-        enemyManager.render_enemy(game.getBatch());
+        // render Enemies
+        player.enemyManager.render(game.getBatch());
         // render NPC
         npcManager.renderNpc(game.getBatch());
         // end the batch
@@ -285,7 +275,7 @@ public class Gameplay implements Screen {
      */
     public void checkGameState() {
 
-        if (player.arrestedCount >= 2) {
+        if (player.enemyManager.hasPlayerWon()) {
             game.setScreen(new WinLoseScreen(game.getBatch(), "YOU WIN!!", this.isDemo));
         }
         int sabotagedCount = 0;
