@@ -9,7 +9,7 @@ import screen.LoadGame;
  * Create ability to increase speed for enemy.
  */
 public class SpeedingUpAbility extends AbsAbility {
-    float originalSpeed;
+    private double speedConstant = 3;
 
     public SpeedingUpAbility() {
         super();
@@ -32,13 +32,12 @@ public class SpeedingUpAbility extends AbsAbility {
      * enemy use ability to increase his speed
      *
      * @param player player
-     * @param enemy  enemy who speed becomes faster
+     * @param enemy enemy who speed becomes faster
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
 
-        originalSpeed = enemy.movementSystem.speed;
-        enemy.movementSystem.speed = originalSpeed * 3f;
+        enemy.movementSystem.speed *= speedConstant;
     }
 
     /**
@@ -48,6 +47,7 @@ public class SpeedingUpAbility extends AbsAbility {
      */
     @Override
     public void removeAbility(Enemy enemy) {
-        enemy.movementSystem.speed = originalSpeed;
+        enemy.movementSystem.speed /= speedConstant;
     }
 }
+

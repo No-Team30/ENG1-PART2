@@ -6,10 +6,10 @@ import org.json.simple.JSONObject;
 import screen.LoadGame;
 
 /**
- * Create ability to damage system with higher.
+ * Create ability to damage system with higher damage.
  */
-public class HigherSystemDamageAbility extends AbsAbility {
-    private float systemDamage = 0;
+public class HigherSystemDamagerAbility extends AbsAbility {
+    private double damageConstant = 2;
 
     public HigherSystemDamageAbility() {
         super();
@@ -27,17 +27,15 @@ public class HigherSystemDamageAbility extends AbsAbility {
         state.put("ability_type", "higher_system_damage");
         return state;
     }
-
     /**
      * Enemy to attack systems with higher damage .
      *
      * @param player player
-     * @param enemy  the enemy who can sabotage system with higher damage.
+     * @param enemy the enemy who can sabotage system with higher damage.
      */
     @Override
     public void useAbility(Enemy enemy, Player player) {
-        systemDamage = enemy.systemDamage;
-        enemy.systemDamage = systemDamage * 2;
+        enemy.systemDamage *= damageConstant;
     }
 
     /**
@@ -47,6 +45,6 @@ public class HigherSystemDamageAbility extends AbsAbility {
      */
     @Override
     public void removeAbility(Enemy enemy) {
-        enemy.systemDamage = systemDamage * 0.5f;
+        enemy.systemDamage /= damageConstant;
     }
 }

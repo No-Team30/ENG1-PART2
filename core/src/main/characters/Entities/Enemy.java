@@ -2,6 +2,8 @@ package characters.Entities;
 
 import characters.Entities.abilities.AbilityFactory;
 import characters.Entities.abilities.AbsAbility;
+import characters.Entities.abilities.GhostModeAbility;
+import characters.Entities.abilities.SpeedingUpAbility;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
 import screen.LoadGame;
 import sprites.Systems;
+
+import java.util.Random;
 
 public class Enemy extends Entity {
 
@@ -37,9 +41,12 @@ public class Enemy extends Entity {
         this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("Enemy" + numberOfEnemies);
         ability = AbilityFactory.randomAbility();
-        createEdgeShape();
         mode = "";
     }
+
+    Random random = new Random();
+    public  static double randomUseAbilityRate = 0.5;
+
 
     public Enemy(World world, JSONObject object) {
         super();
@@ -58,25 +65,24 @@ public class Enemy extends Entity {
     }
 
     /**
-     * Create an EdgeShape for enemy to sense auber for special ability.
+     * 1.call super's update
+     * 2.if there is a ability for enemy, call the function update of ability to update,
+     * used to support the continuous release,class ability, for example: attackPlayerAbility
+     * 3.If ability is ready,
+     * the ability is used randomly with a probability of randomUseAbilityRate per second.
+     * @param delta The time in seconds since the last update
      */
-    public void createEdgeShape() {
-
-        EdgeShape sensoringArea = new EdgeShape();
-        sensoringArea.set(new Vector2(64, 32), new Vector2(64, -32));
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = sensoringArea;
-        fixtureDef.isSensor = true;
-        // store ability in sensor userdata to retrieve it in contactListener
-        this.movementSystem.b2body.createFixture(fixtureDef).setUserData(this);
-
-    }
-
     @Override
     public void update(float delta) {
         super.update(delta);
         if (ability != null) {
             ability.update(delta, this);
+        }
+        // random use ability
+        if(ability.isReady
+                && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
+                && random.nextDouble()  < randomUseAbilityRate * delta ){
+            ability.provokeAbility(this,null);
         }
     }
 

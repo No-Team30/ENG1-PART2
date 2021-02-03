@@ -11,7 +11,12 @@ import screen.LoadGame;
 public class AttackPlayerAbility extends AbsAbility {
     public final float DAMAGE = 10f;
     public boolean contact = false;
-    protected float deltaChanged = 0f;
+    /**
+     * This time is used to scale the damage applied to Auber,
+     * by the time elapsed since damage was last applied.
+     * Ensuring that the total damage applied。
+     */
+    protected float  timeElapsedSinceDamageApplied = 0f;
 
     public AttackPlayerAbility() {
         useTime = 30f;
@@ -34,7 +39,7 @@ public class AttackPlayerAbility extends AbsAbility {
     /**
      * Determining whether to use attack ability.
      *
-     * @param player the player who sould be attacked by enemy
+     * @param player the player who would be attacked by enemy
      * @param enemy  enemy who can attack the player
      */
     @Override
@@ -47,7 +52,7 @@ public class AttackPlayerAbility extends AbsAbility {
     /**
      * Update the usage time of attacking ability
      *
-     * @param delta delta time to update the use time
+     * @param delta the time elapsed since this function was last called
      * @param enemy  enemy who can attack the player
      */
     @Override
@@ -55,7 +60,7 @@ public class AttackPlayerAbility extends AbsAbility {
         super.update(delta, enemy);
         if (isDisabled) return;
         if (contact && useTime > 0) {
-            this.deltaChanged += delta;
+            this. timeElapsedSinceDamageApplied += delta;
             useAbility(enemy, target);
         }
     }
@@ -69,13 +74,14 @@ public class AttackPlayerAbility extends AbsAbility {
     public void useAbility(Enemy enemy, Player player) {
         target = player;
         if (isDisabled) return;
-        if (deltaChanged <= 0) return;
+        if ( timeElapsedSinceDamageApplied <= 0) return;
 
-        float currentHp = target.health;
-        float damage = DAMAGE * deltaChanged;
+        target.health -= DAMAGE *  timeElapsedSinceDamageApplied;
+        timeElapsedSinceDamageApplied = 0;
+    }
 
-        target.health = currentHp - damage;
-        deltaChanged = 0;
+    @Override
+    public void removeAbility(Enemy enemy) {
     }
 
 }
