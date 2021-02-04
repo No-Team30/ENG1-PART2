@@ -8,7 +8,7 @@ import screen.LoadGame;
 /**
  * Create ability to damage system with higher damage.
  */
-public class HigherSystemDamagerAbility extends AbsAbility {
+public class HigherSystemDamageAbility extends AbsAbility {
     private double damageConstant = 2;
 
     public HigherSystemDamageAbility() {
