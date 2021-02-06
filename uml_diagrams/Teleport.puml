@@ -1,0 +1,17 @@
+@startuml
+state "Ready To Teleport" as ReadyToTeleport
+state "Selecting Room" as SelectingRoom
+state "In Room" as InRoom
+
+[*] --> Idle
+Idle --> Idle
+Idle --> ReadyToTeleport: Auber contacts teleport
+ReadyToTeleport --> SelectingRoom: User clicks the teleport menu
+ReadyToTeleport --> Idle: Auber not in contact with teleport
+ReadyToTeleport --> ReadyToTeleport
+SelectingRoom --> Teleporting: User clicks on a room
+SelectingRoom --> Idle: Auber not in contact with teleport 
+SelectingRoom --> SelectingRoom
+Teleporting --> InRoom: Auber is teleported to room
+InRoom --> ReadyToTeleport
+@enduml

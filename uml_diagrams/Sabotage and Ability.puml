@@ -1,0 +1,11 @@
+@startuml
+actor User
+alt Enemy is near a system
+    loop until system is fully sabotaged
+        Enemy -> System: sabotage
+    end
+    System -> User: sabotage notification
+else Enemy is near User
+    Enemy -> User: uses ability
+end
+@enduml
