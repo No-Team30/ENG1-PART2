@@ -1,17 +1,13 @@
 package characters.Entities.abilities;
 
 import characters.Entities.Enemy;
-import characters.Entities.Player;
 import org.json.simple.JSONObject;
 import screen.LoadGame;
 
 /**
  * Create ability to damage system with higher damage.
  */
-public class HigherSystemDamagerAbility extends AbilityBase<Enemy, Enemy> {
-    private double damageConstant = 2;
-
-public class HigherSystemDamageAbility extends AbsAbility {
+public class HigherSystemDamageAbility extends AbilityBase<Enemy, Enemy> {
     private final double damageConstant = 2;
 
     public HigherSystemDamageAbility() {

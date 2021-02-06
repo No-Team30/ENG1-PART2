@@ -1,9 +1,6 @@
 package characters.Entities;
 
-import characters.Entities.abilities.AbilityFactory;
-import characters.Entities.abilities.GhostModeAbility;
-import characters.Entities.abilities.IAbility;
-import characters.Entities.abilities.SpeedingUpAbility;
+import characters.Entities.abilities.*;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -52,7 +49,7 @@ public class Enemy extends Entity {
         super();
         LoadGame.validateAndLoadObject(object, "entity_type", "enemy");
         this.mode = LoadGame.loadObject(object, "mode", String.class);
-        this.ability = AbsAbility.loadAbility(LoadGame.loadObject(object, "ability", JSONObject.class));
+        this.ability = AbilityBase.loadAbility(LoadGame.loadObject(object, "ability", JSONObject.class));
         Object targetSystem = object.get("target_system");
         if (targetSystem instanceof JSONObject) {
             Systems loadedSystem = Systems.loadFromJSON(world, null, (JSONObject) targetSystem);

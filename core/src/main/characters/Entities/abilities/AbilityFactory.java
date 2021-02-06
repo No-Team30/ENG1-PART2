@@ -17,7 +17,7 @@ public class AbilityFactory {
      * @see SlowDownTargetAbility
      * @see SpeedingUpAbility
      * @see StopTargetAbility
-     * @see HigherSystemDamagerAbility
+     * @see HigherSystemDamageAbility
      */
     public static AbilityBase<? extends Entity, ? extends Entity> randomAbility() {
         Random random = new Random();
@@ -33,7 +33,7 @@ public class AbilityFactory {
             case 4:
                 return new StopTargetAbility();
             default:
-                return new HigherSystemDamagerAbility();
+                return new HigherSystemDamageAbility();
         }
 
     }

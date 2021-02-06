@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class AbilityFooter extends Label {
 
-    private String ability = "";
-    private String abilityName = "";
+    private final String ability = "";
+    private final String abilityName = "";
 
     /**
      * Label to show the number of arrested enemies.

@@ -3,14 +3,7 @@ package characters.Entities.abilities;
 import characters.Entities.Enemy;
 import characters.Entities.Entity;
 import characters.Entities.Player;
-import com.badlogic.gdx.math.Vector2;
 import screen.Gameplay;
-import tools.CharacterRenderer;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MarkInfiltratorAbility extends AbilityBase<Player, Entity> {
     public float markDistance = 1000000000;

@@ -1,52 +1,44 @@
 package characters.Entities.abilities;
 
-import characters.Entities.Enemy;
-import characters.Entities.Player;
+import characters.Entities.Entity;
 import org.json.simple.JSONObject;
 import screen.LoadGame;
 
 /**
  * Create ability to stop player moving.
  */
-public class StopPlayerAbility extends AbsAbility {
-    public StopPlayerAbility() {
+public class StopTargetAbility extends AbilityBase<Entity, Entity> {
+    public StopTargetAbility() {
         useTime = 5;
     }
 
-    public StopPlayerAbility(JSONObject object) {
+    public StopTargetAbility(JSONObject object) {
         super(object);
         LoadGame.validateAndLoadObject(object, "object_type", "ability");
-        LoadGame.validateAndLoadObject(object, "ability_type", "stop_player");
+        LoadGame.validateAndLoadObject(object, "ability_type", "stop_target");
     }
 
     @Override
     public JSONObject save() {
         JSONObject state = super.save();
-        state.put("ability_type", "stop_player");
+        state.put("ability_type", "stop_target");
         return state;
     }
 
     /**
-     * enemy use ability to let player stop moving
-     *
-     * @param player player who can not move
-     * @param enemy  enemy
+     * begin to use ability,Entity use ability to let target stop moving
      */
     @Override
-    public void useAbility(Enemy enemy, Player player) {
-        target = player;
+    public void beginUseAbility() {
         target.cantMove = true;
         target.cantMoveTime += useTime;
-
     }
 
     /**
-     * player can start to move when can't move time is over
-     *
-     * @param enemy enemy
+     * target can start to move when can't move time is over
      */
     @Override
-    public void removeAbility(Enemy enemy) {
+    public void endUseAbility() {
         target.cantMoveTime -= useTime;
         if (target.cantMoveTime <= 0) {
             target.cantMoveTime = 0;

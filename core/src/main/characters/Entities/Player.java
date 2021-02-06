@@ -1,6 +1,9 @@
 package characters.Entities;
 
-import characters.Entities.abilities.*;
+import characters.Entities.abilities.GlobalSlowDownAbility;
+import characters.Entities.abilities.IAbility;
+import characters.Entities.abilities.MarkInfiltratorAbility;
+import characters.Entities.abilities.ReinforcedSystemsAbility;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
 import characters.Movement.UserMovement;
@@ -61,8 +64,8 @@ public class Player extends Entity {
         this.enemyManager = new EnemyManager(world, map);
         this.movementSystem.b2body.setUserData("auber");
         this.health = 100f;
-        this.ishealing = false;
-        arrestPressed = false;
+        this.isHealing = false;
+        isArrestPressed = false;
         creatAbilities();
     }
 

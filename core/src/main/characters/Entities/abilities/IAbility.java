@@ -1,6 +1,7 @@
 package characters.Entities.abilities;
 
 import characters.Entities.Entity;
+import org.json.simple.JSONObject;
 
 /**
  * the ability can be host by player and enemy
@@ -98,4 +99,11 @@ public interface IAbility<THost extends Entity, TTarget extends Entity> {
      * @param delta delta time in the game world
      */
     void update(float delta);
+
+    /**
+     * Exports the ability to a JSON Object
+     *
+     * @return The json object
+     */
+    JSONObject save();
 }
