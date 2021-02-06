@@ -6,26 +6,22 @@ import characters.Entities.Player;
 /**
  * Create ability to damage system with higher damage.
  */
-public class HigherSystemDamagerAbility extends AbsAbility {
+public class HigherSystemDamagerAbility extends AbilityBase<Enemy, Enemy> {
     private double damageConstant = 2;
+
     /**
-     * Enemy to attack systems with higher damage .
-     *
-     * @param player player
-     * @param enemy the enemy who can sabotage system with higher damage.
+     * begin to use ability,Enemy to attack systems with higher damage .
      */
     @Override
-    public void useAbility(Enemy enemy, Player player) {
-        enemy.systemDamage *= damageConstant;
+    public void beginUseAbility() {
+        host.systemDamage *= damageConstant;
     }
 
     /**
      * Enemy's damage back to normal
-     *
-     * @param enemy the enemy whose high damage becomes to normal
      */
     @Override
-    public void removeAbility(Enemy enemy) {
-        enemy.systemDamage /= damageConstant;
+    public void endUseAbility() {
+        host.systemDamage /= damageConstant;
     }
 }

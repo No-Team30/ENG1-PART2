@@ -1,11 +1,15 @@
 package characters.Entities;
 
+import characters.Entities.abilities.*;
 import characters.Movement.AiMovement;
 import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
 import tools.CharacterRenderer;
 import tools.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static screen.Gameplay.TILE_SIZE;
 
@@ -16,6 +20,11 @@ import static screen.Gameplay.TILE_SIZE;
 public class Player extends Entity {
     public final EnemyManager enemyManager;
     public boolean ishealing;
+    private List<IAbility> abilities;
+    public GlobalSlowDownAbility globalSlowDownAbility;
+    public ReinforcedSystemsAbility reinforcedSystemsAbility;
+    public MarkInfiltratorAbility markInfiltratorAbility;
+
     /**
      * The time since the target for the AI movement system was last updated
      */
@@ -53,7 +62,27 @@ public class Player extends Entity {
         this.health = 100f;
         this.ishealing = false;
         arrestPressed = false;
+        creatAbilities();
+    }
 
+    private void creatAbilities() {
+
+
+        globalSlowDownAbility = new GlobalSlowDownAbility();
+        globalSlowDownAbility.setHost(this);
+        globalSlowDownAbility.setTarget(this);
+
+        reinforcedSystemsAbility = new ReinforcedSystemsAbility();
+        reinforcedSystemsAbility.setHost(this);
+
+
+        markInfiltratorAbility = new MarkInfiltratorAbility();
+        markInfiltratorAbility.setHost(this);
+
+        abilities = new ArrayList<>();
+        abilities.add(globalSlowDownAbility);
+        abilities.add(reinforcedSystemsAbility);
+        abilities.add(markInfiltratorAbility);
     }
 
     /**
@@ -119,9 +148,24 @@ public class Player extends Entity {
         if (Controller.isArrestPressed()) {
             arrestPressed = true;
         }
+        if (Controller.isAbility1Pressed()) {
+            globalSlowDownAbility.setTarget(this);
+            globalSlowDownAbility.tryUseAbility();
+        }
+        if (Controller.isAbility2Pressed()) {
+            reinforcedSystemsAbility.setTarget(this);
+            reinforcedSystemsAbility.tryUseAbility();
+        }
+        if (Controller.isAbility3Pressed()) {
+            markInfiltratorAbility.setTarget(this);
+            markInfiltratorAbility.tryUseAbility();
+        }
         // should be called each loop of rendering
         healing(delta);
 
+        for (IAbility ability : abilities) {
+            ability.update(delta);
+        }
     }
 
 

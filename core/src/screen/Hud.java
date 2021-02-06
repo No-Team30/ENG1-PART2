@@ -7,12 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import screen.actors.ArrestedHeader;
-import screen.actors.HealthBar;
-import screen.actors.PauseMenu;
-import screen.actors.SettingsMenu;
-import screen.actors.SystemStatusMenu;
-import screen.actors.Teleport_Menu;
+import screen.actors.*;
 
 /**
  * Hud to display information.
@@ -31,10 +26,11 @@ public class Hud {
     public SettingsMenu settingsMenu;
 
     public ArrestedHeader arrestedHeader;
+    public AbilityFooter abilityFooter;
 
     /**
      * Create a new instantiated hud.
-
+     *
      * @param spriteBatch the GamePlay batch
      */
     public Hud(final SpriteBatch spriteBatch) {
@@ -81,11 +77,17 @@ public class Hud {
         stage.addActor(pauseMenu.pauseWindow());
         stage.addActor(settingsMenu.settingsWindow());
 
+        Table abilityTable = new Table();
+        abilityTable.bottom();
+        abilityFooter = new AbilityFooter();
+        abilityTable.add(abilityFooter).padLeft(40).width(Value.percentWidth(.9f, abilityTable));
+
+        stage.addActor(abilityTable);
     }
 
     /**
      * Resize the viewport.
-
+     *
      * @param width  in pixles
      * @param height in pixles
      */

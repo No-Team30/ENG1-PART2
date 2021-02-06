@@ -1,9 +1,6 @@
 package characters.Entities;
 
-import characters.Entities.abilities.AbilityFactory;
-import characters.Entities.abilities.AbsAbility;
-import characters.Entities.abilities.GhostModeAbility;
-import characters.Entities.abilities.SpeedingUpAbility;
+import characters.Entities.abilities.*;
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -20,7 +17,8 @@ public class Enemy extends Entity {
     public Systems currentContactSystem; // used for contact listener
     //TODO WHY NO ENUM?
     public String mode;
-    public AbsAbility ability;
+    public boolean beMarked;
+    public IAbility ability;
     public static int numberOfEnemies;
     public float systemDamage = .1f;
     public boolean ghostMode = false;
@@ -38,11 +36,12 @@ public class Enemy extends Entity {
         this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("Enemy" + numberOfEnemies);
         ability = AbilityFactory.randomAbility();
+        ability.setHost(this);
         mode = "";
     }
 
     Random random = new Random();
-    public  static double randomUseAbilityRate = 0.5;
+    public static double randomUseAbilityRate = 0.5;
 
 
     /**
@@ -56,16 +55,23 @@ public class Enemy extends Entity {
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (ability!=null){
-            ability.update(delta, this);
+        if (ability != null) {
+            ability.update(delta);
         }
         // random use ability
-        if(ability.isReady
+        if (ability.isReady()
                 && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
-                && random.nextDouble()  < randomUseAbilityRate * delta ){
-            ability.provokeAbility(this,null);
+                && random.nextDouble() < randomUseAbilityRate * delta) {
+            ability.tryUseAbility();
         }
+        if (beMarked && flashDelta < -0.2f) {
+            flashDelta = 0.3f;
+        }
+
+        flashDelta -= delta;
     }
+
+    private float flashDelta = 0;
 
     /**
      * draw the enemy who have ghost mode ability
@@ -74,9 +80,14 @@ public class Enemy extends Entity {
      */
     @Override
     public void draw(SpriteBatch batch) {
-        if (ghostMode) {
+        if (beMarked && flashDelta > 0) {
             return;
         }
+
+        if (ghostMode && !beMarked) {
+            return;
+        }
+
         super.draw(batch);
     }
 
@@ -104,6 +115,9 @@ public class Enemy extends Entity {
      * @param system system object
      */
     public void sabotage(Systems system) {
+        //if player use reinforced systems ability,systems will not be sabotaged
+        if (system.reinforced) return;
+
         if (system.hp > 0) {
             system.hp -= systemDamage;
         } else {
@@ -160,7 +174,6 @@ public class Enemy extends Entity {
     public boolean isArrested() {
         return mode.equals("arrested");
     }
-
 
 
 }

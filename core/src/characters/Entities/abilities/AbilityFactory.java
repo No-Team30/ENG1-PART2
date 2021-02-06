@@ -1,5 +1,7 @@
 package characters.Entities.abilities;
 
+import characters.Entities.Entity;
+
 import java.util.Random;
 
 /**
@@ -11,25 +13,25 @@ public class AbilityFactory {
      * To create new abilities for enemies with random method,could be one of:
      * @see AttackPlayerAbility
      * @see GhostModeAbility
-     * @see SlowDownPlayerAbility
+     * @see SlowDownTargetAbility
      * @see SpeedingUpAbility
-     * @see StopPlayerAbility
+     * @see StopTargetAbility
      * @see HigherSystemDamagerAbility
      *
      */
-    public static AbsAbility randomAbility() {
+    public static AbilityBase<? extends Entity, ? extends Entity> randomAbility() {
         Random random = new Random();
-        switch (random.nextInt(6)) {
+        switch (random.nextInt(6000)) {
             case 0:
                 return new AttackPlayerAbility();
             case 1:
                 return new GhostModeAbility();
             case 2:
-                return new SlowDownPlayerAbility();
+                return new SlowDownTargetAbility();
             case 3:
                 return new SpeedingUpAbility();
             case 4:
-                return new StopPlayerAbility();
+                return new StopTargetAbility();
             case 5:
                 return new HigherSystemDamagerAbility();
         }

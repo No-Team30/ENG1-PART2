@@ -27,6 +27,9 @@ public abstract class Controller {
     }
 
     public static boolean isArrestPressed() { return Gdx.input.isKeyPressed(Input.Keys.A); }
+    public static boolean isAbility1Pressed() { return Gdx.input.isKeyPressed(Input.Keys.S); }
+    public static boolean isAbility2Pressed() { return Gdx.input.isKeyPressed(Input.Keys.D); }
+    public static boolean isAbility3Pressed() { return Gdx.input.isKeyPressed(Input.Keys.F); }
 
     /**
      * sets the controls of the user
@@ -36,10 +39,10 @@ public abstract class Controller {
      * @param r right key string
      */
     public static void changeControls(String u, String d, String l, String r) {
-        int newUp = Input.Keys.valueOf(u.toString()); 
-        int newDown = Input.Keys.valueOf(d.toString()); 
-        int newLeft = Input.Keys.valueOf(l.toString()); 
-        int newRight = Input.Keys.valueOf(r.toString()); 
+        int newUp = Input.Keys.valueOf(u.toString());
+        int newDown = Input.Keys.valueOf(d.toString());
+        int newLeft = Input.Keys.valueOf(l.toString());
+        int newRight = Input.Keys.valueOf(r.toString());
 
         if (newUp != -1) {
             up = newUp;
@@ -53,9 +56,9 @@ public abstract class Controller {
         if (newRight != -1) {
             right = newRight;
         }
-        
-    } 
-    
+
+    }
+
     public static String up() {
         return Input.Keys.toString(up);
     }

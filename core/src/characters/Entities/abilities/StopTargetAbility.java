@@ -1,38 +1,32 @@
 package characters.Entities.abilities;
 
 import characters.Entities.Enemy;
+import characters.Entities.Entity;
 import characters.Entities.Player;
 import characters.Movement.AiMovement;
 
 /**
  * Create ability to stop player moving.
  */
-public class StopPlayerAbility extends AbsAbility {
-    public StopPlayerAbility() {
+public class StopTargetAbility extends AbilityBase<Entity, Entity> {
+    public StopTargetAbility() {
         useTime = 5;
     }
 
     /**
-     * enemy use ability to let player stop moving
-     *
-     * @param player player who can not move
-     * @param enemy  enemy
+     * begin to use ability,Entity use ability to let target stop moving
      */
     @Override
-    public void useAbility(Enemy enemy, Player player) {
-        target = player;
+    public void beginUseAbility() {
         target.cantMove = true;
         target.cantMoveTime += useTime;
-
     }
 
     /**
-     * player can start to move when can't move time is over
-     *
-     * @param enemy  enemy
+     * target can start to move when can't move time is over
      */
     @Override
-    public void removeAbility(Enemy enemy) {
+    public void endUseAbility() {
         target.cantMoveTime -= useTime;
         if (target.cantMoveTime <= 0) {
             target.cantMoveTime = 0;

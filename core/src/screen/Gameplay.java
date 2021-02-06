@@ -16,10 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
 import map.Map;
-import screen.actors.ArrestedHeader;
-import screen.actors.HealthBar;
-import screen.actors.SystemStatusMenu;
-import screen.actors.Teleport_Menu;
+import screen.actors.*;
 import sprites.Door;
 import sprites.Systems;
 import tools.*;
@@ -63,6 +60,8 @@ public class Gameplay implements Screen {
     public SystemStatusMenu systemStatusMenu;
 
     public ArrestedHeader arrestedHeader;
+
+    public AbilityFooter abilityFooter;
 
     private final TmxMapLoader maploader;
 
@@ -132,6 +131,7 @@ public class Gameplay implements Screen {
         systemStatusMenu.generate_systemLabels(systems);
         // create arrest_status header
         arrestedHeader = hud.arrestedHeader;
+        abilityFooter = hud.abilityFooter;
         // create Npc_manager instance
         npcManager = new NpcManager(world, map);
 
@@ -156,6 +156,7 @@ public class Gameplay implements Screen {
         npcManager.updateNpc(delta);
         systemStatusMenu.update_status(systems);
         arrestedHeader.update_Arrested(player);
+        abilityFooter.update_abilities(player);
         // if escape is pressed pause the game
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();

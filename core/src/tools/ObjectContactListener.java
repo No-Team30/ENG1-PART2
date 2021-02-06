@@ -83,7 +83,7 @@ public class ObjectContactListener implements ContactListener {
         if (enemy != null) {
             if (player != null) {
                 enemy.ability.setTarget(player);
-                enemy.ability.provokeAbility(enemy, player);
+                enemy.ability.tryUseAbility();
                 if (player.isArrestPressed()) {
                     player.enemyManager.arrestEnemy(enemy);
                 }

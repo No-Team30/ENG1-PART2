@@ -1,35 +1,30 @@
 package characters.Entities.abilities;
 
 import characters.Entities.Enemy;
+import characters.Entities.Entity;
 import characters.Entities.Player;
 
 /**
  * Create ability to slow down player's speed.
  */
-public class SlowDownPlayerAbility extends AbsAbility {
+public class SlowDownTargetAbility extends AbilityBase<Entity, Entity> {
     public static final float SLOWDOWN = 0.5f;
 
     /**
-     * enemy use ability to let player speed become slower
-     *
-     * @param player player's speed become slower
-     * @param enemy enemy
+     * begin to use ability
      */
     @Override
-    public void useAbility(Enemy enemy, Player player) {
+    public void beginUseAbility() {
         if (target != null) {
-            target = player;
             target.movementSystem.speed *= SLOWDOWN;
         }
     }
 
     /**
-     * player's speed back to normal
-     *
-     * @param enemy enemy
+     * end to use ability when ability useTiming is form n to 0;you can remove the ability effect here.
      */
     @Override
-    public void removeAbility(Enemy enemy) {
+    public void endUseAbility() {
         if (target != null) {
             target.movementSystem.speed /= SLOWDOWN;
         }
