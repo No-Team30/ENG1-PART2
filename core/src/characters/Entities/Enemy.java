@@ -1,11 +1,11 @@
 package characters.Entities;
 
-import characters.Entities.abilities.*;
+import characters.Entities.abilities.AbilityFactory;
+import characters.Entities.abilities.GhostModeAbility;
+import characters.Entities.abilities.IAbility;
+import characters.Entities.abilities.SpeedingUpAbility;
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import sprites.Systems;
 
@@ -145,7 +145,7 @@ public class Enemy extends Entity {
      *
      * @return true if it is in attacking mode
      */
-    public boolean is_attcking_mode() {
+    public boolean is_attacking_mode() {
         return mode.equals("attacking_system");
     }
 

@@ -15,7 +15,6 @@ import sprites.Systems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static screen.Gameplay.TILE_SIZE;
 
@@ -230,7 +229,7 @@ public class EnemyManager {
                         generateNextTarget(enemy);
                     }
                 } else {
-                    if (enemy.is_attcking_mode()) {
+                    if (enemy.is_attacking_mode()) {
                         // Damage system
                         enemy.sabotage(sys);
                     }
