@@ -7,9 +7,6 @@ import characters.Entities.abilities.SpeedingUpAbility;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
 import screen.LoadGame;
@@ -45,7 +42,7 @@ public class Enemy extends Entity {
     }
 
     Random random = new Random();
-    public  static double randomUseAbilityRate = 0.5;
+    public static double randomUseAbilityRate = 0.5;
 
 
     public Enemy(World world, JSONObject object) {
@@ -70,6 +67,7 @@ public class Enemy extends Entity {
      * used to support the continuous release,class ability, for example: attackPlayerAbility
      * 3.If ability is ready,
      * the ability is used randomly with a probability of randomUseAbilityRate per second.
+     *
      * @param delta The time in seconds since the last update
      */
     @Override
@@ -79,10 +77,10 @@ public class Enemy extends Entity {
             ability.update(delta, this);
         }
         // random use ability
-        if(ability.isReady
+        if (ability.isReady
                 && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
-                && random.nextDouble()  < randomUseAbilityRate * delta ){
-            ability.provokeAbility(this,null);
+                && random.nextDouble() < randomUseAbilityRate * delta) {
+            ability.provokeAbility(this, null);
         }
     }
 
@@ -191,7 +189,11 @@ public class Enemy extends Entity {
         state.put("entity_type", "enemy");
         state.put("mode", this.mode);
         state.put("ability", this.ability.save());
-        state.put("targetSystem", this.targetSystem.save());
+        if (this.targetSystem == null) {
+            state.put("targetSystem", "");
+        } else {
+            state.put("targetSystem", this.targetSystem.save());
+        }
         if (this.currentContactSystem != null) {
             state.put("currentContactSystem", this.currentContactSystem.save());
         }
@@ -200,4 +202,11 @@ public class Enemy extends Entity {
         return state;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AiMovement) {
+            return super.equals(o);
+        }
+        return true;
+    }
 }

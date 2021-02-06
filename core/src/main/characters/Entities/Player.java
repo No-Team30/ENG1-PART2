@@ -166,4 +166,26 @@ public class Player extends Entity {
 
         return state;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof Player)) {
+            return false;
+        }
+        Player other = (Player) o;
+        if (!((Entity) this).equals(o)) {
+            return false;
+        }
+        if (this.movementSystem.equals(other.movementSystem)) {
+            return false;
+        }
+        if (this.health != other.health) {
+            return false;
+        }
+        if (this.isHealing != other.isHealing) {
+            return false;
+        }
+        return this.isArrestPressed() == other.isArrestPressed();
+    }
 }

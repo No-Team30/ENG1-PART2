@@ -1,25 +1,22 @@
 package saves;
 
+import characters.Entities.Enemy;
 import characters.Entities.Player;
-import characters.Movement.AiMovement;
-import characters.Movement.Movement;
-import characters.Movement.UserMovement;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import map.Map;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import screen.Gameplay;
 import screen.LoadGame;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static saves.HelperTestFunctions.*;
 
 @RunWith(GdxTestRunner.class)
 class LoadGameTest {
@@ -170,6 +167,20 @@ class LoadGameTest {
 
 
     @Test
+    @DisplayName("Null target System")
+    void testNullTargetSystem() {
+        World world = buildWorld();
+        TiledMap map = buildMap();
+        MapLayer layers = map.getLayers().get("spawn");
+        Rectangle point = ((RectangleMapObject) layers.getObjects().get(0)).getRectangle();
+        Enemy enemy = new Enemy(world, point.x, point.y);
+        enemy.targetSystem = null;
+        JSONObject save = enemy.save();
+        Enemy loaded = new Enemy(world, save);
+        assertNull(loaded.targetSystem);
+    }
+
+    @Test
     @DisplayName("Checks map exists")
     void TestMap() {
         TmxMapLoader maploader = new TmxMapLoader();
@@ -199,64 +210,7 @@ class LoadGameTest {
         Player player = buildPlayer();
         JSONObject savedPlayer = player.save();
         Player loadedPlayer = new Player(buildWorld(), buildMap(), savedPlayer);
-        assertNull(Gameplay.player);
-        assertTrue(MovementSystemsEqual(player.movementSystem, loadedPlayer.movementSystem), "Movement systems are not equal");
-        assertEquals(player.health, loadedPlayer.health, "Player health isn't loaded properly");
-        assertEquals(player.isHealing, loadedPlayer.isHealing, "Player isHealing isn't loaded properly");
-        assertEquals(player.isArrestPressed(), loadedPlayer.isArrestPressed(), "Arrest key isn't loaded properly");
+        assertEquals(player, loadedPlayer);
     }
 
-    Boolean MovementSystemsEqual(Movement a, Movement b) {
-        if (!a.getPosition().equals(b.getPosition())) {
-            return false;
-        }
-        if (a.speed != b.speed) {
-            return false;
-        }
-        if (!a.b2body.getUserData().equals(b.b2body.getUserData())) {
-            return false;
-        }
-        if (!a.getSize().equals(b.getSize())) {
-            return false;
-        }
-        if (a instanceof AiMovement) {
-            if (!(b instanceof AiMovement)) {
-                return false;
-            } else return (AiMovementSystemsEqual((AiMovement) a, (AiMovement) b));
-        }
-        if (a instanceof UserMovement) {
-            if (!(b instanceof UserMovement)) {
-                return false;
-            } else return !UserMovementSystemsEqual((UserMovement) a, (UserMovement) b);
-        }
-        return true;
-    }
-
-    Boolean AiMovementSystemsEqual(AiMovement a, AiMovement b) {
-        return a.destX == b.destX && a.destY == b.destY;
-    }
-
-    Boolean UserMovementSystemsEqual(UserMovement a, UserMovement b) {
-        // If any additional parameters are added to UserMovement, they should be added here
-        return true;
-    }
-
-    World buildWorld() {
-        return new World(new Vector2(0, 0), true);
-    }
-
-    TiledMap buildMap() {
-        TmxMapLoader maploader = new TmxMapLoader();
-        // load the tiled map
-        TiledMap map = maploader.load("Map/Map.tmx");
-        Map.create(map);
-        return map;
-    }
-
-    Player buildPlayer() {
-        World world = buildWorld();
-        TiledMap map = buildMap();
-        Rectangle spawn = ((RectangleMapObject) map.getLayers().get("spawn").getObjects().get(0)).getRectangle();
-        return new Player(world, spawn.x, spawn.y, map);
-    }
 }

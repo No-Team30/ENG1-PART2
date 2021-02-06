@@ -54,6 +54,7 @@ public abstract class Entity {
     public void draw(SpriteBatch batch) {
         renderer.render(this.movementSystem.getPosition(), batch);
     }
+
     /**
      * @return The Vector2 coordinate of the entity
      */
@@ -82,4 +83,9 @@ public abstract class Entity {
     }
 
     public abstract JSONObject save();
+
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

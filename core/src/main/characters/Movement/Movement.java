@@ -128,4 +128,22 @@ public abstract class Movement {
     public Vector2 getPosition() {
         return this.position;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Movement)) {
+            return false;
+        }
+        Movement other = (Movement) o;
+        if (!this.getPosition().equals(other.getPosition())) {
+            return false;
+        }
+        if (this.speed != other.speed) {
+            return false;
+        }
+        if (!this.b2body.getUserData().equals(other.b2body.getUserData())) {
+            return false;
+        }
+        return this.getSize().equals(other.getSize());
+    }
 }

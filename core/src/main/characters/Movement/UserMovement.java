@@ -65,4 +65,9 @@ public class UserMovement extends Movement {
         state.put("movement_type", "user_movement");
         return state;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof UserMovement;
+    }
 }

@@ -284,5 +284,17 @@ public class AiMovement extends Movement {
         state.put("dest_y_position", this.destY);
         return state;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof AiMovement)) {
+            return false;
+        }
+        AiMovement otherAi = (AiMovement) other;
+        if (this.destX == otherAi.destX && this.destY == otherAi.destY) {
+            return false;
+        }
+        return ((Movement) this).equals(other);
+    }
 }
 
