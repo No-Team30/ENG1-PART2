@@ -9,6 +9,7 @@ import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
+import screen.Gameplay;
 import screen.LoadGame;
 import sprites.Systems;
 
@@ -52,11 +53,28 @@ public class Enemy extends Entity {
         this.ability = AbsAbility.loadAbility(LoadGame.loadObject(object, "ability", JSONObject.class));
         Object targetSystem = object.get("target_system");
         if (targetSystem instanceof JSONObject) {
-            this.targetSystem = Systems.loadFromJSON(world, null, (JSONObject) targetSystem);
+            Systems loadedSystem = Systems.loadFromJSON(world, null, (JSONObject) targetSystem);
+            for (Systems sys : Gameplay.systems) {
+                if (sys.sysName.equals(loadedSystem.sysName)) {
+                    this.targetSystem = sys;
+                    break;
+                }
+            }
         } else {
             this.targetSystem = null;
         }
-
+        Object currentContactSystem = object.get("current_contact_system");
+        if (currentContactSystem instanceof JSONObject) {
+            Systems loadedSystem = Systems.loadFromJSON(world, null, (JSONObject) currentContactSystem);
+            for (Systems sys : Gameplay.systems) {
+                if (sys.sysName.equals(loadedSystem.sysName)) {
+                    this.currentContactSystem = sys;
+                    break;
+                }
+            }
+        } else {
+            this.currentContactSystem = null;
+        }
         this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
                 JSONObject.class));
     }
@@ -190,12 +208,12 @@ public class Enemy extends Entity {
         state.put("mode", this.mode);
         state.put("ability", this.ability.save());
         if (this.targetSystem == null) {
-            state.put("targetSystem", "");
+            state.put("target_system", "");
         } else {
-            state.put("targetSystem", this.targetSystem.save());
+            state.put("target_system", this.targetSystem.save());
         }
         if (this.currentContactSystem != null) {
-            state.put("currentContactSystem", this.currentContactSystem.save());
+            state.put("current_contact_system", this.currentContactSystem.save());
         }
 
         state.put("movement", this.movementSystem.save());

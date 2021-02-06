@@ -29,11 +29,6 @@ public class LoadGame extends Gameplay {
         }
         try {
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(handle.readString());
-           this.npcManager = new NpcManager(this.world, LoadGame.loadObject(jsonObject, "npc_manager",
-                   JSONObject.class));
-            player = new Player(this.world, this.map, LoadGame.loadObject(jsonObject, "player",
-                    JSONObject.class));
-
             Gameplay.systems = new ArrayList<>();
             for (Object systemObject : LoadGame.loadObject(jsonObject, "systems", JSONArray.class)) {
                 if (!(systemObject instanceof JSONObject)) {
@@ -45,6 +40,12 @@ public class LoadGame extends Gameplay {
             }
             // Rebuild the hud for systems
             this.systemStatusMenu.generate_systemLabels(Gameplay.systems);
+            this.npcManager = new NpcManager(this.world, LoadGame.loadObject(jsonObject, "npc_manager",
+                    JSONObject.class));
+            player = new Player(this.world, this.map, LoadGame.loadObject(jsonObject, "player",
+                    JSONObject.class));
+
+
         } catch (ParseException e) {
             e.printStackTrace();
         }

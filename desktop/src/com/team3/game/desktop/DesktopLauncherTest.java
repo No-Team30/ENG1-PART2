@@ -1,3 +1,4 @@
+/*
 package com.team3.game.desktop;
 
 import characters.Entities.Enemy;
@@ -94,7 +95,7 @@ class DesktopLauncherTest {
         Thread.sleep(50);
         
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        NpcManager.npcs.clear();
+        //NpcManager.npcs.clear();
 
         //Replace all enemies' ability to ghostModeAbility
         for (Enemy enemy : enemies) {
@@ -366,4 +367,4 @@ class DesktopLauncherTest {
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
-}
+}*/

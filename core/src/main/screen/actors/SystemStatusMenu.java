@@ -52,7 +52,13 @@ public class SystemStatusMenu extends VerticalGroup {
      * @param systems Arraylist of System objects
      */
     public void generate_systemLabels(ArrayList<Systems> systems) {
-        System.out.println("Generasting lables  for: " + systems);
+        System.out.println("Generating labels  for: " + systems);
+        if (statusMap != null) {
+            for (Label label : statusMap.values()) {
+                removeActor(label);
+            }
+            statusMap.clear();
+        }
         for (Systems system : systems) {
             Label sys = new Label(system.getSystemName(), myskin, "alt");
             sys.setColor(Color.WHITE);
@@ -93,7 +99,7 @@ public class SystemStatusMenu extends VerticalGroup {
                     sysLabel.setText(system.sysName + ": Sabotaged(" + system.hp + "%)");
 
                 } else {
-                    sysLabel.setText(system.sysName + ": Sabotaged("  + system.hp + "%)");
+                    sysLabel.setText(system.sysName + ": Sabotaged(" + system.hp + "%)");
                     sysLabel.setColor(Color.GRAY);
                     // update sabotaged count
                     count += 1;
