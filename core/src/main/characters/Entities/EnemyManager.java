@@ -119,6 +119,10 @@ public class EnemyManager {
         }
     }
 
+    public ArrayList<Enemy> getActiveEnemies() {
+        return activeEnemies;
+    }
+
     public static ArrayList<Vector2> generate_jail_positions(TiledMap map) {
         ArrayList<Vector2> positions = new ArrayList<>();
         MapLayers layers = map.getLayers();
@@ -226,7 +230,7 @@ public class EnemyManager {
         // Try and use special ability, otherwise try and damage systems
         for (Enemy enemy : activeEnemies) {
             enemy.update(delta);
-            if (enemy.ability != null && !enemy.ability.inUse) {
+            if (enemy.ability != null && !enemy.ability.inUse()) {
 
                 // get targeted system object
                 Systems sys = enemy.get_target_system();
@@ -310,10 +314,10 @@ public class EnemyManager {
 
     /**
      * Returns the active enemy that is closest to the given position
-         * Could be null, if there are no active enemies
+     * Could be null, if there are no active enemies
      *
-     * @throws NullPointerException
      * @param position The position of the enemy
+     * @throws NullPointerException
      */
     public Enemy getClosestActiveEnemy(Vector2 position) {
         Enemy closest_enemy = null;
@@ -327,6 +331,7 @@ public class EnemyManager {
         }
         return closest_enemy;
     }
+
 
     /**
      * This will cause the given enemy, to become "arrested" which means they follow the Player around, until the player goes to the jail

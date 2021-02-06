@@ -1,5 +1,6 @@
 package characters.Entities;
 
+import characters.Entities.abilities.*;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
 import characters.Movement.UserMovement;
@@ -9,6 +10,9 @@ import org.json.simple.JSONObject;
 import screen.LoadGame;
 import tools.CharacterRenderer;
 import tools.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static screen.Gameplay.TILE_SIZE;
 
@@ -34,7 +38,10 @@ public class Player extends Entity {
      */
     private boolean isArrestPressed;
 
-
+    private List<IAbility> abilities;
+    public GlobalSlowDownAbility globalSlowDownAbility;
+    public ReinforcedSystemsAbility reinforcedSystemsAbility;
+    public MarkInfiltratorAbility markInfiltratorAbility;
     /**
      * The range in which the AI Player can arrest Enemies (In pixels)
      */
@@ -54,10 +61,11 @@ public class Player extends Entity {
         this.enemyManager = new EnemyManager(world, map);
         this.movementSystem.b2body.setUserData("auber");
         this.health = 100f;
-        this.isHealing = false;
-        isArrestPressed = false;
-
+        this.ishealing = false;
+        arrestPressed = false;
+        creatAbilities();
     }
+
 
     /**
      * Builds a Player instance from the provided JSON Object
@@ -73,8 +81,28 @@ public class Player extends Entity {
         this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
                 JSONObject.class));
         this.enemyManager = new EnemyManager(world, LoadGame.loadObject(object, "enemy_manager", JSONObject.class));
+        // TODO Add ability
     }
 
+    private void creatAbilities() {
+
+
+        globalSlowDownAbility = new GlobalSlowDownAbility();
+        globalSlowDownAbility.setHost(this);
+        globalSlowDownAbility.setTarget(this);
+
+        reinforcedSystemsAbility = new ReinforcedSystemsAbility();
+        reinforcedSystemsAbility.setHost(this);
+
+
+        markInfiltratorAbility = new MarkInfiltratorAbility();
+        markInfiltratorAbility.setHost(this);
+
+        abilities = new ArrayList<>();
+        abilities.add(globalSlowDownAbility);
+        abilities.add(reinforcedSystemsAbility);
+        abilities.add(markInfiltratorAbility);
+    }
 
     /**
      * Sets whether or not Player is currently healing.
@@ -139,9 +167,24 @@ public class Player extends Entity {
         if (Controller.isArrestPressed()) {
             isArrestPressed = true;
         }
+        if (Controller.isAbility1Pressed()) {
+            globalSlowDownAbility.setTarget(this);
+            globalSlowDownAbility.tryUseAbility();
+        }
+        if (Controller.isAbility2Pressed()) {
+            reinforcedSystemsAbility.setTarget(this);
+            reinforcedSystemsAbility.tryUseAbility();
+        }
+        if (Controller.isAbility3Pressed()) {
+            markInfiltratorAbility.setTarget(this);
+            markInfiltratorAbility.tryUseAbility();
+        }
         // should be called each loop of rendering
         healing(delta);
 
+        for (IAbility ability : abilities) {
+            ability.update(delta);
+        }
     }
 
 

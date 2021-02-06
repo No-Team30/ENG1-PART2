@@ -1,17 +1,12 @@
-/*
 package com.team3.game.desktop;
 
 import characters.Entities.Enemy;
 import characters.Entities.EnemyManager;
 import characters.Entities.NpcManager;
 import characters.Entities.abilities.*;
-import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.team3.game.GameMain;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import screen.Gameplay;
 
@@ -85,7 +80,7 @@ class DesktopLauncherTest {
 
     void fastenAbilityUpdate(ArrayList<Enemy> enemies, float delta) {
         for (Enemy enemy : enemies) {
-            enemy.ability.update(delta, enemy);
+            enemy.ability.update(delta);
         }
     }
 
@@ -93,9 +88,9 @@ class DesktopLauncherTest {
     void testGhostModeAbility() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
         Thread.sleep(50);
-        
+
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        //NpcManager.npcs.clear();
+
 
         //Replace all enemies' ability to ghostModeAbility
         for (Enemy enemy : enemies) {
@@ -108,28 +103,29 @@ class DesktopLauncherTest {
 
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
-                assert enemy.ability.isReady;
-                enemy.ability.provokeAbility(enemy, Gameplay.player);
+                assert enemy.ability.isReady();
+                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //Asserts that all enemies' abilities are in use
             for (Enemy enemy : enemies) {
-                assert enemy.ability.inUse;
-                assert (enemy.ability.useTimeTiming > 0);
+                assert enemy.ability.inUse();
+                assert (enemy.ability.getUseTimeTiming() > 0);
                 assert (enemy.ghostMode);
             }
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.useTimeTiming + 0.1f);//speed up ability useTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);///Waiting for game thread updates via sleep
 
             //When the ability duration is over, Assert that the state of all enemies' GhostMode have become disabled
             for (Enemy enemy : enemies) {
                 assert (enemy.ghostMode == false);
-                assert (enemy.ability.cooldownTimeTiming >= 0);
+                assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
 
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.cooldownTimeTiming + 0.1f);//speed up ability coolDownTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
@@ -139,11 +135,10 @@ class DesktopLauncherTest {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        NpcManager.npcs.clear();
 
         //Replace all enemies' ability to SpeedingUpAbility
         for (Enemy enemy : enemies) {
-            
+
             enemy.ability = new SpeedingUpAbility();
         }
 
@@ -152,28 +147,29 @@ class DesktopLauncherTest {
             float speedBackup = enemies.get(0).movementSystem.speed;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
-                assert enemy.ability.isReady;
-                enemy.ability.provokeAbility(enemy, Gameplay.player);
+                assert enemy.ability.isReady();
+                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //Asserts that all enemies' abilities are in use
             for (Enemy enemy : enemies) {
-                assert enemy.ability.inUse;
-                assert (enemy.ability.useTimeTiming > 0);
+                assert enemy.ability.inUse();
+                assert (enemy.ability.getUseTimeTiming() > 0);
                 assert (enemy.movementSystem.speed == speedBackup * 3.0);
             }
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.useTimeTiming + 0.1f);//speed up ability useTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //When the ability duration is over, Assert that the state of all enemies' SpeedingUpAbility have become disabled
             for (Enemy enemy : enemies) {
                 assert (Math.abs(enemy.movementSystem.speed - speedBackup) <= 0.1);
-                assert (enemy.ability.cooldownTimeTiming >= 0);
+                assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
 
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.cooldownTimeTiming + 0.1f);//speed up ability coolDownTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
@@ -183,11 +179,11 @@ class DesktopLauncherTest {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        NpcManager.npcs.clear();
+
 
         //Replace all enemies' ability to HigherSystemDamagerAbility
         for (Enemy enemy : enemies) {
-            
+
             enemy.ability = new HigherSystemDamagerAbility();
         }
 
@@ -196,28 +192,29 @@ class DesktopLauncherTest {
             float damageBackup = enemies.get(0).systemDamage;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
-                assert enemy.ability.isReady;
-                enemy.ability.provokeAbility(enemy, Gameplay.player);
+                assert enemy.ability.isReady();
+                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //Asserts that all enemies' abilities are in use
             for (Enemy enemy : enemies) {
-                assert enemy.ability.inUse;
-                assert (enemy.ability.useTimeTiming > 0);
+                assert enemy.ability.inUse();
+                assert (enemy.ability.getUseTimeTiming() > 0);
                 assert (enemy.systemDamage == damageBackup * 2);
             }
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.useTimeTiming + 0.1f);//speed up ability useTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //When the ability duration is over, Assert that the state of all enemies' HigherSystemDamagerAbility have become disabled
             for (Enemy enemy : enemies) {
                 assert (Math.abs(enemy.systemDamage - damageBackup) <= 0.1);
-                assert (enemy.ability.cooldownTimeTiming >= 0);
+                assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
 
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.cooldownTimeTiming + 0.1f);//speed up ability coolDownTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
@@ -227,12 +224,12 @@ class DesktopLauncherTest {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        NpcManager.npcs.clear();
+
 
         //Replace all enemies' ability to SlowDownPlayerAbility
         for (Enemy enemy : enemies) {
-            
-            enemy.ability = new SlowDownPlayerAbility();
+
+            enemy.ability = new SlowDownTargetAbility();
         }
 
         //Repeat i times to make sure the skill can be used repeatedly
@@ -240,27 +237,28 @@ class DesktopLauncherTest {
             float speedBackup = Gameplay.player.movementSystem.speed;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
-                assert enemy.ability.isReady;
-                enemy.ability.provokeAbility(enemy, Gameplay.player);
+                assert enemy.ability.isReady();
+                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //Asserts that all enemies' abilities are in use
             for (Enemy enemy : enemies) {
-                assert enemy.ability.inUse;
-                assert (enemy.ability.useTimeTiming > 0);
+                assert enemy.ability.inUse();
+                assert (enemy.ability.getUseTimeTiming() > 0);
             }
             assert (Gameplay.player.movementSystem.speed == speedBackup * Math.pow(0.5f, enemies.size()));
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.useTimeTiming + 0.1f);//speed up ability useTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //When the ability duration is over, Assert that the state of all enemies' SlowDownPlayerAbility have become disabled
             for (Enemy enemy : enemies) {
-                assert (enemy.ability.cooldownTimeTiming >= 0);
+                assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
             assert (Gameplay.player.movementSystem.speed == speedBackup);
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.cooldownTimeTiming + 0.1f);//speed up ability coolDownTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
@@ -271,12 +269,12 @@ class DesktopLauncherTest {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        NpcManager.npcs.clear();
+
 
         //Replace all enemies' ability to StopPlayerAbility
         for (Enemy enemy : enemies) {
-            
-            enemy.ability = new StopPlayerAbility();
+
+            enemy.ability = new StopTargetAbility();
         }
 
         //Repeat i times to make sure the skill can be used repeatedly
@@ -284,27 +282,28 @@ class DesktopLauncherTest {
             float speedBackup = Gameplay.player.movementSystem.speed;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
-                assert enemy.ability.isReady;
-                enemy.ability.provokeAbility(enemy, Gameplay.player);
+                assert enemy.ability.isReady();
+                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //Asserts that all enemies' abilities are in use
             for (Enemy enemy : enemies) {
-                assert enemy.ability.inUse;
-                assert (enemy.ability.useTimeTiming > 0);
+                assert enemy.ability.inUse();
+                assert (enemy.ability.getUseTimeTiming() > 0);
             }
             assert (Gameplay.player.cantMove);
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.useTimeTiming + 0.1f);//speed up ability useTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //When the ability duration is over, Assert that the state of all enemies' StopPlayerAbility have become disabled
             for (Enemy enemy : enemies) {
-                assert (enemy.ability.cooldownTimeTiming >= 0);
+                assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
             assert (Gameplay.player.cantMove == false);
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.cooldownTimeTiming + 0.1f);//speed up ability coolDownTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
@@ -315,11 +314,11 @@ class DesktopLauncherTest {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
         ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
-        NpcManager.npcs.clear();
+
 
         //Replace all enemies' ability to AttackPlayerAbility
         for (Enemy enemy : enemies) {
-            
+
             enemy.ability = new AttackPlayerAbility();
         }
 
@@ -329,8 +328,9 @@ class DesktopLauncherTest {
             float DAMAGE = ((AttackPlayerAbility) enemies.get(0).ability).DAMAGE;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
-                assert enemy.ability.isReady;
-                enemy.ability.provokeAbility(enemy, Gameplay.player);
+                assert enemy.ability.isReady();
+                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.tryUseAbility();
                 AttackPlayerAbility ability = (AttackPlayerAbility) enemy.ability;
                 ability.contact = true;
             }
@@ -339,8 +339,8 @@ class DesktopLauncherTest {
 
             //Asserts that all enemies' abilities are in use
             for (Enemy enemy : enemies) {
-                assert enemy.ability.inUse;
-                assert (enemy.ability.useTimeTiming > 0);
+                assert enemy.ability.inUse();
+                assert (enemy.ability.getUseTimeTiming() > 0);
             }
 
             fastenAbilityUpdate(enemies, 0.1f);//Make sure the damage has been done to the player
@@ -353,18 +353,18 @@ class DesktopLauncherTest {
             }
 
             healthBackup = Gameplay.player.health;
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.useTimeTiming + 0.1f);//speed up ability useTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
 
             //When the ability duration is over, Assert that the state of all enemies' AttackPlayerAbility have become disabled
             for (Enemy enemy : enemies) {
-                assert (enemy.ability.cooldownTimeTiming >= 0);
+                assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
 
             assert (Gameplay.player.health <= healthBackup);
-            fastenAbilityUpdate(enemies, enemies.get(0).ability.cooldownTimeTiming + 0.1f);//speed up ability coolDownTimeTiming
+            fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
     }
-}*/
+}

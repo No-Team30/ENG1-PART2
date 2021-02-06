@@ -1,8 +1,8 @@
 package characters.Entities;
 
 import characters.Entities.abilities.AbilityFactory;
-import characters.Entities.abilities.AbsAbility;
 import characters.Entities.abilities.GhostModeAbility;
+import characters.Entities.abilities.IAbility;
 import characters.Entities.abilities.SpeedingUpAbility;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
@@ -21,7 +21,8 @@ public class Enemy extends Entity {
     public Systems currentContactSystem; // used for contact listener
     //TODO WHY NO ENUM?
     public String mode;
-    public AbsAbility ability;
+    public boolean beMarked;
+    public IAbility ability;
     public static int numberOfEnemies;
     public float systemDamage = .1f;
     public boolean ghostMode = false;
@@ -39,6 +40,7 @@ public class Enemy extends Entity {
         this.movementSystem = new AiMovement(this, world, x, y);
         this.movementSystem.b2body.setUserData("Enemy" + numberOfEnemies);
         ability = AbilityFactory.randomAbility();
+        ability.setHost(this);
         mode = "";
     }
 
@@ -91,16 +93,24 @@ public class Enemy extends Entity {
     @Override
     public void update(float delta) {
         super.update(delta);
+        // TODO Can we remove this null check?
         if (ability != null) {
-            ability.update(delta, this);
+            ability.update(delta);
         }
         // random use ability
-        if (ability.isReady
+        if (ability.isReady()
                 && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
                 && random.nextDouble() < randomUseAbilityRate * delta) {
-            ability.provokeAbility(this, null);
+            ability.tryUseAbility();
         }
+        if (beMarked && flashDelta < -0.2f) {
+            flashDelta = 0.3f;
+        }
+
+        flashDelta -= delta;
     }
+
+    private float flashDelta = 0;
 
     /**
      * draw the enemy who have ghost mode ability
@@ -109,9 +119,14 @@ public class Enemy extends Entity {
      */
     @Override
     public void draw(SpriteBatch batch) {
-        if (ghostMode) {
+        if (beMarked && flashDelta > 0) {
             return;
         }
+
+        if (ghostMode && !beMarked) {
+            return;
+        }
+
         super.draw(batch);
     }
 
@@ -139,6 +154,9 @@ public class Enemy extends Entity {
      * @param system system object
      */
     public void sabotage(Systems system) {
+        //if player use reinforced systems ability,systems will not be sabotaged
+        if (system.reinforced) return;
+
         if (system.hp > 0) {
             system.hp -= systemDamage;
         } else {
@@ -197,9 +215,6 @@ public class Enemy extends Entity {
     }
 
 
-    // TO DO
-    // Enemies special abilities
-    // ...
     @Override
     public JSONObject save() {
         JSONObject state = new JSONObject();
@@ -222,6 +237,7 @@ public class Enemy extends Entity {
 
     @Override
     public boolean equals(Object o) {
+        // TODO This needs to be completed
         if (o instanceof AiMovement) {
             return super.equals(o);
         }

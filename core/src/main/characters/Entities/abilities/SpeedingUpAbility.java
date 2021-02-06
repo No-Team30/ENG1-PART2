@@ -1,6 +1,7 @@
 package characters.Entities.abilities;
 
 import characters.Entities.Enemy;
+import characters.Entities.Entity;
 import characters.Entities.Player;
 import org.json.simple.JSONObject;
 import screen.LoadGame;
@@ -8,8 +9,8 @@ import screen.LoadGame;
 /**
  * Create ability to increase speed for enemy.
  */
-public class SpeedingUpAbility extends AbsAbility {
-    private double speedConstant = 3;
+public class SpeedingUpAbility extends AbilityBase<Entity, Entity> {
+    public double speedConstant = 3;
 
     public SpeedingUpAbility() {
         super();
@@ -28,26 +29,21 @@ public class SpeedingUpAbility extends AbsAbility {
         return state;
     }
 
+
     /**
      * enemy use ability to increase his speed
-     *
-     * @param player player
-     * @param enemy enemy who speed becomes faster
      */
     @Override
-    public void useAbility(Enemy enemy, Player player) {
-
-        enemy.movementSystem.speed *= speedConstant;
+    public void beginUseAbility() {
+        host.movementSystem.speed *= speedConstant;
     }
 
     /**
      * enemy speed bonus removed
-     *
-     * @param enemy enemy who speed back to normal
      */
     @Override
-    public void removeAbility(Enemy enemy) {
-        enemy.movementSystem.speed /= speedConstant;
+    public void endUseAbility() {
+        host.movementSystem.speed /= speedConstant;
     }
 }
 

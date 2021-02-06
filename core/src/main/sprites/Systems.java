@@ -14,7 +14,7 @@ public class Systems extends InteractiveTileObject {
      * Whether there is an enemy targeting this system
      */
     private boolean isTargetedByEnemy;
-
+    public boolean reinforced;
     /**
      * Creates a new instantiated System object.
      *
@@ -84,7 +84,7 @@ public class Systems extends InteractiveTileObject {
 
     /**
      * If the system is a door set userdata accordingly.
-     *
+
      * @param name The name of the system
      */
     public void isDoors(String name) {

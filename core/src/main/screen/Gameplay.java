@@ -74,6 +74,8 @@ public class Gameplay implements Screen {
 
     public ArrestedHeader arrestedHeader;
 
+    public AbilityFooter abilityFooter;
+
     private final TmxMapLoader maploader;
 
     protected final TiledMap map;
@@ -248,6 +250,10 @@ public class Gameplay implements Screen {
         systemStatusMenu.generate_systemLabels(systems);
         // create arrest_status header
         arrestedHeader = hud.arrestedHeader;
+        abilityFooter = hud.abilityFooter;
+        // create Npc_manager instance
+        npcManager = new NpcManager(world, map);
+
     }
 
     /**
@@ -268,6 +274,7 @@ public class Gameplay implements Screen {
         npcManager.updateNpc(delta);
         systemStatusMenu.update_status(systems);
         arrestedHeader.update_Arrested(player);
+        abilityFooter.update_abilities(player);
         // if escape is pressed pause the game
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();

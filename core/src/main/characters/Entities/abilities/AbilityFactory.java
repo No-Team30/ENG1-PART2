@@ -1,23 +1,25 @@
 package characters.Entities.abilities;
 
+import characters.Entities.Entity;
+
 import java.util.Random;
 
 /**
- *  the factory to create different abilities
+ * the factory to create different abilities
  */
 public class AbilityFactory {
 
     /**
      * To create new abilities for enemies with random method,could be one of:
+     *
      * @see AttackPlayerAbility
      * @see GhostModeAbility
-     * @see SlowDownPlayerAbility
+     * @see SlowDownTargetAbility
      * @see SpeedingUpAbility
-     * @see StopPlayerAbility
+     * @see StopTargetAbility
      * @see HigherSystemDamagerAbility
-     *
      */
-    public static AbsAbility randomAbility() {
+    public static AbilityBase<? extends Entity, ? extends Entity> randomAbility() {
         Random random = new Random();
         switch (random.nextInt(6)) {
             case 0:
@@ -25,14 +27,14 @@ public class AbilityFactory {
             case 1:
                 return new GhostModeAbility();
             case 2:
-                return new SlowDownPlayerAbility();
+                return new SlowDownTargetAbility();
             case 3:
                 return new SpeedingUpAbility();
             case 4:
-                return new StopPlayerAbility();
-            case 5:
-                return new HigherSystemDamageAbility();
+                return new StopTargetAbility();
+            default:
+                return new HigherSystemDamagerAbility();
         }
-        return null;
+
     }
 }
