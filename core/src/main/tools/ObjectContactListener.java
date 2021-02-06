@@ -233,17 +233,16 @@ public class ObjectContactListener implements ContactListener {
     public void preSolve(Contact contact, Manifold oldManifold) {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
-
-        // if the character is about to come into contact with a door
-        if (is_Doors(fixB)
-                && ((fixA.getBody().getUserData() == "auber") || is_Enemy(fixA))) {
-            // gets the door
-            Object data = fixB.getBody().getUserData();
-            if (data instanceof Door) {
-                // if the door is locked, it is collidable,
-                // else it is not
-                contact.setEnabled(((Door) data).isLocked());
-            }
+        // Try and obtain the door object
+        Door door = null;
+        if (is_Doors(fixB) && fixB.getBody().getUserData() instanceof Door) {
+            door = (Door) fixB.getBody().getUserData();
+        } else if (is_Doors(fixB) && fixB.getBody().getUserData() instanceof Door) {
+            door = (Door) fixA.getBody().getUserData();
+        }
+        // Unlock the door, if an auber or enemy are passing through
+        if ((is_Auber(fixA) || is_Enemy(fixA) || is_Auber(fixB) || is_Enemy(fixB)) && door != null) {
+            contact.setEnabled(door.isLocked());
         }
     }
 

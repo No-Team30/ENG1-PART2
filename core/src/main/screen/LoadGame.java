@@ -4,6 +4,8 @@ import characters.Entities.NpcManager;
 import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.math.Vector2;
 import com.team3.game.GameMain;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -18,14 +20,15 @@ public class LoadGame extends Gameplay {
     public static final String saveName = "SaveGame.json";
 
     public LoadGame(GameMain game) {
-        super(game);
+        super(game, new Vector2(640, 360), true);
         if (!Gdx.files.isLocalStorageAvailable()) {
             throw new FileSystemNotFoundException("Local file access is unavailable!");
         }
         FileHandle handle = Gdx.files.local(saveName);
         // If no save exists, start a new game
         if (!handle.exists()) {
-            game.setScreen(new Gameplay(game));
+            game.setScreen(new Gameplay(game, false));
+
         }
         try {
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(handle.readString());
@@ -39,12 +42,19 @@ public class LoadGame extends Gameplay {
                 Gameplay.systems.add(Systems.loadFromJSON(world, this.map, systemJSON));
             }
             // Rebuild the hud for systems
-            this.systemStatusMenu.generate_systemLabels(Gameplay.systems);
+            //this.systemStatusMenu.generate_systemLabels(Gameplay.systems);
             this.npcManager = new NpcManager(this.world, LoadGame.loadObject(jsonObject, "npc_manager",
                     JSONObject.class));
             player = new Player(this.world, this.map, LoadGame.loadObject(jsonObject, "player",
                     JSONObject.class));
 
+            MapLayers layers = map.getLayers();
+            buildWalls(layers);
+            buildDoors(layers);
+            buildTeleports(layers);
+            buildJails(layers);
+            // Build UI elements
+            buildUI();
 
         } catch (ParseException e) {
             e.printStackTrace();

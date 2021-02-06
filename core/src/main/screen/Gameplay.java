@@ -8,11 +8,15 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
@@ -23,7 +27,9 @@ import screen.actors.HealthBar;
 import screen.actors.SystemStatusMenu;
 import screen.actors.Teleport_Menu;
 import sprites.Door;
+import sprites.Jail;
 import sprites.Systems;
+import sprites.Teleport;
 import tools.*;
 
 import java.nio.file.FileSystemNotFoundException;
@@ -84,13 +90,10 @@ public class Gameplay implements Screen {
 
     private final LightControl lightControl;
 
-    /**
-     * Creates a new instantiated game.
-     *
-     * @param game The game object used in Libgdx things
-     */
-    public Gameplay(GameMain game) {
-        this(game, new Vector2(640, 360), false);
+    public Gameplay(GameMain game, Boolean isDemo) {
+        this(game, new Vector2(640, 360), isDemo);
+        buildEntities();
+        buildUI();
     }
 
     /**
@@ -120,8 +123,115 @@ public class Gameplay implements Screen {
         viewport = new FitViewport(screenSize.x, screenSize.y, camera);
         // create a new background Render
         backgroundRenderer = new BackgroundRenderer(game.getBatch(), viewport);
+
+    }
+
+    /**
+     * Creates all the interactive objects and hooks them into the world physics.
+     * Including:
+     * Doors, Walls, Jails, Systems, Players, Npcs and Teleport
+     */
+    public void buildEntities() {
         // create 2d box world for objects , walls, teleport...
-        B2worldCreator.createWorld(world, map, this);
+        // Get all layers of map
+        MapLayers layers = map.getLayers();
+        buildWalls(layers);
+
+        // create systems <- this is interactive tiled map object
+        systems = new ArrayList<>();
+        for (MapObject object : layers.get("systems").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // create a new instantiated System object
+            // stor system object in the systems Arraylist
+            systems.add(new Systems(world, map, rect, object.getName()));
+        }
+
+        // Creates the player at the spawn point on the spawn layer of the map
+        for (MapObject object : layers.get("spawn").getObjects()) {
+            Rectangle point = ((RectangleMapObject) object).getRectangle();
+            player = new Player(world, point.x, point.y, map);
+            break;
+        }
+        buildDoors(layers);
+        buildTeleports(layers);
+        buildJails(layers);
+
+        // create Npc_manager instance
+        npcManager = new NpcManager(world, map);
+    }
+
+    /**
+     * Builds all the door objects, from the provided map layer
+     *
+     * @param layers The map object containing door positions
+     */
+    public void buildDoors(MapLayers layers) {
+        // create doors <- this is interactive tiled map object
+        doors = new ArrayList<>();
+        for (MapObject object : layers.get("doors").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // create a new instantiated door object
+            // adds door object to the Doors Arraylist
+            doors.add(new Door(world, map, rect, object.getName().equals("jailDoor")));
+        }
+
+    }
+
+    /**
+     * Builds all the teleport pads, from the provided map layer
+     *
+     * @param layers The map object containing teleport positions
+     */
+    public void buildTeleports(MapLayers layers) {
+        //create teleport <- this is interactive tiled map object
+        for (MapObject object : layers.get("teleports").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // create a new instantiated Teleport object
+            new Teleport(world, map, rect, object.getName());
+        }
+    }
+
+    /**
+     * Builds all the jail positions, from the provided map layer
+     *
+     * @param layers The map object containing jail positions
+     */
+    public void buildJails(MapLayers layers) {
+        // create jails
+        int jailNumber = 0;
+        for (MapObject object : layers.get("jail").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            new Jail(world, map, rect, jailNumber);
+            jailNumber++;
+        }
+    }
+
+
+    /**
+     * Builds all the wall objects, from the provided map layer
+     *
+     * @param layers The map object containing wall positions
+     */
+    public void buildWalls(MapLayers layers) {
+        Body body;
+        BodyDef bdef = new BodyDef();
+        PolygonShape shape = new PolygonShape();
+        FixtureDef fdef = new FixtureDef();
+        // create the walls
+        for (MapObject object : layers.get("walls").getObjects()) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(rect.getX() + rect.getWidth() / 2,
+                    rect.getY() + rect.getHeight() / 2);
+            body = world.createBody(bdef);
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            body.createFixture(fdef).setUserData("walls");
+            body.setUserData("walls");
+        }
+    }
+
+    public void buildUI() {
         // set the contact listener for the world
         world.setContactListener(new ObjectContactListener());
         // create HUD
@@ -138,11 +248,7 @@ public class Gameplay implements Screen {
         systemStatusMenu.generate_systemLabels(systems);
         // create arrest_status header
         arrestedHeader = hud.arrestedHeader;
-        // create Npc_manager instance
-        npcManager = new NpcManager(world, map);
-
     }
-
 
     /**
      * Updates the game, logic will go here called by libgdx GameMain.
