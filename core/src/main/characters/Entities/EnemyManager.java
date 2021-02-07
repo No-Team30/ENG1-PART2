@@ -295,6 +295,7 @@ public class EnemyManager {
         while (this.haveEnemiesBeenArrested()) {
             Enemy enemy = this.arrestedEnemies.remove(0);
             enemy.targetSystem = null;
+            enemy.ability = null;
             if (this.availableJailPositions.size() == 0) {
                 throw new RuntimeException("Not enough jail positions for enemies!");
             }

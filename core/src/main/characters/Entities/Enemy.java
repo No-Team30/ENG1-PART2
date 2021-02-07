@@ -50,6 +50,7 @@ public class Enemy extends Entity {
         LoadGame.validateAndLoadObject(object, "entity_type", "enemy");
         this.mode = LoadGame.loadObject(object, "mode", String.class);
         this.ability = AbilityBase.loadAbility(LoadGame.loadObject(object, "ability", JSONObject.class));
+        this.ability.setHost(this);
         Object targetSystem = object.get("target_system");
         if (targetSystem instanceof JSONObject) {
             Systems loadedSystem = Systems.loadFromJSON(world, null, (JSONObject) targetSystem);
@@ -93,18 +94,18 @@ public class Enemy extends Entity {
         // TODO Can we remove this null check?
         if (ability != null) {
             ability.update(delta);
-        }
-        // random use ability
-        if (ability.isReady()
-                && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
-                && random.nextDouble() < randomUseAbilityRate * delta) {
-            ability.tryUseAbility();
-        }
-        if (beMarked && flashDelta < -0.2f) {
-            flashDelta = 0.3f;
-        }
 
-        flashDelta -= delta;
+            // random use ability
+            if (ability.isReady()
+                    && (ability instanceof GhostModeAbility || ability instanceof SpeedingUpAbility)
+                    && random.nextDouble() < randomUseAbilityRate * delta) {
+                ability.tryUseAbility();
+            }
+            if (beMarked && flashDelta < -0.2f) {
+                flashDelta = 0.3f;
+            }
+            flashDelta -= delta;
+        }
     }
 
     private float flashDelta = 0;
@@ -231,7 +232,7 @@ public class Enemy extends Entity {
         state.put("movement", this.movementSystem.save());
         return state;
     }
-
+/*
     @Override
     public boolean equals(Object o) {
         // TODO This needs to be completed
@@ -239,5 +240,5 @@ public class Enemy extends Entity {
             return super.equals(o);
         }
         return true;
-    }
+    }*/
 }

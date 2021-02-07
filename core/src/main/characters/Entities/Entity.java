@@ -84,8 +84,8 @@ public abstract class Entity {
 
     public abstract JSONObject save();
 
-    @Override
+/*    @Override
     public boolean equals(Object o) {
         throw new UnsupportedOperationException("Not implemented yet");
-    }
+    }*/
 }

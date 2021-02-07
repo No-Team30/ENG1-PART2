@@ -3,9 +3,10 @@ package characters.Entities.abilities;
 import characters.Entities.Entity;
 import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.team3.game.GameMain;
+import org.json.simple.JSONObject;
 import screen.Gameplay;
+import screen.LoadGame;
 import sprites.Systems;
 
 /**
@@ -16,6 +17,19 @@ public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
     public ReinforcedSystemsAbility() {
         useTime = 5;
         this.cooldownTime = Float.MAX_VALUE;
+    }
+
+    public ReinforcedSystemsAbility(JSONObject object) {
+        super(object);
+        LoadGame.validateAndLoadObject(object, "object_type", "ability");
+        LoadGame.validateAndLoadObject(object, "ability_type", "reinforced_systems");
+    }
+
+    @Override
+    public JSONObject save() {
+        JSONObject state = super.save();
+        state.put("ability_type", "reinforced_systems");
+        return state;
     }
 
     /**
@@ -29,7 +43,7 @@ public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Systems systems : gameplay.systems) {
+        for (Systems systems : Gameplay.systems) {
             systems.setReinforced(true);
         }
     }
@@ -45,7 +59,7 @@ public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Systems systems : gameplay.systems) {
+        for (Systems systems : Gameplay.systems) {
             systems.setReinforced(false);
         }
     }

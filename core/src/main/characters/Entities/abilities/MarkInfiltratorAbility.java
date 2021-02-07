@@ -1,19 +1,9 @@
 package characters.Entities.abilities;
 
 import characters.Entities.Enemy;
-import characters.Entities.Entity;
 import characters.Entities.Player;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector2;
-import com.team3.game.GameMain;
-import screen.Gameplay;
-import tools.CharacterRenderer;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.json.simple.JSONObject;
+import screen.LoadGame;
 
 /**
  * Create ability for player which is used to mark one of the closest enemies.
@@ -27,6 +17,19 @@ public class MarkInfiltratorAbility extends AbilityBase<Player, Enemy> {
         super();
         useTime = 5;
         cooldownTime = 30;
+    }
+
+    public MarkInfiltratorAbility(JSONObject object) {
+        super(object);
+        LoadGame.validateAndLoadObject(object, "object_type", "ability");
+        LoadGame.validateAndLoadObject(object, "ability_type", "mark_infiltrator");
+    }
+
+    @Override
+    public JSONObject save() {
+        JSONObject state = super.save();
+        state.put("ability_type", "mark_infiltrator");
+        return state;
     }
 
     /**

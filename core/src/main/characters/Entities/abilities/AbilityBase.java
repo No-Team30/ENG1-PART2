@@ -50,19 +50,19 @@ public abstract class AbilityBase<THost extends Entity, TTarget extends Entity> 
     }
 
     /**
-     * Builds a new movement_type from the JSON Object
+     * Builds a new ability from the JSON Object
      *
-     * @param object The JSON Object to build the movement system from
-     * @throws IllegalArgumentException if 'movement_type' parameter, does not match any known movement system
+     * @param object The JSON Object to build the ability from
+     * @throws IllegalArgumentException if 'ability_type' parameter, does not match any known movement system
      */
     public static AbilityBase loadAbility(JSONObject object) {
         String abilityType = LoadGame.loadObject(object, "ability_type", String.class);
         switch (abilityType) {
-            case "stop_player":
+            case "stop_target":
                 return new StopTargetAbility(object);
             case "speed_up":
                 return new SpeedingUpAbility(object);
-            case "slow_player":
+            case "slow_target":
                 return new SlowDownTargetAbility(object);
             case "higher_system_damage":
                 return new HigherSystemDamageAbility(object);
@@ -70,6 +70,12 @@ public abstract class AbilityBase<THost extends Entity, TTarget extends Entity> 
                 return new GhostModeAbility(object);
             case "attack_player":
                 return new AttackPlayerAbility(object);
+            case "reinforced_systems":
+                return new ReinforcedSystemsAbility(object);
+            case "global_slowdown":
+                return new GlobalSlowDownAbility(object);
+            case "mark_infiltrator":
+                return new MarkInfiltratorAbility(object);
             default:
                 throw new IllegalArgumentException("ability_type parameter, does not match any known ability " +
                         "types (" + abilityType + ")");

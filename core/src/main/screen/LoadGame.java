@@ -20,7 +20,7 @@ public class LoadGame extends Gameplay {
     public static final String saveName = "SaveGame.json";
 
     public LoadGame(GameMain game) {
-        super(game, new Vector2(640, 360), true);
+        super(game, new Vector2(640, 360), false);
         if (!Gdx.files.isLocalStorageAvailable()) {
             throw new FileSystemNotFoundException("Local file access is unavailable!");
         }
@@ -100,6 +100,12 @@ public class LoadGame extends Gameplay {
             }
             if (type == Double.class && parameter.getClass() == Float.class) {
                 return (type.cast((((Float) parameter).doubleValue())));
+            }
+            if (type == Integer.class && parameter.getClass() == Long.class) {
+                return (type.cast((((Long) parameter).intValue())));
+            }
+            if (type == Long.class && parameter.getClass() == Integer.class) {
+                return (type.cast((((Integer) parameter).longValue())));
             }
             throw new IllegalArgumentException("Parameter: " + parameterName + " is of incorrect type. Expected: " + type +
                     " Received: " + parameter.getClass());

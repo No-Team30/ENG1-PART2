@@ -1,15 +1,13 @@
 package characters.Entities;
 
-import characters.Entities.abilities.GlobalSlowDownAbility;
-import characters.Entities.abilities.IAbility;
-import characters.Entities.abilities.MarkInfiltratorAbility;
-import characters.Entities.abilities.ReinforcedSystemsAbility;
+import characters.Entities.abilities.*;
 import characters.Movement.AiMovement;
 import characters.Movement.Movement;
 import characters.Movement.UserMovement;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import screen.LoadGame;
 import tools.CharacterRenderer;
@@ -79,18 +77,32 @@ public class Player extends Entity {
     /**
      * Builds a Player instance from the provided JSON Object
      *
-     * @param object The json object to load the data from
+     * @param jsonObject The json object to load the data from
      */
-    public Player(World world, TiledMap map, JSONObject object) {
+    public Player(World world, TiledMap map, JSONObject jsonObject) {
         super(CharacterRenderer.Sprite.AUBER);
-        LoadGame.validateAndLoadObject(object, "entity_type", "auber");
-        this.health = LoadGame.loadObject(object, "health", Float.class);
-        this.isHealing = LoadGame.loadObject(object, "is_healing", Boolean.class);
-        this.isArrestPressed = LoadGame.loadObject(object, "is_arrest_pressed", Boolean.class);
-        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
+        LoadGame.validateAndLoadObject(jsonObject, "entity_type", "auber");
+        this.health = LoadGame.loadObject(jsonObject, "health", Float.class);
+        this.isHealing = LoadGame.loadObject(jsonObject, "is_healing", Boolean.class);
+        this.isArrestPressed = LoadGame.loadObject(jsonObject, "is_arrest_pressed", Boolean.class);
+        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(jsonObject, "movement",
                 JSONObject.class));
-        this.enemyManager = new EnemyManager(world, LoadGame.loadObject(object, "enemy_manager", JSONObject.class));
-        // TODO Add ability
+        this.enemyManager = new EnemyManager(world, LoadGame.loadObject(jsonObject, "enemy_manager", JSONObject.class));
+        this.abilityMap = new TreeMap<>();
+        for (Object abilityObject : LoadGame.loadObject(jsonObject, "abilities", JSONArray.class)) {
+            if (!(abilityObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("Save file does not contain auber abilities");
+            }
+            JSONObject abilityJSON = (JSONObject) abilityObject;
+            IAbility ability = AbilityBase.loadAbility(abilityJSON);
+            ability.setHost(this);
+            if (ability instanceof GlobalSlowDownAbility) {
+                ability.setTarget(this);
+                System.out.println("Set target for ability:" + abilityJSON);
+            }
+            Integer keyCode = LoadGame.loadObject(abilityJSON, "key", Integer.class);
+            this.abilityMap.put(keyCode, ability);
+        }
     }
 
     private void creatAbilities() {
@@ -108,9 +120,9 @@ public class Player extends Entity {
         markInfiltratorAbility.setHost(this);
 
         abilityMap = new TreeMap<>();
-        abilityMap.put(Input.Keys.S,globalSlowDownAbility);
-        abilityMap.put(Input.Keys.D,reinforcedSystemsAbility);
-        abilityMap.put(Input.Keys.F,markInfiltratorAbility);
+        abilityMap.put(Input.Keys.S, globalSlowDownAbility);
+        abilityMap.put(Input.Keys.D, reinforcedSystemsAbility);
+        abilityMap.put(Input.Keys.F, markInfiltratorAbility);
     }
 
     /**
@@ -181,7 +193,7 @@ public class Player extends Entity {
         for (int key : abilityMap.keySet()) {
             if (Controller.isKeyPressed(key)) {
                 IAbility ability = abilityMap.get(key);
-                ability.setTarget(this);
+                //ability.setTarget(this);
                 ability.tryUseAbility();
             }
         }
@@ -204,7 +216,13 @@ public class Player extends Entity {
         state.put("is_arrest_pressed", this.isArrestPressed);
         state.put("movement", this.movementSystem.save());
         state.put("enemy_manager", this.enemyManager.save());
-
+        JSONArray abilities = new JSONArray();
+        for (Map.Entry<Integer, IAbility> abilityEntry : this.abilityMap.entrySet()) {
+            JSONObject abilityJSON = abilityEntry.getValue().save();
+            abilityJSON.put("key", abilityEntry.getKey());
+            abilities.add(abilityJSON);
+        }
+        state.put("abilities", abilities);
         return state;
     }
 

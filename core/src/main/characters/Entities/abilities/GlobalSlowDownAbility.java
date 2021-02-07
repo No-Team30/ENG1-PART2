@@ -3,19 +3,33 @@ package characters.Entities.abilities;
 import characters.Entities.Entity;
 import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.team3.game.GameMain;
+import org.json.simple.JSONObject;
 import screen.Gameplay;
+import screen.LoadGame;
 
 /**
  * Create ability for player which is used to slow down npc and enemies.
  */
 public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
-    public static final float SLOWDOWN =2f;
+    public static final float SLOWDOWN = 2f;
 
     public GlobalSlowDownAbility() {
         useTime = 5;
         cooldownTime = 60;
+    }
+
+    public GlobalSlowDownAbility(JSONObject object) {
+        super(object);
+        LoadGame.validateAndLoadObject(object, "object_type", "ability");
+        LoadGame.validateAndLoadObject(object, "ability_type", "global_slowdown");
+    }
+
+    @Override
+    public JSONObject save() {
+        JSONObject state = super.save();
+        state.put("ability_type", "global_slowdown");
+        return state;
     }
 
     /**
@@ -32,7 +46,7 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Entity entity : gameplay.player.enemyManager.getActiveEnemies()) {
+        for (Entity entity : Gameplay.player.enemyManager.getActiveEnemies()) {
             entity.movementSystem.speed /= SLOWDOWN;
         }
         for (Entity entity : gameplay.npcManager.npcs) {
@@ -51,7 +65,7 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Entity entity : gameplay.player.enemyManager.getActiveEnemies()) {
+        for (Entity entity : Gameplay.player.enemyManager.getActiveEnemies()) {
             entity.movementSystem.speed *= SLOWDOWN;
         }
         for (Entity entity : gameplay.npcManager.npcs) {

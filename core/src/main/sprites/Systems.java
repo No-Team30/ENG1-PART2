@@ -50,7 +50,7 @@ public class Systems extends InteractiveTileObject {
 
     Systems(World world, TiledMap map, Rectangle bounds, String name, Float hp, String userData, Boolean isTargetedByEnemy) {
         super(world, map, bounds);
-        this.isTargetedByEnemy = isTargetedByEnemy;
+        this.isTargetedByEnemy = false;
         sysName = name;
         this.hp = hp;
         // use the fixture.userdata to store the system object.
