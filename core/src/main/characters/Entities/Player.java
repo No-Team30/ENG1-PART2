@@ -181,7 +181,6 @@ public class Player extends Entity {
         for (int key : abilityMap.keySet()) {
             if (Controller.isKeyPressed(key)) {
                 IAbility ability = abilityMap.get(key);
-                ability.setTarget(this);
                 ability.tryUseAbility();
             }
         }
