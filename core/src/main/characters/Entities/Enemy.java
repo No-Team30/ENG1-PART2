@@ -6,7 +6,6 @@ import characters.Movement.Movement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import org.json.simple.JSONObject;
-import screen.Gameplay;
 import screen.LoadGame;
 import sprites.Systems;
 
@@ -20,7 +19,7 @@ public class Enemy extends Entity {
     public String mode;
     public boolean beMarked;
     public IAbility ability;
-    public static int numberOfEnemies;
+    public int numberOfEnemies;
     public float systemDamage = .1f;
     public boolean ghostMode = false;
 
@@ -52,9 +51,9 @@ public class Enemy extends Entity {
         this.ability = AbilityBase.loadAbility(LoadGame.loadObject(object, "ability", JSONObject.class));
         this.ability.setHost(this);
         Object targetSystem = object.get("target_system");
-        if (targetSystem instanceof JSONObject) {
+/*        if (targetSystem instanceof JSONObject) {
             Systems loadedSystem = Systems.loadFromJSON(world, null, (JSONObject) targetSystem);
-            for (Systems sys : Gameplay.systems) {
+            for (Systems sys : Gameplay.getInstance().systems) {
                 if (sys.sysName.equals(loadedSystem.sysName)) {
                     this.targetSystem = sys;
                     break;
@@ -62,11 +61,13 @@ public class Enemy extends Entity {
             }
         } else {
             this.targetSystem = null;
-        }
-        Object currentContactSystem = object.get("current_contact_system");
+        }*/
+        this.targetSystem = null;
+        this.currentContactSystem = null;
+/*        Object currentContactSystem = object.get("current_contact_system");
         if (currentContactSystem instanceof JSONObject) {
             Systems loadedSystem = Systems.loadFromJSON(world, null, (JSONObject) currentContactSystem);
-            for (Systems sys : Gameplay.systems) {
+            for (Systems sys : Gameplay.getInstance().systems) {
                 if (sys.sysName.equals(loadedSystem.sysName)) {
                     this.currentContactSystem = sys;
                     break;
@@ -74,7 +75,7 @@ public class Enemy extends Entity {
             }
         } else {
             this.currentContactSystem = null;
-        }
+        }*/
         this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
                 JSONObject.class));
     }

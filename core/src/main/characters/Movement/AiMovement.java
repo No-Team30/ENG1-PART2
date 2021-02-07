@@ -3,6 +3,10 @@ package characters.Movement;
 import characters.Entities.Entity;
 import com.badlogic.gdx.ai.pfa.PathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import map.Distance;
@@ -10,7 +14,11 @@ import map.Map;
 import map.Node;
 import map.Path;
 import org.json.simple.JSONObject;
+import screen.Gameplay;
 import screen.LoadGame;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * AI Character object for the game.
@@ -222,7 +230,26 @@ public class AiMovement extends Movement {
      * @return true if we managed to find a valid path
      */
     private boolean findValidPath(float x, float y) {
-        float targeted_x_position = x;
+        MapObjects spawns = Gameplay.getInstance().map.getLayers().get("npcSpawns").getObjects();
+        ArrayList<Vector2> positions = new ArrayList<>();
+        Random random = new Random();
+        int count = 0;
+        for (MapObject spawn : spawns) {
+            Rectangle rect = ((RectangleMapObject) spawn).getRectangle();
+            positions.add(new Vector2(rect.x, rect.y));
+        }
+        while (!this.isValidPath(x, y)) {
+            Vector2 position = positions.get(random.nextInt(positions.size()));
+            x = position.x;
+            y = position.y;
+            count += 1;
+            if (count > 5) {
+                return false;
+            }
+        }
+
+        return true;
+/*        float targeted_x_position = x;
         float targeted_y_position = y;
         float original_x = getPosition().x;
         float original_y = getPosition().y;
@@ -256,7 +283,7 @@ public class AiMovement extends Movement {
                 }
             }
         }
-        return true;
+        return true;*/
     }
 
     /**

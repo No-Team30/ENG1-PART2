@@ -1,23 +1,24 @@
 package tools;
 
-import java.util.ArrayList;
-import java.util.Random;
 import screen.Gameplay;
 import sprites.Door;
 import sprites.Systems;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public abstract class DoorControll {
-    private static int MaxDoorsToLock = 3;
-    private static float MaxTime = 30;
+    private static final int MaxDoorsToLock = 3;
+    private static final float MaxTime = 30;
     private static float time = MaxTime;
     private static boolean isSabotaged;
     private static ArrayList<Door> doors;
 
     /**
      * Uppdates all the doors in the map.
-
+     *
      * @param systems the list of systems
-     * @param delta secconds since last update
+     * @param delta   secconds since last update
      */
     public static void updateDoors(ArrayList<Systems> systems, float delta) {
         if (!isSabotaged) {
@@ -53,9 +54,9 @@ public abstract class DoorControll {
         doors = new ArrayList<Door>();
         for (int i = 0; i < MaxDoorsToLock; i++) {
             Random r = new Random();
-            int index = r.nextInt(Gameplay.doors.size());
+            int index = r.nextInt(Gameplay.getInstance().doors.size());
             index = 7;
-            Door door = Gameplay.doors.get(index);
+            Door door = Gameplay.getInstance().doors.get(index);
             if (!door.isLocked()) {
                 door.lock();
                 doors.add(door);

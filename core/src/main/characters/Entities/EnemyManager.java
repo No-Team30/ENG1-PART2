@@ -79,7 +79,7 @@ public class EnemyManager {
                 throw new IllegalArgumentException("Active enemies does not contain enemy JSON Object");
             }
             Enemy enemy = new Enemy(world, (JSONObject) enemyObject);
-            generateNextTarget(enemy);
+            //generateNextTarget(enemy);
             activeEnemies.add(enemy);
         }
 
@@ -164,7 +164,7 @@ public class EnemyManager {
             float[] position = spawn_position.get(i);
             // pic needs to be changed with enemy pic
             Enemy enemy = new Enemy(world, position[0], position[1]);
-            generateNextTarget(enemy);
+            //generateNextTarget(enemy);
             activeEnemies.add(enemy);
 
         }
@@ -264,10 +264,10 @@ public class EnemyManager {
     public void generateNextTarget(Enemy enemy) {
         // Randomise the order systems are assigned
         List<Integer> systemOrder =
-                IntStream.rangeClosed(0, Gameplay.systems.size() - 1).boxed().collect(Collectors.toList());
+                IntStream.rangeClosed(0, Gameplay.getInstance().systems.size() - 1).boxed().collect(Collectors.toList());
         Collections.shuffle(systemOrder);
         for (int index : systemOrder) {
-            Systems system = Gameplay.systems.get(index);
+            Systems system = Gameplay.getInstance().systems.get(index);
             if (!system.isTargetedByEnemy() && !system.is_sabotaged()) {
                 float endx = system.getposition()[0];
                 float endy = system.getposition()[1];

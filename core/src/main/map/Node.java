@@ -7,10 +7,10 @@ import com.badlogic.gdx.utils.Array;
  * Node Class represents a tile in the map.
  */
 public class Node {
-    private static int nextIndex = 0; 
+    public static int nextIndex = 0;
 
-    private Array<Connection<Node>> edges;
-    private int index;
+    private final Array<Connection<Node>> edges;
+    private final int index;
 
     /**
      * Represents node for pathfinding.

@@ -43,7 +43,7 @@ public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Systems systems : Gameplay.systems) {
+        for (Systems systems : Gameplay.getInstance().systems) {
             systems.setReinforced(true);
         }
     }
@@ -59,7 +59,7 @@ public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Systems systems : Gameplay.systems) {
+        for (Systems systems : Gameplay.getInstance().systems) {
             systems.setReinforced(false);
         }
     }
