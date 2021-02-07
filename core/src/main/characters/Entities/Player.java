@@ -1,15 +1,20 @@
 package characters.Entities;
 
-import characters.Entities.abilities.*;
+import characters.Entities.abilities.GlobalSlowDownAbility;
+import characters.Entities.abilities.IAbility;
+import characters.Entities.abilities.MarkInfiltratorAbility;
+import characters.Entities.abilities.ReinforcedSystemsAbility;
 import characters.Movement.AiMovement;
+import characters.Movement.Movement;
 import characters.Movement.UserMovement;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
+import org.json.simple.JSONObject;
+import screen.LoadGame;
 import tools.CharacterRenderer;
 import tools.Controller;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,26 +25,32 @@ import static screen.Gameplay.TILE_SIZE;
  * Main player object for the game.
  */
 public class Player extends Entity {
+    /**
+     * The handler for all enemy entities
+     */
     public final EnemyManager enemyManager;
-    public boolean ishealing;
-    public Map<Integer,IAbility> abilityMap;
-
+    /**
+     * Whether the player is healing
+     */
+    public boolean isHealing;
 
     /**
-     * The time since the target for the AI movement system was last updated
+     * A list of player abilities
+     * (Indexed by the key press required to apply the ability)
+     * Key S - globalSlowDownAbility
+     * Key D - reinforcedSystemsAbility
+     * Key F - markInfiltratorAbility
      */
-    private final float timeSinceEnemyTargetUpdated = 0;
+    public Map<Integer, IAbility> abilityMap;
+
     /**
-     * The x and y coordinates of the Jail
+     * The health of the player
      */
-    //private final Vector2 jailPosition;
     public float health;
-    //public int arrestedCount = 0;
-    private boolean arrestPressed;
     /**
-     * How often to change the target of the ai system (in seconds)
+     * Whether the arrest key has been pressed
      */
-    private final float refreshAiEnemyTarget = 0.25f;
+    private boolean isArrestPressed;
 
     /**
      * The range in which the AI Player can arrest Enemies (In pixels)
@@ -60,9 +71,26 @@ public class Player extends Entity {
         this.enemyManager = new EnemyManager(world, map);
         this.movementSystem.b2body.setUserData("auber");
         this.health = 100f;
-        this.ishealing = false;
-        arrestPressed = false;
+        this.isHealing = false;
+        isArrestPressed = false;
         creatAbilities();
+    }
+
+    /**
+     * Builds a Player instance from the provided JSON Object
+     *
+     * @param object The json object to load the data from
+     */
+    public Player(World world, TiledMap map, JSONObject object) {
+        super(CharacterRenderer.Sprite.AUBER);
+        LoadGame.validateAndLoadObject(object, "entity_type", "auber");
+        this.health = LoadGame.loadObject(object, "health", Float.class);
+        this.isHealing = LoadGame.loadObject(object, "is_healing", Boolean.class);
+        this.isArrestPressed = LoadGame.loadObject(object, "is_arrest_pressed", Boolean.class);
+        this.movementSystem = Movement.loadMovement(this, world, LoadGame.loadObject(object, "movement",
+                JSONObject.class));
+        this.enemyManager = new EnemyManager(world, LoadGame.loadObject(object, "enemy_manager", JSONObject.class));
+        // TODO Add ability
     }
 
     private void creatAbilities() {
@@ -91,7 +119,7 @@ public class Player extends Entity {
      * @param isheal set ishealing to true or false
      */
     public void setHealing(boolean isheal) {
-        ishealing = isheal;
+        isHealing = isheal;
     }
 
     /**
@@ -112,7 +140,7 @@ public class Player extends Entity {
             setHealing(false);
         }
         // healing process
-        if (ishealing) {
+        if (isHealing) {
             // adjust healing amount accordingly
             health += 20f * delta;
             if (health > 100f) {
@@ -146,8 +174,9 @@ public class Player extends Entity {
             }
         }
         if (Controller.isArrestPressed()) {
-            arrestPressed = true;
+            isArrestPressed = true;
         }
+        //TODO Change this to entrySet
 
         for (int key : abilityMap.keySet()) {
             if (Controller.isKeyPressed(key)) {
@@ -165,12 +194,47 @@ public class Player extends Entity {
         }
     }
 
+    @Override
+    public JSONObject save() {
+        JSONObject state = new JSONObject();
+        state.put("object_type", "entity");
+        state.put("entity_type", "auber");
+        state.put("health", this.health);
+        state.put("is_healing", this.isHealing);
+        state.put("is_arrest_pressed", this.isArrestPressed);
+        state.put("movement", this.movementSystem.save());
+        state.put("enemy_manager", this.enemyManager.save());
+
+        return state;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (!(o instanceof Player)) {
+            return false;
+        }
+        Player other = (Player) o;
+        if (!((Entity) this).equals(o)) {
+            return false;
+        }
+        if (this.movementSystem.equals(other.movementSystem)) {
+            return false;
+        }
+        if (this.health != other.health) {
+            return false;
+        }
+        if (this.isHealing != other.isHealing) {
+            return false;
+        }
+        return this.isArrestPressed() == other.isArrestPressed();
+    }
 
     public boolean isArrestPressed() {
-        return this.arrestPressed;
+        return this.isArrestPressed;
     }
 
     public void setArrestPressed(boolean value) {
-        this.arrestPressed = value;
+        this.isArrestPressed = value;
     }
 }
