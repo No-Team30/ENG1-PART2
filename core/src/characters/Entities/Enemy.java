@@ -116,7 +116,7 @@ public class Enemy extends Entity {
      */
     public void sabotage(Systems system) {
         //if player use reinforced systems ability,systems will not be sabotaged
-        if (system.reinforced) return;
+        if (system.isReinforced()) return;
 
         if (system.hp > 0) {
             system.hp -= systemDamage;

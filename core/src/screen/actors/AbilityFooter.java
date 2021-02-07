@@ -2,9 +2,12 @@ package screen.actors;
 
 import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
+import java.security.Key;
 
 public class AbilityFooter extends Label {
 
@@ -31,34 +34,17 @@ public class AbilityFooter extends Label {
      *
      * @param auber player
      */
-    public void update_abilities(Player auber) {
-        int jailedCount = auber.enemyManager.getJailedCount();
-        String speedUpText = "S: Slowdown ";
-        if (auber.globalSlowDownAbility.inUse()) {
-            speedUpText += "Using\n";
-        } else if (auber.globalSlowDownAbility.isReady) {
-            speedUpText += "Ready\n";
-        } else {
-            speedUpText += String.format(" CD:%.2f/%.2f\n", auber.globalSlowDownAbility.getCooldownTimeTiming(), auber.globalSlowDownAbility.getCooldownTime());
+    public void updateAbilities(Player auber) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int key:auber.abilityMap.keySet()) {
+            sb.append(Input.Keys.toString(key) +": "+ auber.abilityMap.get(key).toString()+"\n");
         }
 
-        String reinforcedText = "D: Reinforced Systems ";
-        reinforcedText += auber.reinforcedSystemsAbility.isReady ? "Ready\n" : "Used\n";
+        setText(sb.toString());
 
-        String markInfiltratorText = "F: Mark Infiltrators ";
-        if (auber.markInfiltratorAbility.inUse()) {
-            markInfiltratorText += "Using\n";
-        } else if (auber.markInfiltratorAbility.isReady) {
-            markInfiltratorText += "Ready\n";
-        } else {
-            markInfiltratorText += String.format(" CD:%.2f/%.2f\n", auber.markInfiltratorAbility.getCooldownTimeTiming(), auber.markInfiltratorAbility.getCooldownTime());
-        }
-
-        setText(speedUpText + reinforcedText + markInfiltratorText);
-        if (jailedCount > 0) {
-            setColor(Color.GREEN);
-        }
     }
-
-
 }
+
+
+

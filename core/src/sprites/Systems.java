@@ -8,7 +8,15 @@ public class Systems extends InteractiveTileObject {
 
     public String sysName;
     public float hp;
-    public boolean reinforced;
+    private boolean reinforced;
+
+    public void setReinforced(boolean reinforced) {
+        this.reinforced = reinforced;
+    }
+
+    public boolean isReinforced() {
+        return reinforced;
+    }
 
     /**
      * Creates a new instantiated System object.

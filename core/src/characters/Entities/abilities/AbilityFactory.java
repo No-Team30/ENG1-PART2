@@ -21,7 +21,7 @@ public class AbilityFactory {
      */
     public static AbilityBase<? extends Entity, ? extends Entity> randomAbility() {
         Random random = new Random();
-        switch (random.nextInt(6000)) {
+        switch (random.nextInt(6)) {
             case 0:
                 return new AttackPlayerAbility();
             case 1:

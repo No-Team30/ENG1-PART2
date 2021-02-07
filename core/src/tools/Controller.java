@@ -27,9 +27,7 @@ public abstract class Controller {
     }
 
     public static boolean isArrestPressed() { return Gdx.input.isKeyPressed(Input.Keys.A); }
-    public static boolean isAbility1Pressed() { return Gdx.input.isKeyPressed(Input.Keys.S); }
-    public static boolean isAbility2Pressed() { return Gdx.input.isKeyPressed(Input.Keys.D); }
-    public static boolean isAbility3Pressed() { return Gdx.input.isKeyPressed(Input.Keys.F); }
+    public static boolean isKeyPressed(int key) { return Gdx.input.isKeyPressed(key); }
 
     /**
      * sets the controls of the user

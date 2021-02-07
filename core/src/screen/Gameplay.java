@@ -156,7 +156,7 @@ public class Gameplay implements Screen {
         npcManager.updateNpc(delta);
         systemStatusMenu.update_status(systems);
         arrestedHeader.update_Arrested(player);
-        abilityFooter.update_abilities(player);
+        abilityFooter.updateAbilities(player);
         // if escape is pressed pause the game
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();

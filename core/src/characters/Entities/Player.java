@@ -3,13 +3,15 @@ package characters.Entities;
 import characters.Entities.abilities.*;
 import characters.Movement.AiMovement;
 import characters.Movement.UserMovement;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.physics.box2d.World;
 import tools.CharacterRenderer;
 import tools.Controller;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static screen.Gameplay.TILE_SIZE;
 
@@ -20,10 +22,8 @@ import static screen.Gameplay.TILE_SIZE;
 public class Player extends Entity {
     public final EnemyManager enemyManager;
     public boolean ishealing;
-    private List<IAbility> abilities;
-    public GlobalSlowDownAbility globalSlowDownAbility;
-    public ReinforcedSystemsAbility reinforcedSystemsAbility;
-    public MarkInfiltratorAbility markInfiltratorAbility;
+    public Map<Integer,IAbility> abilityMap;
+
 
     /**
      * The time since the target for the AI movement system was last updated
@@ -68,21 +68,21 @@ public class Player extends Entity {
     private void creatAbilities() {
 
 
-        globalSlowDownAbility = new GlobalSlowDownAbility();
+        GlobalSlowDownAbility globalSlowDownAbility = new GlobalSlowDownAbility();
         globalSlowDownAbility.setHost(this);
         globalSlowDownAbility.setTarget(this);
 
-        reinforcedSystemsAbility = new ReinforcedSystemsAbility();
+        ReinforcedSystemsAbility reinforcedSystemsAbility = new ReinforcedSystemsAbility();
         reinforcedSystemsAbility.setHost(this);
 
 
-        markInfiltratorAbility = new MarkInfiltratorAbility();
+        MarkInfiltratorAbility markInfiltratorAbility = new MarkInfiltratorAbility();
         markInfiltratorAbility.setHost(this);
 
-        abilities = new ArrayList<>();
-        abilities.add(globalSlowDownAbility);
-        abilities.add(reinforcedSystemsAbility);
-        abilities.add(markInfiltratorAbility);
+        abilityMap = new TreeMap<>();
+        abilityMap.put(Input.Keys.S,globalSlowDownAbility);
+        abilityMap.put(Input.Keys.D,reinforcedSystemsAbility);
+        abilityMap.put(Input.Keys.F,markInfiltratorAbility);
     }
 
     /**
@@ -148,22 +148,19 @@ public class Player extends Entity {
         if (Controller.isArrestPressed()) {
             arrestPressed = true;
         }
-        if (Controller.isAbility1Pressed()) {
-            globalSlowDownAbility.setTarget(this);
-            globalSlowDownAbility.tryUseAbility();
+
+        for (int key : abilityMap.keySet()) {
+            if (Controller.isKeyPressed(key)) {
+                IAbility ability = abilityMap.get(key);
+                ability.setTarget(this);
+                ability.tryUseAbility();
+            }
         }
-        if (Controller.isAbility2Pressed()) {
-            reinforcedSystemsAbility.setTarget(this);
-            reinforcedSystemsAbility.tryUseAbility();
-        }
-        if (Controller.isAbility3Pressed()) {
-            markInfiltratorAbility.setTarget(this);
-            markInfiltratorAbility.tryUseAbility();
-        }
+
         // should be called each loop of rendering
         healing(delta);
 
-        for (IAbility ability : abilities) {
+        for (IAbility ability : abilityMap.values()) {
             ability.update(delta);
         }
     }

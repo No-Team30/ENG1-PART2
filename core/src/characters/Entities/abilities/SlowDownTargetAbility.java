@@ -21,7 +21,7 @@ public class SlowDownTargetAbility extends AbilityBase<Entity, Entity> {
     }
 
     /**
-     * end to use ability when ability useTiming is form n to 0;you can remove the ability effect here.
+     * end to use ability when ability useTiming is from n to 0;you can remove the ability effect here.
      */
     @Override
     public void endUseAbility() {

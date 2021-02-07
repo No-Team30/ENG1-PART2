@@ -3,11 +3,12 @@ package characters.Entities.abilities;
 import characters.Entities.Entity;
 import characters.Entities.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.team3.game.GameMain;
 import screen.Gameplay;
 
 /**
- * Create ability to slow down player's speed.
+ * Create ability for player which is used to slow down npc and enemies.
  */
 public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
     public static final float SLOWDOWN =2f;
@@ -31,7 +32,7 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Entity entity : Gameplay.player.enemyManager.getActiveEnemies()) {
+        for (Entity entity : gameplay.player.enemyManager.getActiveEnemies()) {
             entity.movementSystem.speed /= SLOWDOWN;
         }
         for (Entity entity : gameplay.npcManager.npcs) {
@@ -50,11 +51,24 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Entity entity : Gameplay.player.enemyManager.getActiveEnemies()) {
+        for (Entity entity : gameplay.player.enemyManager.getActiveEnemies()) {
             entity.movementSystem.speed *= SLOWDOWN;
         }
         for (Entity entity : gameplay.npcManager.npcs) {
             entity.movementSystem.speed *= SLOWDOWN;
         }
+    }
+
+    @Override
+    public String toString() {
+        String str = "Slowdown ";
+        if (this.inUse()) {
+            str += "Using";
+        } else if (this.isReady()) {
+            str += "Ready";
+        } else {
+            str += String.format(" CD:%.2f/%.2f", this.getCooldownTimeTiming(), this.getCooldownTime());
+        }
+        return str;
     }
 }

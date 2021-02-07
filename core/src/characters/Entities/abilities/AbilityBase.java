@@ -13,9 +13,13 @@ public abstract class AbilityBase<THost extends Entity, TTarget extends Entity> 
 
     protected boolean isDisabled;
 
+    //Used to set the time that an ability can be used
     public float useTime = 30;
+    //Used to calculate the time change by delta when the ability is being used
     public float useTimeTiming = 0;
+    //Used to set the amount of time an ability needs to cool down
     public float cooldownTime = 30;
+    //Used to calculate the time change by delta when the ability is being cooled down
     public float cooldownTimeTiming = 0;
 
     public boolean isReady;

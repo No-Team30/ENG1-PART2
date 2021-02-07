@@ -2,9 +2,15 @@ package characters.Entities.abilities;
 
 import characters.Entities.Entity;
 import characters.Entities.Player;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.team3.game.GameMain;
 import screen.Gameplay;
 import sprites.Systems;
 
+/**
+ * Create ability for player which is used to keep the system from being damaged.
+ */
 public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
 
     public ReinforcedSystemsAbility() {
@@ -17,18 +23,39 @@ public class ReinforcedSystemsAbility extends AbilityBase<Player, Entity> {
      */
     @Override
     public void beginUseAbility() {
-        for (Systems systems : Gameplay.systems) {
-            systems.reinforced = true;
+        GameMain gameMain = (GameMain) Gdx.app.getApplicationListener();
+        if (gameMain == null) return;
+
+        Gameplay gameplay = (Gameplay) gameMain.getScreen();
+        if (gameplay == null) return;
+
+        for (Systems systems : gameplay.systems) {
+            systems.setReinforced(true);
         }
     }
 
     /**
-     * end to use ability when ability useTiming is form n to 0;you can remove the ability effect here.
+     * end to use ability when ability useTiming is from n to 0;you can remove the ability effect here.
      */
     @Override
     public void endUseAbility() {
-        for (Systems systems : Gameplay.systems) {
-            systems.reinforced = false;
+        GameMain gameMain = (GameMain) Gdx.app.getApplicationListener();
+        if (gameMain == null) return;
+
+        Gameplay gameplay = (Gameplay) gameMain.getScreen();
+        if (gameplay == null) return;
+
+        for (Systems systems : gameplay.systems) {
+            systems.setReinforced(false);
         }
+    }
+
+    @Override
+    public String toString() {
+        String str = "Reinforced Systems ";
+        if (this.inUse()) {
+            str += "Using";}
+        else str += this.isReady() ? "Ready" : "Used";
+        return str;
     }
 }
