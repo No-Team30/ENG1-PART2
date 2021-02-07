@@ -1,0 +1,65 @@
+@startuml
+node Startup {
+    [Launcher]
+    [Main Menu]
+}
+database Assets {
+    [Map]
+    [Textures]
+}
+node Entities {
+    [Entity]
+    [Player]
+    [Enemy]
+    [NPC]
+}
+node Actors {
+    [System Status Menu]
+    [Teleport Menu]
+    [Pause Menu]
+    [Settings Menu]
+}
+node Sprites {
+    [Teleporter]
+    [System]
+    [Healing Pod]
+}
+node MovementSystems{
+    [Movement]
+    [AiMovement]
+    [UserMovement]
+}
+[Launcher] --> [Main Menu]: Launches
+[Main Menu] --> [Main Game]: Selects
+[Main Game] --> Assets: Loads
+[Main Game] --> [Game World]: Has
+[Main Game] --> [Hud]: Shows
+[Enemy Manager] --> [Enemy]: Controls
+[Enemy] --> [Ability]: Uses
+[Enemy] --> [System]: Sabotages
+[Player] --> [Enemy]: Arrests
+[Player] --> [Ability]: Uses
+[Teleporter] --> [Player]: Teleports
+[Healing Pod] --> [Player]: Heals
+Characters --> [Game World]: Are in
+[Renderer] --> [Game World]: Renders
+[Game World] --> [Contact Listener]: Uses
+[Key Controls] --> [Player]: Controls
+[Pause Menu] --> [Settings Menu]: Opens
+[Settings Menu] --> [Key Controls]: Changes
+[Hud] --> Actors: Shows
+[System] --> [System Status Menu]: Informs
+[NPC Manager] --> [NPC]: Controls
+[Character Renderer] --> Characters: Renders
+[Teleport Menu] --> [Teleport Process]: Informs
+[Teleport Process] --> [Teleporter]: Controls function
+[Teleporter] --> [Enemy]: Teleports to jail
+
+
+[Entity]-->[Player]
+[Entity]-->[Enemy]
+[Entity]-->[NPC]
+[Movement]-->[AiMovement]
+[Movement]-->[UserMovement]
+MovementSystems-->Entities: Controls
+@enduml

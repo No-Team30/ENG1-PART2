@@ -2,7 +2,6 @@ package com.team3.game.desktop;
 
 import characters.Entities.Enemy;
 import characters.Entities.EnemyManager;
-import characters.Entities.NpcManager;
 import characters.Entities.abilities.*;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -25,7 +24,7 @@ class TestGame extends GameMain {
     }
 
     public void newGame() {
-        gameplay = new Gameplay(this);
+        gameplay = new Gameplay(this, false);
         setScreen(gameplay);
     }
 }
@@ -184,7 +183,7 @@ class DesktopLauncherTest {
         //Replace all enemies' ability to HigherSystemDamagerAbility
         for (Enemy enemy : enemies) {
 
-            enemy.ability = new HigherSystemDamagerAbility();
+            enemy.ability = new HigherSystemDamageAbility();
         }
 
         //Repeat i times to make sure the skill can be used repeatedly
