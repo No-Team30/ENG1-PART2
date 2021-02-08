@@ -237,12 +237,16 @@ public class ObjectContactListener implements ContactListener {
         Door door = null;
         if (is_Doors(fixB) && fixB.getBody().getUserData() instanceof Door) {
             door = (Door) fixB.getBody().getUserData();
-        } else if (is_Doors(fixB) && fixB.getBody().getUserData() instanceof Door) {
+            // Unlock the door, if an auber or enemy are passing through
+            if (is_Auber(fixA) || is_Enemy(fixA)) {
+                contact.setEnabled(door.isLocked());
+            }
+        } else if (is_Doors(fixA) && fixA.getBody().getUserData() instanceof Door) {
             door = (Door) fixA.getBody().getUserData();
-        }
-        // Unlock the door, if an auber or enemy are passing through
-        if ((is_Auber(fixA) || is_Enemy(fixA) || is_Auber(fixB) || is_Enemy(fixB)) && door != null) {
-            contact.setEnabled(door.isLocked());
+            // Unlock the door, if an auber or enemy are passing through
+            if (is_Auber(fixB) || is_Enemy(fixB)) {
+                contact.setEnabled(door.isLocked());
+            }
         }
     }
 
