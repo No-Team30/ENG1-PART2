@@ -305,7 +305,6 @@ public class AiMovement extends Movement {
     @Override
     public JSONObject save() {
         JSONObject state = super.save();
-        System.out.println(state);
         state.put("movement_type", "ai_movement");
         state.put("dest_x_position", this.destX);
         state.put("dest_y_position", this.destY);

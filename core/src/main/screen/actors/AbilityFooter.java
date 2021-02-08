@@ -1,6 +1,7 @@
 package screen.actors;
 
 import characters.Entities.Player;
+import characters.Entities.abilities.IAbility;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import java.security.Key;
+import java.util.Map;
 
 public class AbilityFooter extends Label {
 
@@ -35,10 +37,9 @@ public class AbilityFooter extends Label {
      * @param auber player
      */
     public void updateAbilities(Player auber) {
-
         StringBuilder sb = new StringBuilder();
-        for (int key:auber.abilityMap.keySet()) {
-            sb.append(Input.Keys.toString(key) +": "+ auber.abilityMap.get(key).toString()+"\n");
+        for (Map.Entry< Integer, IAbility> entry:auber.abilityMap.entrySet()) {
+            sb.append(Input.Keys.toString(entry.getKey()) +": "+ entry.getValue().toString()+"\n");
         }
 
         setText(sb.toString());

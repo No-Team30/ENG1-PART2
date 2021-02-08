@@ -8,11 +8,15 @@ import org.json.simple.JSONObject;
 import screen.Gameplay;
 import screen.LoadGame;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Create ability for player which is used to slow down npc and enemies.
  */
 public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
     public static final float SLOWDOWN = 2f;
+    private List<Entity> influenceEntities = new ArrayList<>();
 
     public GlobalSlowDownAbility() {
         useTime = 5;
@@ -48,9 +52,7 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
 
         for (Entity entity : Gameplay.getInstance().player.enemyManager.getActiveEnemies()) {
             entity.movementSystem.speed /= SLOWDOWN;
-        }
-        for (Entity entity : gameplay.npcManager.npcs) {
-            entity.movementSystem.speed /= SLOWDOWN;
+            influenceEntities.add(entity);
         }
     }
 
@@ -59,16 +61,7 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
      */
     @Override
     public void endUseAbility() {
-        GameMain gameMain = (GameMain) Gdx.app.getApplicationListener();
-        if (gameMain == null) return;
-
-        Gameplay gameplay = (Gameplay) gameMain.getScreen();
-        if (gameplay == null) return;
-
-        for (Entity entity : Gameplay.getInstance().player.enemyManager.getActiveEnemies()) {
-            entity.movementSystem.speed *= SLOWDOWN;
-        }
-        for (Entity entity : gameplay.npcManager.npcs) {
+        for (Entity entity : influenceEntities) {
             entity.movementSystem.speed *= SLOWDOWN;
         }
     }

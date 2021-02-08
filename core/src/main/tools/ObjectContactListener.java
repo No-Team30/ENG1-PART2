@@ -46,11 +46,13 @@ public class ObjectContactListener implements ContactListener {
             System.out.println("Failed");
         }
         isTeleport = Pattern.matches(teleportPattern, fixB.getBody().getUserData().toString());
+
         // use reg to check whether the object contacted is a healpod
         isHealingPod = Pattern.matches(healingPattern, fixB.getBody().getUserData().toString());
 
         // only auber contact with teleport will be listened
-        if (isTeleport && fixA.getBody().getUserData() == "auber") {
+        if (isTeleport && fixA.getBody().getUserData().equals("auber")) {
+            System.out.println("Player is raedy top telpeort");
             // set the player.UserData to ready_to_teleport for teleport_process
             fixA.getBody().setUserData("ready_to_teleport");
         }
@@ -237,12 +239,16 @@ public class ObjectContactListener implements ContactListener {
         Door door = null;
         if (is_Doors(fixB) && fixB.getBody().getUserData() instanceof Door) {
             door = (Door) fixB.getBody().getUserData();
-        } else if (is_Doors(fixB) && fixB.getBody().getUserData() instanceof Door) {
+            // Unlock the door, if an auber or enemy are passing through
+            if (is_Auber(fixA) || is_Enemy(fixA)) {
+                contact.setEnabled(door.isLocked());
+            }
+        } else if (is_Doors(fixA) && fixA.getBody().getUserData() instanceof Door) {
             door = (Door) fixA.getBody().getUserData();
-        }
-        // Unlock the door, if an auber or enemy are passing through
-        if ((is_Auber(fixA) || is_Enemy(fixA) || is_Auber(fixB) || is_Enemy(fixB)) && door != null) {
-            contact.setEnabled(door.isLocked());
+            // Unlock the door, if an auber or enemy are passing through
+            if (is_Auber(fixB) || is_Enemy(fixB)) {
+                contact.setEnabled(door.isLocked());
+            }
         }
     }
 
