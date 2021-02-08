@@ -50,7 +50,7 @@ public class GlobalSlowDownAbility extends AbilityBase<Player, Entity> {
         Gameplay gameplay = (Gameplay) gameMain.getScreen();
         if (gameplay == null) return;
 
-        for (Entity entity : Gameplay.player.enemyManager.getActiveEnemies()) {
+        for (Entity entity : Gameplay.getInstance().player.enemyManager.getActiveEnemies()) {
             entity.movementSystem.speed /= SLOWDOWN;
             influenceEntities.add(entity);
         }

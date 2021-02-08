@@ -114,8 +114,8 @@ public class NpcManager {
             destcount += 1;
             // pic for NPC needed
             Npc npc = new Npc(world, spawn.x, spawn.y);
-            ((AiMovement) npc.movementSystem).setDestination(dest.x, dest.y);
-            ((AiMovement) npc.movementSystem).moveToDestination();
+/*            ((AiMovement) npc.movementSystem).setDestination(dest.x, dest.y);
+            ((AiMovement) npc.movementSystem).moveToDestination();*/
             npcs.add(npc);
 
         }

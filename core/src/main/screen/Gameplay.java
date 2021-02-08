@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
 import map.Map;
+import map.Node;
 import org.json.simple.JSONObject;
 import screen.actors.*;
 import sprites.Door;
@@ -39,15 +40,15 @@ import java.util.stream.Collectors;
  */
 public class Gameplay implements Screen {
 
+    public final TiledMap map;
+
     public static final int TILE_SIZE = 64;
 
     private final GameMain game;
+    public ArrayList<Door> doors;
 
-    public static ArrayList<Door> doors = new ArrayList<>();
-
-    public static ArrayList<Systems> systems = new ArrayList<>();
-
-    public static Player player;
+    public ArrayList<Systems> systems;
+    public Player player;
     /**
      * Whether the game is in demo mode
      */
@@ -74,8 +75,7 @@ public class Gameplay implements Screen {
     public AbilityFooter abilityFooter;
 
     private final TmxMapLoader maploader;
-
-    protected final TiledMap map;
+    private boolean isSaveRequested = false;
 
     private final OrthogonalTiledMapRenderer renderer;
 
@@ -102,6 +102,7 @@ public class Gameplay implements Screen {
      * @param screenSize size of the rendered game screen, doesn't effect screen size
      */
     protected Gameplay(GameMain game, Vector2 screenSize, Boolean isDemo) {
+        Node.nextIndex = 0;
         this.isDemo = isDemo;
         this.game = game;
         // create a box2D world
@@ -122,6 +123,8 @@ public class Gameplay implements Screen {
         viewport = new FitViewport(screenSize.x, screenSize.y, camera);
         // create a new background Render
         backgroundRenderer = new BackgroundRenderer(game.getBatch(), viewport);
+        this.systems = new ArrayList<>();
+        this.doors = new ArrayList<>();
 
     }
 
@@ -281,10 +284,13 @@ public class Gameplay implements Screen {
     }
 
     private static final int[] forgroundLayers = new int[]{3};
-    private static boolean isSaveRequested = false;
 
-    public static void requestSave() {
-        Gameplay.isSaveRequested = true;
+    public static Gameplay getInstance() {
+        return (Gameplay) ((GameMain) Gdx.app.getApplicationListener()).getScreen();
+    }
+
+    public void requestSave() {
+        this.isSaveRequested = true;
     }
 
     @Override
@@ -297,7 +303,7 @@ public class Gameplay implements Screen {
      * Saves the game state into a json file (LoadGame.saveName)
      */
     public void saveGame() {
-        Gameplay.isSaveRequested = false;
+        this.isSaveRequested = false;
         System.out.println("Saving game");
         if (!Gdx.files.isLocalStorageAvailable()) {
             throw new FileSystemNotFoundException("Local file access is unavailable!");
@@ -305,7 +311,8 @@ public class Gameplay implements Screen {
         JSONObject state = new JSONObject();
         //state.put("EnemyManager", this.enemyManager.save());
         state.put("npc_manager", this.npcManager.save());
-        state.put("player", Gameplay.player.save());
+        state.put("is_demo_mode", this.isDemo);
+        state.put("player", this.player.save());
         state.put("systems", systems.stream().map(Systems::save).collect(Collectors.toList()));
         FileHandle handle = Gdx.files.local(LoadGame.saveName);
         handle.writeString(state.toJSONString(), false);
@@ -373,7 +380,7 @@ public class Gameplay implements Screen {
     @Override
     public void render(float delta) {
         // Execute a save, if it is requested
-        if (Gameplay.isSaveRequested) {
+        if (this.isSaveRequested) {
             this.saveGame();
         }
         // if the game is not paused, update it
@@ -384,7 +391,9 @@ public class Gameplay implements Screen {
         } else if (this.hud.pauseMenu.resume()) {
             resume();
         } else if (this.hud.pauseMenu.exit()) {
-            Gdx.app.exit();
+            GameMain game = (GameMain) Gdx.app.getApplicationListener();
+            game.setScreen(new MainMenu(game.getBatch()));
+            //Gdx.app.exit();
         }
 
 

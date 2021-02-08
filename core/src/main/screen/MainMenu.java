@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.team3.game.GameMain;
+import org.json.simple.parser.ParseException;
 import tools.BackgroundRenderer;
 
 /**
@@ -70,6 +71,7 @@ public class MainMenu implements Screen {
         TextButton playButton = new TextButton("Play", skin);
         TextButton loadButton = new TextButton("Load", skin);
         TextButton demoButton = new TextButton("Demo", skin);
+        TextButton exitButton = new TextButton("Exit", skin);
 
         // creates a listener to listen for clicks on the button
         // when button is clicked start an instance of Gameplay to start playing the game
@@ -84,7 +86,11 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 GameMain game = (GameMain) Gdx.app.getApplicationListener();
-                game.setScreen(new LoadGame(game));
+                try {
+                    game.setScreen(LoadGame.LoadGameFromFile(game));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
         demoButton.addListener(new ClickListener() {
@@ -92,6 +98,12 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 GameMain game = (GameMain) Gdx.app.getApplicationListener();
                 game.setScreen(new GameDemo(game));
+            }
+        });
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
             }
         });
 
@@ -104,6 +116,8 @@ public class MainMenu implements Screen {
         root.add(loadButton);
         root.row();
         root.add(demoButton);
+        root.row();
+        root.add(exitButton);
 
         stage.addActor(root);
     }
