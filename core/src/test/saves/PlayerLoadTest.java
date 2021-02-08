@@ -11,7 +11,7 @@ public class PlayerLoadTest {
 
     public PlayerLoadTest() {
         GameMain game = new GameMain();
-        gameplay = new Gameplay(game);
+        //gameplay = new Gameplay(game);
     }
 
     @Test
