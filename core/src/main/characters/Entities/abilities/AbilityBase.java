@@ -76,6 +76,8 @@ public abstract class AbilityBase<THost extends Entity, TTarget extends Entity> 
                 return new GlobalSlowDownAbility(object);
             case "mark_infiltrator":
                 return new MarkInfiltratorAbility(object);
+            case "inactive":
+                return new InactiveAbility(object);
             default:
                 throw new IllegalArgumentException("ability_type parameter, does not match any known ability " +
                         "types (" + abilityType + ")");

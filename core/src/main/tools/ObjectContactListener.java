@@ -46,11 +46,13 @@ public class ObjectContactListener implements ContactListener {
             System.out.println("Failed");
         }
         isTeleport = Pattern.matches(teleportPattern, fixB.getBody().getUserData().toString());
+
         // use reg to check whether the object contacted is a healpod
         isHealingPod = Pattern.matches(healingPattern, fixB.getBody().getUserData().toString());
 
         // only auber contact with teleport will be listened
-        if (isTeleport && fixA.getBody().getUserData() == "auber") {
+        if (isTeleport && fixA.getBody().getUserData().equals("auber")) {
+            System.out.println("Player is raedy top telpeort");
             // set the player.UserData to ready_to_teleport for teleport_process
             fixA.getBody().setUserData("ready_to_teleport");
         }

@@ -1,5 +1,6 @@
 package characters.Entities;
 
+import characters.Entities.abilities.InactiveAbility;
 import characters.Movement.AiMovement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
@@ -295,7 +296,7 @@ public class EnemyManager {
         while (this.haveEnemiesBeenArrested()) {
             Enemy enemy = this.arrestedEnemies.remove(0);
             enemy.targetSystem = null;
-            enemy.ability = null;
+            enemy.ability = new InactiveAbility();
             if (this.availableJailPositions.size() == 0) {
                 throw new RuntimeException("Not enough jail positions for enemies!");
             }
@@ -348,7 +349,8 @@ public class EnemyManager {
         System.out.println("Arresting enemy: " + enemy);
         this.arrestedEnemies.add(enemy);
         this.activeEnemies.remove(enemy);
-        enemy.ability.setDisable(true);
+        enemy.ability = new InactiveAbility();
+        System.out.println("Set new abilitu");
         // stop enemy's sabotaging if it does
         enemy.set_ArrestedMode();
         // set enemy destination to auber's left,enemy should follow auber until it is in jail
