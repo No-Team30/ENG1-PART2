@@ -24,12 +24,12 @@ public class WinLoseScreen implements Screen {
 
     private final Boolean isDemo;
     private float elapsedTime = 0f;
-    private Viewport viewport;
-    private OrthographicCamera camera;
-    private TextureAtlas atlas;
-    private Stage stage;
-    private Skin skin;
-    private String status;
+    private final Viewport viewport;
+    private final OrthographicCamera camera;
+    private final TextureAtlas atlas;
+    private final Stage stage;
+    private final Skin skin;
+    private final String status;
 
     /**
      * Create an instantiated instance of the win or lose screen.
@@ -100,7 +100,7 @@ public class WinLoseScreen implements Screen {
     public void render(float delta) {
         this.elapsedTime += delta;
         // Auto replay demo mode after 10 seconds
-        if (this.isDemo && this.elapsedTime >= 1) {
+        if (this.isDemo && this.elapsedTime >= 10) {
             // TODO Crashes on restarting the game
             GameMain game = (GameMain) Gdx.app.getApplicationListener();
             game.create();

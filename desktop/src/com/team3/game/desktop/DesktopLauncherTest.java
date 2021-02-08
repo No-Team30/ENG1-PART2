@@ -88,7 +88,7 @@ class DesktopLauncherTest {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
         Thread.sleep(50);
 
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
 
 
         //Replace all enemies' ability to ghostModeAbility
@@ -103,7 +103,7 @@ class DesktopLauncherTest {
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
                 assert enemy.ability.isReady();
-                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.setTarget(Gameplay.getInstance().player);
                 enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -133,7 +133,7 @@ class DesktopLauncherTest {
     void testSpeedingUpAbility() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
 
         //Replace all enemies' ability to SpeedingUpAbility
         for (Enemy enemy : enemies) {
@@ -147,7 +147,7 @@ class DesktopLauncherTest {
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
                 assert enemy.ability.isReady();
-                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.setTarget(Gameplay.getInstance().player);
                 enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -177,7 +177,7 @@ class DesktopLauncherTest {
     void testHigherSystemDamagerAbility() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
 
 
         //Replace all enemies' ability to HigherSystemDamagerAbility
@@ -192,7 +192,7 @@ class DesktopLauncherTest {
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
                 assert enemy.ability.isReady();
-                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.setTarget(Gameplay.getInstance().player);
                 enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -222,7 +222,7 @@ class DesktopLauncherTest {
     void testSlowDownPlayerAbility() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
 
 
         //Replace all enemies' ability to SlowDownPlayerAbility
@@ -233,11 +233,11 @@ class DesktopLauncherTest {
 
         //Repeat i times to make sure the skill can be used repeatedly
         for (int i = 0; i <= 3; i++) {
-            float speedBackup = Gameplay.player.movementSystem.speed;
+            float speedBackup = Gameplay.getInstance().player.movementSystem.speed;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
                 assert enemy.ability.isReady();
-                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.setTarget(Gameplay.getInstance().player);
                 enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -247,7 +247,7 @@ class DesktopLauncherTest {
                 assert enemy.ability.inUse();
                 assert (enemy.ability.getUseTimeTiming() > 0);
             }
-            assert (Gameplay.player.movementSystem.speed == speedBackup * Math.pow(0.5f, enemies.size()));
+            assert (Gameplay.getInstance().player.movementSystem.speed == speedBackup * Math.pow(0.5f, enemies.size()));
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -256,7 +256,7 @@ class DesktopLauncherTest {
             for (Enemy enemy : enemies) {
                 assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
-            assert (Gameplay.player.movementSystem.speed == speedBackup);
+            assert (Gameplay.getInstance().player.movementSystem.speed == speedBackup);
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
@@ -267,7 +267,7 @@ class DesktopLauncherTest {
     void testStopPlayerAbility() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
 
 
         //Replace all enemies' ability to StopPlayerAbility
@@ -278,11 +278,11 @@ class DesktopLauncherTest {
 
         //Repeat i times to make sure the skill can be used repeatedly
         for (int i = 0; i <= 3; i++) {
-            float speedBackup = Gameplay.player.movementSystem.speed;
+            float speedBackup = Gameplay.getInstance().player.movementSystem.speed;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
                 assert enemy.ability.isReady();
-                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.setTarget(Gameplay.getInstance().player);
                 enemy.ability.tryUseAbility();
             }
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -292,7 +292,7 @@ class DesktopLauncherTest {
                 assert enemy.ability.inUse();
                 assert (enemy.ability.getUseTimeTiming() > 0);
             }
-            assert (Gameplay.player.cantMove);
+            assert (Gameplay.getInstance().player.cantMove);
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -301,7 +301,7 @@ class DesktopLauncherTest {
             for (Enemy enemy : enemies) {
                 assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
-            assert (Gameplay.player.cantMove == false);
+            assert (Gameplay.getInstance().player.cantMove == false);
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }
@@ -312,7 +312,7 @@ class DesktopLauncherTest {
     void testAttackPlayerAbility() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
         Enemy.randomUseAbilityRate = 0;//Disabled abilities are released randomly
 
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
 
 
         //Replace all enemies' ability to AttackPlayerAbility
@@ -323,12 +323,12 @@ class DesktopLauncherTest {
 
         //Repeat i times to make sure the skill can be used repeatedly
         for (int i = 0; i <= 3; i++) {
-            float healthBackup = Gameplay.player.health;
+            float healthBackup = Gameplay.getInstance().player.health;
             float DAMAGE = ((AttackPlayerAbility) enemies.get(0).ability).DAMAGE;
             //Assert that all enemies' abilities isReady and use the ability
             for (Enemy enemy : enemies) {
                 assert enemy.ability.isReady();
-                enemy.ability.setTarget(Gameplay.player);
+                enemy.ability.setTarget(Gameplay.getInstance().player);
                 enemy.ability.tryUseAbility();
                 AttackPlayerAbility ability = (AttackPlayerAbility) enemy.ability;
                 ability.contact = true;
@@ -343,7 +343,7 @@ class DesktopLauncherTest {
             }
 
             fastenAbilityUpdate(enemies, 0.1f);//Make sure the damage has been done to the player
-            assert (Gameplay.player.health <= (healthBackup - enemies.size() * DAMAGE * 0.1f));
+            assert (Gameplay.getInstance().player.health <= (healthBackup - enemies.size() * DAMAGE * 0.1f));
 
             //Mark out of contact  to avoid excessive sustained damage
             for (Enemy enemy : enemies) {
@@ -351,7 +351,7 @@ class DesktopLauncherTest {
                 ability.contact = false;
             }
 
-            healthBackup = Gameplay.player.health;
+            healthBackup = Gameplay.getInstance().player.health;
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getUseTimeTiming() + 0.1f);//speed up ability getUseTimeTiming()
 
             Thread.sleep(10);//Waiting for game thread updates via sleep
@@ -361,7 +361,7 @@ class DesktopLauncherTest {
                 assert (enemy.ability.getCooldownTimeTiming() >= 0);
             }
 
-            assert (Gameplay.player.health <= healthBackup);
+            assert (Gameplay.getInstance().player.health <= healthBackup);
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
         }

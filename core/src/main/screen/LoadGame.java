@@ -19,8 +19,34 @@ import java.util.ArrayList;
 public class LoadGame extends Gameplay {
     public static final String saveName = "SaveGame.json";
 
-    public LoadGame(GameMain game) {
-        super(game, new Vector2(640, 360), false);
+    public LoadGame(GameMain game, JSONObject jsonObject) {
+        super(game, new Vector2(640, 360), loadObject(jsonObject, "is_demo_mode", Boolean.class));
+        this.systems = new ArrayList<>();
+        for (Object systemObject : LoadGame.loadObject(jsonObject, "systems", JSONArray.class)) {
+            if (!(systemObject instanceof JSONObject)) {
+                throw new IllegalArgumentException("system does not contain npc JSON Object");
+            }
+            JSONObject systemJSON = (JSONObject) systemObject;
+            LoadGame.validateAndLoadObject(systemJSON, "object_type", "system");
+            this.systems.add(Systems.loadFromJSON(world, this.map, systemJSON));
+        }
+        // Rebuild the hud for systems
+        //this.systemStatusMenu.generate_systemLabels(Gameplay.systems);
+        this.npcManager = new NpcManager(this.world, LoadGame.loadObject(jsonObject, "npc_manager",
+                JSONObject.class));
+        player = new Player(this.world, this.map, LoadGame.loadObject(jsonObject, "player",
+                JSONObject.class));
+
+        MapLayers layers = map.getLayers();
+        buildWalls(layers);
+        buildDoors(layers);
+        buildTeleports(layers);
+        buildJails(layers);
+        // Build UI elements
+        buildUI();
+    }
+
+    public static Gameplay LoadGameFromFile(GameMain game) throws ParseException {
         if (!Gdx.files.isLocalStorageAvailable()) {
             throw new FileSystemNotFoundException("Local file access is unavailable!");
         }
@@ -28,37 +54,9 @@ public class LoadGame extends Gameplay {
         // If no save exists, start a new game
         if (!handle.exists()) {
             game.setScreen(new Gameplay(game, false));
-
         }
-        try {
-            JSONObject jsonObject = (JSONObject) new JSONParser().parse(handle.readString());
-            Gameplay.systems = new ArrayList<>();
-            for (Object systemObject : LoadGame.loadObject(jsonObject, "systems", JSONArray.class)) {
-                if (!(systemObject instanceof JSONObject)) {
-                    throw new IllegalArgumentException("system does not contain npc JSON Object");
-                }
-                JSONObject systemJSON = (JSONObject) systemObject;
-                LoadGame.validateAndLoadObject(systemJSON, "object_type", "system");
-                Gameplay.systems.add(Systems.loadFromJSON(world, this.map, systemJSON));
-            }
-            // Rebuild the hud for systems
-            //this.systemStatusMenu.generate_systemLabels(Gameplay.systems);
-            this.npcManager = new NpcManager(this.world, LoadGame.loadObject(jsonObject, "npc_manager",
-                    JSONObject.class));
-            player = new Player(this.world, this.map, LoadGame.loadObject(jsonObject, "player",
-                    JSONObject.class));
-
-            MapLayers layers = map.getLayers();
-            buildWalls(layers);
-            buildDoors(layers);
-            buildTeleports(layers);
-            buildJails(layers);
-            // Build UI elements
-            buildUI();
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        JSONObject jsonObject = (JSONObject) new JSONParser().parse(handle.readString());
+        return new LoadGame(game, jsonObject);
     }
 
     /**

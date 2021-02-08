@@ -80,7 +80,7 @@ public class PauseMenu extends Menu {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gameplay.requestSave();
+                Gameplay.getInstance().requestSave();
             }
         });
         exitButton.addListener(new ClickListener() {
