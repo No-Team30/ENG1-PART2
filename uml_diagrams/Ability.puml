@@ -1,15 +1,15 @@
 @startuml
-state "Provoke Ability" as ProvokeAbility
+state "TryUseAbility" as TryUseAbility
 state "Using Ability" as UsingAbility
 state "Ability Disabled" as AbilityDisabled
 
 [*] --> Idle
-Idle -> ProvokeAbility: Auber contacts an enemy's ability object
-ProvokeAbility --> UsingAbility: Enemy uses ability
+Idle -> TryUseAbility: Auber makes contact with an enemy, or update() called
+TryUseAbility --> UsingAbility: Entity uses ability
 UsingAbility --> AbilityDisabled: Enemy is arrested
-UsingAbility --> Cooldown: 30 seconds pass
+UsingAbility --> Cooldown: 5 seconds (Or equivalent use time) pass
 Cooldown --> AbilityDisabled: Enemy is arrested
-Cooldown --> Idle: 30 seconds pass
+Cooldown --> Idle: 30 seconds(Or equivalent cooldown time) pass
 AbilityDisabled --> [*]
 Idle --> AbilityDisabled: Enemy is arrested
 @enduml
