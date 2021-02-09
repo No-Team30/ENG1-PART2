@@ -1,0 +1,18 @@
+@startuml
+start
+while (Is Game Running?) is (Yes)
+    if (Arrow key pressed) then (Yes)
+        :Move in direction of arrow key;
+    elseif (A Key pressed) then (Yes)
+        :Toggle arrest;
+    elseif (D Key pressed) then (Yes)
+        :Try to reinforce systems;
+    elseif (F Key pressed) then (Yes)
+        :Try to highlight closest infiltrator;
+    elseif (S Key pressed) then (Yes)
+        :Try to apply enemy slowdown;
+    endif
+endwhile (No)
+:End Game;
+stop
+@enduml

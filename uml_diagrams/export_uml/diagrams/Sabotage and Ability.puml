@@ -5,7 +5,9 @@ alt Enemy is near a system
         Enemy -> System: sabotage
     end
     System -> User: sabotage notification
-else Enemy is near User
-    Enemy -> User: uses ability
+else Enemy is near User and Ability is triggered on contact
+    Enemy -> User: Uses ability
+else Try trigger ability, using random probability
+    Enemy -> User: Uses ability
 end
 @enduml

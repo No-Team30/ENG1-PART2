@@ -1,28 +1,18 @@
 @startuml
 
 start
-repeat:Player Control;
+repeat:Calculate Player Logic;
     if (Is enemy in arrest range?) then (Yes)
         :Arrest Enemy;
     else (No)
     endif
     if (Is enemy following player?) then (Yes)
-        :Move "Move towards Jail";
+        :Move towards Jail;
     else (No)
         :Move towards closest enemy;
     endif
     repeat while (All enemies in jail OR Every system sabotaged) is (No)
     ->Yes;
+    :Win/Lose Screen;
 stop
-@enduml
-    "Arrest Enemy" -->"Move"
-else
-    -->[False] "Move"
-endif
-"Move" --> if "Is there one or more arrested enemies?" then
-    -->[Yes] "Move towards Jail"
-else
-    -->[No] "Move towards closest enemy"
-endif
-
 @enduml

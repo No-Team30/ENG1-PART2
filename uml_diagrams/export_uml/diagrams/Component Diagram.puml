@@ -3,6 +3,13 @@ node Startup {
     [Launcher]
     [Main Menu]
 }
+node GameTypes{
+    [Base Game]
+    [Demo Mode]
+    [Load Game]
+    [Loads Data]
+    [New Game]
+}
 database Assets {
     [Map]
     [Textures]
@@ -12,6 +19,10 @@ node Entities {
     [Player]
     [Enemy]
     [NPC]
+    node Controllers{
+        [Enemy Manager]
+        [NPC Manager]
+    }
 }
 node Actors {
     [System Status Menu]
@@ -29,16 +40,34 @@ node MovementSystems{
     [AiMovement]
     [UserMovement]
 }
+node Ability{
+    () "IAbility"
+    [Base Ability]
+    [Attack Player]
+    [Ghost Mode]
+    [Global Slow down]
+    [Faster System Damage]
+    [Inactive]
+    [Show Infiltrator]
+    [Slow Down Target]
+    [Speed up]
+    [Freeze Target]
+}
 [Launcher] --> [Main Menu]: Launches
-[Main Menu] --> [Main Game]: Selects
-[Main Game] --> Assets: Loads
-[Main Game] --> [Game World]: Has
-[Main Game] --> [Hud]: Shows
+[Main Menu] --> GameTypes: Selects Game Type
+[Demo Mode] --> [Base Game]
+[Demo Mode] --> [Player]: Changes MovementSystem to AI
+[Load Game] --> [Loads Data]:Loads game from file
+[Loads Data]--> [Base Game]:Overwrites data
+[New Game] --> [Base Game]: Starts a new instance
+[Base Game] --> Assets: Loads
+[Base Game] --> [Game World]: Has
+[Base Game] --> [Hud]: Shows
+GameTypes --> Entities: Updates
 [Enemy Manager] --> [Enemy]: Controls
-[Enemy] --> [Ability]: Uses
 [Enemy] --> [System]: Sabotages
+[Player] --> [Enemy Manager]: Owns and updates
 [Player] --> [Enemy]: Arrests
-[Player] --> [Ability]: Uses
 [Teleporter] --> [Player]: Teleports
 [Healing Pod] --> [Player]: Heals
 Characters --> [Game World]: Are in
@@ -59,7 +88,19 @@ Characters --> [Game World]: Are in
 [Entity]-->[Player]
 [Entity]-->[Enemy]
 [Entity]-->[NPC]
+Entities-->Ability: Has
 [Movement]-->[AiMovement]
 [Movement]-->[UserMovement]
-MovementSystems-->Entities: Controls
+Entities-->MovementSystems: Moves Entity
+
+IAbility --> [Base Ability]
+[Base Ability] --> [Attack Player]
+[Base Ability] --> [Ghost Mode]
+[Base Ability] --> [Global Slow down]
+[Base Ability] --> [Faster System Damage]
+[Base Ability] --> [Inactive]
+[Base Ability] --> [Show Infiltrator]
+[Base Ability] --> [Slow Down Target]
+[Base Ability] --> [Speed up]
+[Base Ability] --> [Freeze Target]
 @enduml

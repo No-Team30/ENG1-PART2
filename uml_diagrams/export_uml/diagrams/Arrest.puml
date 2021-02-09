@@ -1,0 +1,17 @@
+@startuml
+actor User
+User -> Auber: Arrest key triggered
+
+alt Auber is near Enemy
+
+    Auber -> Enemy: Arrests
+    Enemy -> Auber: Follows
+    alt User -> Auber: Moves to teleporter
+        User -> Auber: Teleports to jail
+        Enemy --> Jail: Teleports to jail cell
+        Enemy -> JailedStatus :Becomes jailed
+    else User -> Auber: Walks to jail
+        Enemy --> Jail: Walks into jail cell
+        Enemy -> JailedStatus :Becomes jailed
+end
+@enduml
