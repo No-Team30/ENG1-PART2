@@ -372,10 +372,10 @@ public class EnemyAbilitiesTest {
         ability.update(delta);
     }
     void enemiesSabotageSystems(boolean reinforced) throws NoSuchFieldException, IllegalAccessException {
-        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.getInstance().player.enemyManager);
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
-            Systems systems = Gameplay.systems.get(i);
+            Systems systems = Gameplay.getInstance().systems.get(i);
             float hp = systems.hp;
             enemy.set_target_system(systems);
             enemy.sabotage(systems);
@@ -387,7 +387,7 @@ public class EnemyAbilitiesTest {
 
 //        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
         ReinforcedSystemsAbility ability = null;
-        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.player.abilityMap.entrySet()){
+        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.getInstance().player.abilityMap.entrySet()){
             if (playerAbility.getValue() instanceof ReinforcedSystemsAbility){
                 ability = (ReinforcedSystemsAbility) playerAbility.getValue();
                 break;
@@ -395,7 +395,7 @@ public class EnemyAbilitiesTest {
         }
         assert ability != null;
 
-        for (Systems systems: Gameplay.systems){
+        for (Systems systems: Gameplay.getInstance().systems){
             assert systems.isReinforced() == false;
         }
         assert ability.isReady();
@@ -409,13 +409,13 @@ public class EnemyAbilitiesTest {
         enemiesSabotageSystems(true);
 
 
-        for (Systems systems: Gameplay.systems){
+        for (Systems systems: Gameplay.getInstance().systems){
             assert systems.isReinforced() == true;
         }
         fastenAbilityUpdate(ability,ability.useTimeTiming);
         Thread.sleep(10);
 
-        for (Systems systems: Gameplay.systems){
+        for (Systems systems: Gameplay.getInstance().systems){
             assert systems.isReinforced() == false;
         }
         enemiesSabotageSystems(false);
@@ -424,7 +424,7 @@ public class EnemyAbilitiesTest {
     @Test
     void testGlobalSlowDown() throws InterruptedException {
         GlobalSlowDownAbility ability = null;
-        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.player.abilityMap.entrySet()){
+        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.getInstance().player.abilityMap.entrySet()){
             if (playerAbility.getValue() instanceof GlobalSlowDownAbility){
                 ability = (GlobalSlowDownAbility) playerAbility.getValue();
                 break;
@@ -432,7 +432,7 @@ public class EnemyAbilitiesTest {
         }
         assert ability != null;
 
-        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+        for (Enemy enemy:Gameplay.getInstance().player.enemyManager.getActiveEnemies()){
             assert  enemy.movementSystem.speed == 1000.0f;
         }
 
@@ -440,13 +440,13 @@ public class EnemyAbilitiesTest {
         ability.tryUseAbility();
         assert ability.isReady() == false;
 
-        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+        for (Enemy enemy:Gameplay.getInstance().player.enemyManager.getActiveEnemies()){
             assert  enemy.movementSystem.speed == 1000.0f / GlobalSlowDownAbility.SLOWDOWN;
         }
         fastenAbilityUpdate(ability,ability.useTime);
         Thread.sleep(10);
 
-        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+        for (Enemy enemy:Gameplay.getInstance().player.enemyManager.getActiveEnemies()){
             assert Math.abs( enemy.movementSystem.speed- 1000.0f) <= 0.001;
         }
 
@@ -455,7 +455,7 @@ public class EnemyAbilitiesTest {
     @Test
     void testMarkInfiltratorAbility() throws InterruptedException {
         MarkInfiltratorAbility ability = null;
-        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.player.abilityMap.entrySet()){
+        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.getInstance().player.abilityMap.entrySet()){
             if (playerAbility.getValue() instanceof MarkInfiltratorAbility){
                 ability = (MarkInfiltratorAbility) playerAbility.getValue();
                 break;
@@ -463,7 +463,7 @@ public class EnemyAbilitiesTest {
         }
         assert ability != null;
 
-        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+        for (Enemy enemy:Gameplay.getInstance().player.enemyManager.getActiveEnemies()){
             assert enemy.beMarked == false;
         }
 
@@ -471,9 +471,9 @@ public class EnemyAbilitiesTest {
         ability.tryUseAbility();
         assert ability.isReady() == false;
 
-        Enemy enemy = Gameplay.player.enemyManager.getClosestActiveEnemy(Gameplay.player.getPosition());
+        Enemy enemy = Gameplay.getInstance().player.enemyManager.getClosestActiveEnemy(Gameplay.getInstance().player.getPosition());
         if (enemy == null){
-            for (Enemy enemy1:Gameplay.player.enemyManager.getActiveEnemies()){
+            for (Enemy enemy1:Gameplay.getInstance().player.enemyManager.getActiveEnemies()){
                 assert enemy1.beMarked == false;
             }
         }else{
@@ -483,7 +483,7 @@ public class EnemyAbilitiesTest {
 
         fastenAbilityUpdate(ability,ability.useTime);
         Thread.sleep(10);
-        for (Enemy enemy1:Gameplay.player.enemyManager.getActiveEnemies()){
+        for (Enemy enemy1:Gameplay.getInstance().player.enemyManager.getActiveEnemies()){
             assert enemy1.beMarked == false;
         }
     }
