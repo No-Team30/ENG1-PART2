@@ -8,9 +8,11 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.team3.game.GameMain;
 import org.junit.jupiter.api.Test;
 import screen.Gameplay;
+import sprites.Systems;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Map;
 
 class TestGame extends GameMain {
     public Gameplay gameplay;
@@ -29,12 +31,12 @@ class TestGame extends GameMain {
     }
 }
 
-class DesktopLauncherTest {
+public class EnemyAbilitiesTest {
 
     LwjglApplication application;
     TestGame game;
 
-    public DesktopLauncherTest() {
+    public EnemyAbilitiesTest() {
         try {
             startApplication();
             waitApplicationReady(game);
@@ -364,6 +366,125 @@ class DesktopLauncherTest {
             assert (Gameplay.player.health <= healthBackup);
             fastenAbilityUpdate(enemies, enemies.get(0).ability.getCooldownTimeTiming() + 0.1f);//speed up ability coolDownTimeTiming
             Thread.sleep(10);//Waiting for game thread updates via sleep
+        }
+    }
+    void fastenAbilityUpdate(IAbility ability, float delta) {
+        ability.update(delta);
+    }
+    void enemiesSabotageSystems(boolean reinforced) throws NoSuchFieldException, IllegalAccessException {
+        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        for (int i = 0; i < enemies.size(); i++) {
+            Enemy enemy = enemies.get(i);
+            Systems systems = Gameplay.systems.get(i);
+            float hp = systems.hp;
+            enemy.set_target_system(systems);
+            enemy.sabotage(systems);
+            assert  hp == systems.hp == reinforced;
+        }
+    }
+    @Test
+    void testSystemReinforce() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
+
+//        ArrayList<Enemy> enemies = getAllEnemies(Gameplay.player.enemyManager);
+        ReinforcedSystemsAbility ability = null;
+        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.player.abilityMap.entrySet()){
+            if (playerAbility.getValue() instanceof ReinforcedSystemsAbility){
+                ability = (ReinforcedSystemsAbility) playerAbility.getValue();
+                break;
+            }
+        }
+        assert ability != null;
+
+        for (Systems systems: Gameplay.systems){
+            assert systems.isReinforced() == false;
+        }
+        assert ability.isReady();
+
+        enemiesSabotageSystems(false);
+
+
+        ability.tryUseAbility();
+        assert ability.isReady() == false;
+
+        enemiesSabotageSystems(true);
+
+
+        for (Systems systems: Gameplay.systems){
+            assert systems.isReinforced() == true;
+        }
+        fastenAbilityUpdate(ability,ability.useTimeTiming);
+        Thread.sleep(10);
+
+        for (Systems systems: Gameplay.systems){
+            assert systems.isReinforced() == false;
+        }
+        enemiesSabotageSystems(false);
+    }
+
+    @Test
+    void testGlobalSlowDown() throws InterruptedException {
+        GlobalSlowDownAbility ability = null;
+        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.player.abilityMap.entrySet()){
+            if (playerAbility.getValue() instanceof GlobalSlowDownAbility){
+                ability = (GlobalSlowDownAbility) playerAbility.getValue();
+                break;
+            }
+        }
+        assert ability != null;
+
+        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+            assert  enemy.movementSystem.speed == 1000.0f;
+        }
+
+        assert ability.isReady();
+        ability.tryUseAbility();
+        assert ability.isReady() == false;
+
+        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+            assert  enemy.movementSystem.speed == 1000.0f / GlobalSlowDownAbility.SLOWDOWN;
+        }
+        fastenAbilityUpdate(ability,ability.useTime);
+        Thread.sleep(10);
+
+        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+            assert Math.abs( enemy.movementSystem.speed- 1000.0f) <= 0.001;
+        }
+
+    }
+
+    @Test
+    void testMarkInfiltratorAbility() throws InterruptedException {
+        MarkInfiltratorAbility ability = null;
+        for (Map.Entry<Integer, IAbility> playerAbility:Gameplay.player.abilityMap.entrySet()){
+            if (playerAbility.getValue() instanceof MarkInfiltratorAbility){
+                ability = (MarkInfiltratorAbility) playerAbility.getValue();
+                break;
+            }
+        }
+        assert ability != null;
+
+        for (Enemy enemy:Gameplay.player.enemyManager.getActiveEnemies()){
+            assert enemy.beMarked == false;
+        }
+
+        assert ability.isReady();
+        ability.tryUseAbility();
+        assert ability.isReady() == false;
+
+        Enemy enemy = Gameplay.player.enemyManager.getClosestActiveEnemy(Gameplay.player.getPosition());
+        if (enemy == null){
+            for (Enemy enemy1:Gameplay.player.enemyManager.getActiveEnemies()){
+                assert enemy1.beMarked == false;
+            }
+        }else{
+            assert  enemy.beMarked;
+        }
+
+
+        fastenAbilityUpdate(ability,ability.useTime);
+        Thread.sleep(10);
+        for (Enemy enemy1:Gameplay.player.enemyManager.getActiveEnemies()){
+            assert enemy1.beMarked == false;
         }
     }
 }
